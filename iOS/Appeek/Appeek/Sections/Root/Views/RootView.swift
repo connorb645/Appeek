@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+import ConnorsComponents
 
-struct ContentView: View {
+struct RootView: View {
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
-                .foregroundColor(.accentColor)
+                .foregroundColor(Color.backgroundOffset)
             Text("Hello, world!")
         }
     }
@@ -20,6 +21,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        RootView()
     }
 }

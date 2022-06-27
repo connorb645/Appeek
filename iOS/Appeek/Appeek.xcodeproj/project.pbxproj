@@ -8,12 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A37F92869CF4F0003FB4A /* AppeekApp.swift */; };
-		C30A37FC2869CF4F0003FB4A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A37FB2869CF4F0003FB4A /* ContentView.swift */; };
+		C30A37FC2869CF4F0003FB4A /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A37FB2869CF4F0003FB4A /* RootView.swift */; };
 		C30A37FE2869CF500003FB4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C30A37FD2869CF500003FB4A /* Assets.xcassets */; };
 		C30A38012869CF500003FB4A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C30A38002869CF500003FB4A /* Preview Assets.xcassets */; };
 		C30A380B2869CF500003FB4A /* AppeekTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A380A2869CF500003FB4A /* AppeekTests.swift */; };
 		C30A38152869CF500003FB4A /* AppeekUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A38142869CF500003FB4A /* AppeekUITests.swift */; };
 		C30A38172869CF500003FB4A /* AppeekUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A38162869CF500003FB4A /* AppeekUITestsLaunchTests.swift */; };
+		C3B67C6F2869F838001CB727 /* ConnorsComponents in Frameworks */ = {isa = PBXBuildFile; productRef = C3B67C6E2869F838001CB727 /* ConnorsComponents */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +37,7 @@
 /* Begin PBXFileReference section */
 		C30A37F62869CF4F0003FB4A /* Appeek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Appeek.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C30A37F92869CF4F0003FB4A /* AppeekApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppeekApp.swift; sourceTree = "<group>"; };
-		C30A37FB2869CF4F0003FB4A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C30A37FB2869CF4F0003FB4A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		C30A37FD2869CF500003FB4A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C30A38002869CF500003FB4A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C30A38062869CF500003FB4A /* AppeekTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppeekTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3B67C6F2869F838001CB727 /* ConnorsComponents in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,9 +96,14 @@
 		C30A37F82869CF4F0003FB4A /* Appeek */ = {
 			isa = PBXGroup;
 			children = (
-				C30A37F92869CF4F0003FB4A /* AppeekApp.swift */,
-				C30A37FB2869CF4F0003FB4A /* ContentView.swift */,
-				C30A37FD2869CF500003FB4A /* Assets.xcassets */,
+				C30A382B2869D2470003FB4A /* Sections */,
+				C30A38292869D23C0003FB4A /* Resources */,
+				C30A38282869D2360003FB4A /* Stubs */,
+				C30A38272869D22D0003FB4A /* Extensions */,
+				C30A38262869D2290003FB4A /* Models */,
+				C30A38252869D2240003FB4A /* Errors */,
+				C30A38242869D21D0003FB4A /* Protocols */,
+				C30A38232869D2170003FB4A /* Network */,
 				C30A37FF2869CF500003FB4A /* Preview Content */,
 			);
 			path = Appeek;
@@ -127,6 +134,81 @@
 			path = AppeekUITests;
 			sourceTree = "<group>";
 		};
+		C30A38232869D2170003FB4A /* Network */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		C30A38242869D21D0003FB4A /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		C30A38252869D2240003FB4A /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		C30A38262869D2290003FB4A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C30A38272869D22D0003FB4A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		C30A38282869D2360003FB4A /* Stubs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Stubs;
+			sourceTree = "<group>";
+		};
+		C30A38292869D23C0003FB4A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C30A37FD2869CF500003FB4A /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C30A382B2869D2470003FB4A /* Sections */ = {
+			isa = PBXGroup;
+			children = (
+				C30A382C2869D2680003FB4A /* Root */,
+			);
+			path = Sections;
+			sourceTree = "<group>";
+		};
+		C30A382C2869D2680003FB4A /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				C30A382D2869D2760003FB4A /* Views */,
+			);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		C30A382D2869D2760003FB4A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C30A37F92869CF4F0003FB4A /* AppeekApp.swift */,
+				C30A37FB2869CF4F0003FB4A /* RootView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,6 +225,9 @@
 			dependencies = (
 			);
 			name = Appeek;
+			packageProductDependencies = (
+				C3B67C6E2869F838001CB727 /* ConnorsComponents */,
+			);
 			productName = Appeek;
 			productReference = C30A37F62869CF4F0003FB4A /* Appeek.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +300,9 @@
 				Base,
 			);
 			mainGroup = C30A37ED2869CF4F0003FB4A;
+			packageReferences = (
+				C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */,
+			);
 			productRefGroup = C30A37F72869CF4F0003FB4A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -257,7 +345,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C30A37FC2869CF4F0003FB4A /* ContentView.swift in Sources */,
+				C30A37FC2869CF4F0003FB4A /* RootView.swift in Sources */,
 				C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -583,6 +671,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/connorb645/ConnorsComponents.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C3B67C6E2869F838001CB727 /* ConnorsComponents */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */;
+			productName = ConnorsComponents;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C30A37EE2869CF4F0003FB4A /* Project object */;
 }

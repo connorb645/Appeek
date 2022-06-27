@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "connorscomponents",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/connorb645/ConnorsComponents.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "d70af8221f711c6d31766947173fd88a4595760f"
+      }
+    }
+  ],
+  "version" : 2
+}
