@@ -12,7 +12,23 @@ public struct AuthSession {
     let accessToken: String
 }
 
-extension AuthSession: Codable { }
+extension AuthSession: Codable {
+    enum CodingKeys: CodingKey {
+        case userId, accessToken
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.userId = try container.decode(String.self, forKey: .userId)
+        self.accessToken = try container.decode(String.self, forKey: .accessToken)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(userId, forKey: .userId)
+        try container.encode(accessToken, forKey: .accessToken)
+    }
+}
 
 extension AuthSession: RawRepresentable {
     public init?(rawValue: String) {
@@ -26,7 +42,7 @@ extension AuthSession: RawRepresentable {
     
     public var rawValue: String {
         guard let data = try? JSONEncoder().encode(self),
-            let result = String(data: data, encoding: .utf8)
+              let result = String(data: data, encoding: .utf8)
         else {
             return ""
         }

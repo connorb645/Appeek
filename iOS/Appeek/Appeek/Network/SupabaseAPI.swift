@@ -18,10 +18,10 @@ struct SupabaseAPI: APIProtocol {
     private let client: SupabaseClient
     
     init() {
-        guard let supabaseUrl = URL(string: EnvironmentKey.supabaseBaseUrl.rawValue) else {
+        guard let supabaseUrl = URL(string: EnvironmentKey.supabaseBaseUrl.value) else {
             fatalError(APIConfigError.invalidUrl.friendlyMessage)
         }
-        self.client = .init(supabaseURL: supabaseUrl, supabaseKey: EnvironmentKey.supabaseKey.rawValue)
+        self.client = .init(supabaseURL: supabaseUrl, supabaseKey: EnvironmentKey.supabaseKey.value)
     }
     
     func login(email: String, password: String) async throws -> AuthSession {
@@ -33,13 +33,13 @@ struct SupabaseAPI: APIProtocol {
     
     func signUp(email: String, password: String) async throws -> AuthSession {
         let response = try await client.auth.signUp(email: email, password: password)
-        guard let userId = response.user?.id else {
-            try await logout()
-            throw NetworkError.noUserId
-        }
         guard let accessToken = response.session?.accessToken else {
             try await logout()
             throw NetworkError.noAccessToken
+        }
+        guard let userId = response.session?.user.id else {
+            try await logout()
+            throw NetworkError.noUserId
         }
         return .init(userId: userId, accessToken: accessToken)
     }

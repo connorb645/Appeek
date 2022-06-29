@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct AppeekApp: App {
+    @StateObject var navigation = AppNavigation()
+    
     var body: some Scene {
         WindowGroup {
-            RootView()
+            OnboardingView()
+                .environmentObject(navigation)
         }
     }
 }

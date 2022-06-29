@@ -18,25 +18,25 @@ protocol AuthenticationProtocol: ObservableObject {
 
 class Authentication: AuthenticationProtocol {
     let api: APIProtocol
-    @AppStorage("current_auth_session", store: .standard) private(set) var currentSession: AuthSession?
+    @MainActor @AppStorage("current_auth_session", store: .standard) private(set) var currentSession: AuthSession?
     
     init(api: APIProtocol = SupabaseAPI()) {
         self.api = api
     }
     
-    func login(email: String, password: String) async throws -> AuthSession {
+    @MainActor func login(email: String, password: String) async throws -> AuthSession {
         let authSession = try await api.login(email: email, password: password)
         self.currentSession = authSession
         return authSession
     }
     
-    func signUp(email: String, password: String) async throws -> AuthSession {
+    @MainActor func signUp(email: String, password: String) async throws -> AuthSession {
         let authSession = try await api.signUp(email: email, password: password)
         self.currentSession = authSession
         return authSession
     }
     
-    func logout() async throws {
+    @MainActor func logout() async throws {
         try await api.logout()
         self.currentSession = nil
     }

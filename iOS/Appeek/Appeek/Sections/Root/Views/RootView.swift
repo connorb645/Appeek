@@ -13,7 +13,7 @@ struct RootView: View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
-                .foregroundColor(Color.backgroundOffset)
+                .foregroundColor(Color.primary)
             Text("Hello, world!")
         }
     }

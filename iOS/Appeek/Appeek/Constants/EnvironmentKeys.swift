@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum EnvironmentKey: String {
+enum EnvironmentKey {
     case supabaseBaseUrl, supabaseKey
     var value: String {
         switch self {
