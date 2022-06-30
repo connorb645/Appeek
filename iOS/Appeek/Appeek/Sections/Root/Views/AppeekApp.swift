@@ -16,7 +16,7 @@ struct AppeekApp: App {
         WindowGroup {
             Group {
                 if let currentSession = authentication.currentSession {
-                    SettingsView()
+                    HomeView()
                 } else {
                     OnboardingView()
                 }

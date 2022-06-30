@@ -27,6 +27,10 @@ struct SettingsView: View {
     }
 }
 
+extension SettingsView {
+    struct Navigation: Hashable { }
+}
+
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()

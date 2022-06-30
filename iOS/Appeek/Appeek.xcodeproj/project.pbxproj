@@ -33,6 +33,7 @@
 		C3B67C97286B391B001CB727 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C96286B391B001CB727 /* Navigation.swift */; };
 		C3B67C9A286B76AE001CB727 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C99286B76AE001CB727 /* SignUpViewModel.swift */; };
 		C3B67C9C286B84D0001CB727 /* ValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C9B286B84D0001CB727 /* ValidationError.swift */; };
+		C3DA524D286DE413009A7809 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA524C286DE413009A7809 /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,7 @@
 		C3B67C96286B391B001CB727 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
 		C3B67C99286B76AE001CB727 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		C3B67C9B286B84D0001CB727 /* ValidationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationError.swift; sourceTree = "<group>"; };
+		C3DA524C286DE413009A7809 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,6 +235,7 @@
 		C30A382B2869D2470003FB4A /* Sections */ = {
 			isa = PBXGroup;
 			children = (
+				C3DA524A286DE3F8009A7809 /* Home */,
 				C36DED72286DC6920054F1AB /* Settings */,
 				C3B67C8E286B0B43001CB727 /* Shared */,
 				C3B67C91286B12D0001CB727 /* Authentication */,
@@ -348,6 +351,22 @@
 				C37E17E8286DD7A6003689CB /* LoginViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		C3DA524A286DE3F8009A7809 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				C3DA524B286DE3FE009A7809 /* Views */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		C3DA524B286DE3FE009A7809 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C3DA524C286DE413009A7809 /* HomeView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -501,6 +520,7 @@
 				C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */,
 				C3B67C94286B1304001CB727 /* SignUpView.swift in Sources */,
 				C37E17E7286DD792003689CB /* LoginView.swift in Sources */,
+				C3DA524D286DE413009A7809 /* HomeView.swift in Sources */,
 				C3B67C97286B391B001CB727 /* Navigation.swift in Sources */,
 				C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */,
 				C3B67C8D286B0AC7001CB727 /* Color+Extensions.swift in Sources */,
