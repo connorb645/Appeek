@@ -16,8 +16,7 @@ struct AppeekApp: App {
         WindowGroup {
             Group {
                 if let currentSession = authentication.currentSession {
-                    Text(currentSession.userId)
-                    Text(currentSession.accessToken)
+                    SettingsView()
                 } else {
                     OnboardingView()
                 }

@@ -13,6 +13,8 @@
 		C30A380B2869CF500003FB4A /* AppeekTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A380A2869CF500003FB4A /* AppeekTests.swift */; };
 		C30A38152869CF500003FB4A /* AppeekUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A38142869CF500003FB4A /* AppeekUITests.swift */; };
 		C30A38172869CF500003FB4A /* AppeekUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A38162869CF500003FB4A /* AppeekUITestsLaunchTests.swift */; };
+		C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36DED74286DC6AA0054F1AB /* SettingsView.swift */; };
+		C36DED78286DC7B80054F1AB /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36DED77286DC7B80054F1AB /* SettingsViewModel.swift */; };
 		C3B67C6F2869F838001CB727 /* ConnorsComponents in Frameworks */ = {isa = PBXBuildFile; productRef = C3B67C6E2869F838001CB727 /* ConnorsComponents */; };
 		C3B67C71286A45EF001CB727 /* EnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C70286A45EF001CB727 /* EnvironmentKeys.swift */; };
 		C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C73286A46BE001CB727 /* SupabaseAPI.swift */; };
@@ -58,6 +60,8 @@
 		C30A38102869CF500003FB4A /* AppeekUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppeekUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C30A38142869CF500003FB4A /* AppeekUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppeekUITests.swift; sourceTree = "<group>"; };
 		C30A38162869CF500003FB4A /* AppeekUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppeekUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C36DED74286DC6AA0054F1AB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C36DED77286DC7B80054F1AB /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		C3B67C70286A45EF001CB727 /* EnvironmentKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentKeys.swift; sourceTree = "<group>"; };
 		C3B67C73286A46BE001CB727 /* SupabaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAPI.swift; sourceTree = "<group>"; };
 		C3B67C75286A48C6001CB727 /* AuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSession.swift; sourceTree = "<group>"; };
@@ -225,6 +229,7 @@
 		C30A382B2869D2470003FB4A /* Sections */ = {
 			isa = PBXGroup;
 			children = (
+				C36DED72286DC6920054F1AB /* Settings */,
 				C3B67C8E286B0B43001CB727 /* Shared */,
 				C3B67C91286B12D0001CB727 /* Authentication */,
 				C3B67C88286B0A43001CB727 /* Onboarding */,
@@ -247,6 +252,31 @@
 				C30A37F92869CF4F0003FB4A /* AppeekApp.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		C36DED72286DC6920054F1AB /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				C36DED76286DC7A90054F1AB /* ViewModels */,
+				C36DED73286DC69E0054F1AB /* Views */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		C36DED73286DC69E0054F1AB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C36DED74286DC6AA0054F1AB /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C36DED76286DC7A90054F1AB /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				C36DED77286DC7B80054F1AB /* SettingsViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		C3B67C72286A46A6001CB727 /* Constants */ = {
@@ -460,7 +490,9 @@
 				C3B67C76286A48C6001CB727 /* AuthSession.swift in Sources */,
 				C3B67C7D286A4A45001CB727 /* AppeekError.swift in Sources */,
 				C3B67C9A286B76AE001CB727 /* SignUpViewModel.swift in Sources */,
+				C36DED78286DC7B80054F1AB /* SettingsViewModel.swift in Sources */,
 				C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */,
+				C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */,
 				C3B67C94286B1304001CB727 /* SignUpView.swift in Sources */,
 				C3B67C97286B391B001CB727 /* Navigation.swift in Sources */,
 				C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */,
