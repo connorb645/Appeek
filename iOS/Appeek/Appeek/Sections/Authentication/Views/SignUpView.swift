@@ -14,6 +14,7 @@ struct SignUpView: View {
     }
     
     @EnvironmentObject var navigation: AppNavigation
+    @EnvironmentObject var authentication: Authentication
     @StateObject var viewModel: ViewModel = ViewModel()
     @FocusState private var focusedField: FocusField?
     
@@ -105,7 +106,7 @@ struct SignUpView: View {
                 .onSubmit {
                     focusedField = nil
                     Task {
-                        await viewModel.handleAccountCreation()
+                        await viewModel.handleAccountCreation(with: authentication)
                     }
                 }
                 
@@ -131,7 +132,7 @@ struct SignUpView: View {
             CCPrimaryButton(title: "Create account!",
                             backgroundColor: .appeekPrimary) {
                 Task {
-                    await viewModel.handleAccountCreation()
+                    await viewModel.handleAccountCreation(with: authentication)
                 }
             }
             

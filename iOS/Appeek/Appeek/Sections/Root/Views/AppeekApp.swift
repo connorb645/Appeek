@@ -10,11 +10,20 @@ import SwiftUI
 @main
 struct AppeekApp: App {
     @StateObject var navigation = AppNavigation()
+    @StateObject var authentication = Authentication()
     
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
-                .environmentObject(navigation)
+            Group {
+                if let currentSession = authentication.currentSession {
+                    Text(currentSession.userId)
+                    Text(currentSession.accessToken)
+                } else {
+                    OnboardingView()
+                }
+            }
+            .environmentObject(navigation)
+            .environmentObject(authentication)
         }
     }
 }

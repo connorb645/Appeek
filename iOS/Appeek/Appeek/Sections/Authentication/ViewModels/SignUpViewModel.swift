@@ -9,8 +9,6 @@ import Foundation
 
 extension SignUpView {
     class ViewModel: ObservableObject {
-        let authentication: any AuthenticationProtocol
-        
         @MainActor @Published var emailAddress: String = "connor.b645@gmail.com"
         @MainActor @Published var password: String = "Password"
         @MainActor @Published var confirmPassword: String = "Password"
@@ -19,11 +17,7 @@ extension SignUpView {
         @MainActor @Published var isLoading = false
         @MainActor @Published var errorMessage: String?
         
-        init(authentication: some AuthenticationProtocol = Authentication()) {
-            self.authentication = authentication
-        }
-        
-        @MainActor func handleAccountCreation() async {
+        @MainActor func handleAccountCreation(with authentication: some AuthenticationProtocol) async {
             do {
                 isLoading = true
                 errorMessage = nil

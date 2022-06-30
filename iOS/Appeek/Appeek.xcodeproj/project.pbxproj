@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A37F92869CF4F0003FB4A /* AppeekApp.swift */; };
-		C30A37FC2869CF4F0003FB4A /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A37FB2869CF4F0003FB4A /* RootView.swift */; };
 		C30A37FE2869CF500003FB4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C30A37FD2869CF500003FB4A /* Assets.xcassets */; };
 		C30A38012869CF500003FB4A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C30A38002869CF500003FB4A /* Preview Assets.xcassets */; };
 		C30A380B2869CF500003FB4A /* AppeekTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A380A2869CF500003FB4A /* AppeekTests.swift */; };
@@ -52,7 +51,6 @@
 /* Begin PBXFileReference section */
 		C30A37F62869CF4F0003FB4A /* Appeek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Appeek.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C30A37F92869CF4F0003FB4A /* AppeekApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppeekApp.swift; sourceTree = "<group>"; };
-		C30A37FB2869CF4F0003FB4A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		C30A37FD2869CF500003FB4A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C30A38002869CF500003FB4A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C30A38062869CF500003FB4A /* AppeekTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppeekTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -247,7 +245,6 @@
 			isa = PBXGroup;
 			children = (
 				C30A37F92869CF4F0003FB4A /* AppeekApp.swift */,
-				C30A37FB2869CF4F0003FB4A /* RootView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -459,7 +456,6 @@
 				C3B67C7F286A4C96001CB727 /* NetworkError.swift in Sources */,
 				C3B67C7B286A4A20001CB727 /* APIConfigError.swift in Sources */,
 				C3B67C8B286B0A64001CB727 /* OnboardingView.swift in Sources */,
-				C30A37FC2869CF4F0003FB4A /* RootView.swift in Sources */,
 				C3B67C9C286B84D0001CB727 /* ValidationError.swift in Sources */,
 				C3B67C76286A48C6001CB727 /* AuthSession.swift in Sources */,
 				C3B67C7D286A4A45001CB727 /* AppeekError.swift in Sources */,
