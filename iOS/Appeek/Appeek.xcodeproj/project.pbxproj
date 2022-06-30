@@ -15,6 +15,8 @@
 		C30A38172869CF500003FB4A /* AppeekUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30A38162869CF500003FB4A /* AppeekUITestsLaunchTests.swift */; };
 		C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36DED74286DC6AA0054F1AB /* SettingsView.swift */; };
 		C36DED78286DC7B80054F1AB /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36DED77286DC7B80054F1AB /* SettingsViewModel.swift */; };
+		C37E17E7286DD792003689CB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37E17E6286DD792003689CB /* LoginView.swift */; };
+		C37E17E9286DD7A6003689CB /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37E17E8286DD7A6003689CB /* LoginViewModel.swift */; };
 		C3B67C6F2869F838001CB727 /* ConnorsComponents in Frameworks */ = {isa = PBXBuildFile; productRef = C3B67C6E2869F838001CB727 /* ConnorsComponents */; };
 		C3B67C71286A45EF001CB727 /* EnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C70286A45EF001CB727 /* EnvironmentKeys.swift */; };
 		C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C73286A46BE001CB727 /* SupabaseAPI.swift */; };
@@ -62,6 +64,8 @@
 		C30A38162869CF500003FB4A /* AppeekUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppeekUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C36DED74286DC6AA0054F1AB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C36DED77286DC7B80054F1AB /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		C37E17E6286DD792003689CB /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		C37E17E8286DD7A6003689CB /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		C3B67C70286A45EF001CB727 /* EnvironmentKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentKeys.swift; sourceTree = "<group>"; };
 		C3B67C73286A46BE001CB727 /* SupabaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAPI.swift; sourceTree = "<group>"; };
 		C3B67C75286A48C6001CB727 /* AuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSession.swift; sourceTree = "<group>"; };
@@ -324,6 +328,7 @@
 			isa = PBXGroup;
 			children = (
 				C3B67C93286B1304001CB727 /* SignUpView.swift */,
+				C37E17E6286DD792003689CB /* LoginView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -340,6 +345,7 @@
 			isa = PBXGroup;
 			children = (
 				C3B67C99286B76AE001CB727 /* SignUpViewModel.swift */,
+				C37E17E8286DD7A6003689CB /* LoginViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -494,10 +500,12 @@
 				C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */,
 				C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */,
 				C3B67C94286B1304001CB727 /* SignUpView.swift in Sources */,
+				C37E17E7286DD792003689CB /* LoginView.swift in Sources */,
 				C3B67C97286B391B001CB727 /* Navigation.swift in Sources */,
 				C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */,
 				C3B67C8D286B0AC7001CB727 /* Color+Extensions.swift in Sources */,
 				C3B67C90286B0B52001CB727 /* AppeekBackgroundView.swift in Sources */,
+				C37E17E9286DD7A6003689CB /* LoginViewModel.swift in Sources */,
 				C3B67C82286A4F29001CB727 /* Authentication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

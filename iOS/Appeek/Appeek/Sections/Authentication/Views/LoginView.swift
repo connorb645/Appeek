@@ -1,16 +1,16 @@
 //
-//  SignUpView.swift
+//  LoginView.swift
 //  Appeek
 //
-//  Created by Connor Black on 28/06/2022.
+//  Created by Connor Black on 30/06/2022.
 //
 
 import SwiftUI
 import ConnorsComponents
 
-struct SignUpView: View {
+struct LoginView: View {
     enum FocusField: Hashable {
-        case email, password, confirmPassword
+        case email, password
     }
     
     @EnvironmentObject var navigation: AppNavigation
@@ -48,9 +48,6 @@ struct SignUpView: View {
                                    backgroundColor: .appeekBackgroundOffset)
                 }
             }
-            .navigationDestination(for: LoginView.Navigation.self) { _ in
-                LoginView()
-            }
         }
     }
     
@@ -59,7 +56,7 @@ struct SignUpView: View {
             .font(.largeTitle)
             .padding(.top)
         
-        Text("Create your account")
+        Text("Welcome back! Login")
             .frame(maxWidth: .infinity, alignment: .leading)
             .font(.title)
             .fontWeight(.bold)
@@ -84,29 +81,18 @@ struct SignUpView: View {
     
     @ViewBuilder private var password: some View {
         Group {
-            CCPasswordTextField(password: $viewModel.password,
-                                isSecure: viewModel.passwordSecure,
-                                placeholder: "Password",
-                                foregroundColor: .appeekFont,
-                                backgroundColor: .clear)
-            .submitLabel(.next)
-            .focused($focusedField, equals: .password)
-            .onSubmit {
-                focusedField = .confirmPassword
-            }
-            
             HStack {
-                CCPasswordTextField(password: $viewModel.confirmPassword,
+                CCPasswordTextField(password: $viewModel.password,
                                     isSecure: viewModel.passwordSecure,
-                                    placeholder: "Confirm Password",
+                                    placeholder: "Password",
                                     foregroundColor: .appeekFont,
                                     backgroundColor: .clear)
-                .submitLabel(.done)
-                .focused($focusedField, equals: .confirmPassword)
+                .submitLabel(.next)
+                .focused($focusedField, equals: .password)
                 .onSubmit {
                     focusedField = nil
                     Task {
-                        await viewModel.handleAccountCreation(with: authentication)
+                        await viewModel.handleLogin(with: authentication)
                     }
                 }
                 
@@ -129,30 +115,31 @@ struct SignUpView: View {
     
     @ViewBuilder private var callToAction: some View {
         VStack {
-            CCPrimaryButton(title: "Create account!",
+            CCPrimaryButton(title: "Login!",
                             backgroundColor: .appeekPrimary) {
                 Task {
-                    await viewModel.handleAccountCreation(with: authentication)
+                    await viewModel.handleLogin(with: authentication)
                 }
             }
             
-            NavigationLink("Already have an account? Log in!",
-                           value: LoginView.Navigation())
-            .frame(height: 45)
-                .foregroundColor(.appeekPrimary)
-                
+            CCSecondaryButton(title: "Don't have an account? Create one now!",
+                              textColor: .appeekPrimary,
+                              isUnderlined: false) {
+                navigation.mainNavigation.removeLast()
+            }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .padding()
     }
 }
 
-extension SignUpView {
+extension LoginView {
     struct Navigation: Hashable { }
 }
 
-struct SignUpView_Previews: PreviewProvider {
+struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpView()
+        LoginView()
     }
 }
+
