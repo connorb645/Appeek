@@ -11,19 +11,22 @@ extension SignUpView {
     class ViewModel: ObservableObject {
         let authentication: any AuthenticationProtocol
         
-        @Published var emailAddress: String = "connor.b645@gmail.com"
-        @Published var password: String = "Password"
-        @Published var confirmPassword: String = "Password"
-        @Published var passwordSecure = true
+        @MainActor @Published var emailAddress: String = "connor.b645@gmail.com"
+        @MainActor @Published var password: String = "Password"
+        @MainActor @Published var confirmPassword: String = "Password"
+        @MainActor @Published var passwordSecure = true
         
+        @MainActor @Published var isLoading = false
         @MainActor @Published var errorMessage: String?
         
-        init(authentication: any AuthenticationProtocol = Authentication()) {
+        init(authentication: some AuthenticationProtocol = Authentication()) {
             self.authentication = authentication
         }
         
         @MainActor func handleAccountCreation() async {
             do {
+                isLoading = true
+                errorMessage = nil
                 guard !emailAddress.isEmpty else {
                     throw ValidationError.emailAddressRequired
                 }
@@ -41,10 +44,13 @@ extension SignUpView {
                 }
                 _ = try await authentication.signUp(email: emailAddress,
                                                     password: password)
+                isLoading = false
             } catch let error as AppeekError {
                 errorMessage = error.friendlyMessage
+                isLoading = false
             } catch let error {
                 errorMessage = error.localizedDescription
+                isLoading = false
             }
             
         }

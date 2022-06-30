@@ -19,101 +19,128 @@ struct SignUpView: View {
     
     var body: some View {
         AppeekBackgroundView {
-            VStack {
-                ScrollView {
-                    VStack {
-                        Text("✌️ 😁 👋")
-                            .font(.largeTitle)
-                            .padding(.top)
-                        
-                        Text("Create your account")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .padding(.horizontal)
-                            .padding(.top)
-                        
-                        Group {
-                            CCEmailTextField(emailAddress: $viewModel.emailAddress,
-                                             placeholder: "Email Address",
-                                             foregroundColor: .appeekFont,
-                                             backgroundColor: .clear)
-                            .submitLabel(.next)
-                            .focused($focusedField, equals: .email)
-                            .onSubmit {
-                                focusedField = .password
-                            }
-                        }
-                        .padding(.horizontal)
-                        
-                        Divider()
-                        
-                        Group {
-                            CCPasswordTextField(password: $viewModel.password,
-                                                isSecure: viewModel.passwordSecure,
-                                                placeholder: "Password",
-                                                foregroundColor: .appeekFont,
-                                                backgroundColor: .clear)
-                            .submitLabel(.next)
-                            .focused($focusedField, equals: .password)
-                            .onSubmit {
-                                focusedField = .confirmPassword
-                            }
-                            
-                            HStack {
-                                CCPasswordTextField(password: $viewModel.confirmPassword,
-                                                    isSecure: viewModel.passwordSecure,
-                                                    placeholder: "Confirm Password",
-                                                    foregroundColor: .appeekFont,
-                                                    backgroundColor: .clear)
-                                .submitLabel(.done)
-                                .focused($focusedField, equals: .confirmPassword)
-                                .onSubmit {
-                                    focusedField = nil
-                                    Task {
-                                        await viewModel.handleAccountCreation()
-                                    }
-                                }
-                                
-                                CCIconButton(iconName: viewModel.passwordSecure ? "lock" : "lock.open") {
-                                    viewModel.passwordSecure.toggle()
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        
-                        Divider()
-                        
-                        if let errorMessage = viewModel.errorMessage {
-                            Text(errorMessage)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .foregroundColor(.pink)
-                                .font(.callout)
-                                .fontWeight(.regular)
-                                .padding(.horizontal)
-                        }
-                    }
-                }
-                                
+            ZStack {
                 VStack {
-                    CCPrimaryButton(title: "Create account!",
-                                    backgroundColor: .appeekPrimary) {
-                        Task {
-                            await viewModel.handleAccountCreation()
+                    ScrollView {
+                        VStack {
+                            header
+                            
+                            email
+                            
+                            Divider()
+                            
+                            password
+                            
+                            Divider()
+                            
+                            if let errorMessage = viewModel.errorMessage {
+                                error(errorMessage)
+                            }
                         }
                     }
-                    
-                    NavigationLink("Already have an account? Log in!",
-                                   value: "Login")
-                        .foregroundColor(.appeekPrimary)
+                                    
+                    callToAction
                 }
-                .ignoresSafeArea(.keyboard, edges: .bottom)
-                .padding()
+                
+                if viewModel.isLoading {
+                    CCProgressView(foregroundColor: .appeekPrimary,
+                                   backgroundColor: .appeekBackgroundOffset)
+                }
             }
             .navigationDestination(for: String.self) { _ in
                 Text("Login")
             }
         }
+    }
+    
+    @ViewBuilder private var header: some View {
+        Text("✌️ 😁 👋")
+            .font(.largeTitle)
+            .padding(.top)
+        
+        Text("Create your account")
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(.title)
+            .fontWeight(.bold)
+            .padding(.horizontal)
+            .padding(.top)
+    }
+    
+    @ViewBuilder private var email: some View {
+        Group {
+            CCEmailTextField(emailAddress: $viewModel.emailAddress,
+                             placeholder: "Email Address",
+                             foregroundColor: .appeekFont,
+                             backgroundColor: .clear)
+            .submitLabel(.next)
+            .focused($focusedField, equals: .email)
+            .onSubmit {
+                focusedField = .password
+            }
+        }
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder private var password: some View {
+        Group {
+            CCPasswordTextField(password: $viewModel.password,
+                                isSecure: viewModel.passwordSecure,
+                                placeholder: "Password",
+                                foregroundColor: .appeekFont,
+                                backgroundColor: .clear)
+            .submitLabel(.next)
+            .focused($focusedField, equals: .password)
+            .onSubmit {
+                focusedField = .confirmPassword
+            }
+            
+            HStack {
+                CCPasswordTextField(password: $viewModel.confirmPassword,
+                                    isSecure: viewModel.passwordSecure,
+                                    placeholder: "Confirm Password",
+                                    foregroundColor: .appeekFont,
+                                    backgroundColor: .clear)
+                .submitLabel(.done)
+                .focused($focusedField, equals: .confirmPassword)
+                .onSubmit {
+                    focusedField = nil
+                    Task {
+                        await viewModel.handleAccountCreation()
+                    }
+                }
+                
+                CCIconButton(iconName: viewModel.passwordSecure ? "lock" : "lock.open") {
+                    viewModel.passwordSecure.toggle()
+                }
+            }
+        }
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder private func error(_ message: String) -> some View {
+        Text(message)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundColor(.pink)
+            .font(.callout)
+            .fontWeight(.regular)
+            .padding(.horizontal)
+    }
+    
+    @ViewBuilder private var callToAction: some View {
+        VStack {
+            CCPrimaryButton(title: "Create account!",
+                            backgroundColor: .appeekPrimary) {
+                Task {
+                    await viewModel.handleAccountCreation()
+                }
+            }
+            
+            NavigationLink("Already have an account? Log in!",
+                           value: "Login")
+                .foregroundColor(.appeekPrimary)
+        }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
+        .padding()
     }
 }
 
