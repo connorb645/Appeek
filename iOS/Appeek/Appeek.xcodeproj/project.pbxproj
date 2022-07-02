@@ -34,6 +34,8 @@
 		C3B67C9A286B76AE001CB727 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C99286B76AE001CB727 /* SignUpViewModel.swift */; };
 		C3B67C9C286B84D0001CB727 /* ValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C9B286B84D0001CB727 /* ValidationError.swift */; };
 		C3DA524D286DE413009A7809 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA524C286DE413009A7809 /* HomeView.swift */; };
+		C3FBEC38286E008A005DE031 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC37286E008A005DE031 /* ForgotPasswordView.swift */; };
+		C3FBEC3A286E019F005DE031 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC39286E019F005DE031 /* ForgotPasswordViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +84,8 @@
 		C3B67C99286B76AE001CB727 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		C3B67C9B286B84D0001CB727 /* ValidationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationError.swift; sourceTree = "<group>"; };
 		C3DA524C286DE413009A7809 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		C3FBEC37286E008A005DE031 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		C3FBEC39286E019F005DE031 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,6 +336,7 @@
 			children = (
 				C3B67C93286B1304001CB727 /* SignUpView.swift */,
 				C37E17E6286DD792003689CB /* LoginView.swift */,
+				C3FBEC37286E008A005DE031 /* ForgotPasswordView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -349,6 +354,7 @@
 			children = (
 				C3B67C99286B76AE001CB727 /* SignUpViewModel.swift */,
 				C37E17E8286DD7A6003689CB /* LoginViewModel.swift */,
+				C3FBEC39286E019F005DE031 /* ForgotPasswordViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -508,10 +514,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3B67C71286A45EF001CB727 /* EnvironmentKeys.swift in Sources */,
+				C3FBEC38286E008A005DE031 /* ForgotPasswordView.swift in Sources */,
 				C3B67C7F286A4C96001CB727 /* NetworkError.swift in Sources */,
 				C3B67C7B286A4A20001CB727 /* APIConfigError.swift in Sources */,
 				C3B67C8B286B0A64001CB727 /* OnboardingView.swift in Sources */,
 				C3B67C9C286B84D0001CB727 /* ValidationError.swift in Sources */,
+				C3FBEC3A286E019F005DE031 /* ForgotPasswordViewModel.swift in Sources */,
 				C3B67C76286A48C6001CB727 /* AuthSession.swift in Sources */,
 				C3B67C7D286A4A45001CB727 /* AppeekError.swift in Sources */,
 				C3B67C9A286B76AE001CB727 /* SignUpViewModel.swift in Sources */,

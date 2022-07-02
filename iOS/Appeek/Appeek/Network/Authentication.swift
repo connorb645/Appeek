@@ -14,6 +14,7 @@ protocol AuthenticationProtocol: ObservableObject {
     func login(email: String, password: String) async throws -> AuthSession
     func signUp(email: String, password: String) async throws -> AuthSession
     func logout() async throws
+    func resetPassword(email: String) async throws
 }
 
 class Authentication: AuthenticationProtocol {
@@ -39,5 +40,9 @@ class Authentication: AuthenticationProtocol {
     @MainActor func logout() async throws {
         try await api.logout()
         self.currentSession = nil
+    }
+    
+    func resetPassword(email: String) async throws {
+        try await api.resetPassword(email: email)
     }
 }

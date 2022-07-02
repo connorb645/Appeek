@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  ForgotPasswordView.swift
 //  Appeek
 //
 //  Created by Connor Black on 30/06/2022.
@@ -8,9 +8,9 @@
 import SwiftUI
 import ConnorsComponents
 
-struct LoginView: View {
+struct ForgotPasswordView: View {
     enum FocusField: Hashable {
-        case email, password
+        case email
     }
     
     @EnvironmentObject var navigation: AppNavigation
@@ -30,12 +30,6 @@ struct LoginView: View {
                             
                             Divider()
                             
-                            password
-                            
-                            forgotPassword
-                            
-                            Divider()
-                            
                             if let errorMessage = viewModel.errorMessage {
                                 error(errorMessage)
                             }
@@ -50,18 +44,11 @@ struct LoginView: View {
                                    backgroundColor: .appeekBackgroundOffset)
                 }
             }
-            .navigationDestination(for: ForgotPasswordView.Navigation.self) { _ in
-                ForgotPasswordView()
-            }
         }
     }
     
     @ViewBuilder private var header: some View {
-        Text("✌️ 😁 👋")
-            .font(.largeTitle)
-            .padding(.top)
-        
-        Text("Welcome back! Login")
+        Text("Let's get your account back")
             .frame(maxWidth: .infinity, alignment: .leading)
             .font(.title)
             .fontWeight(.bold)
@@ -78,44 +65,15 @@ struct LoginView: View {
             .submitLabel(.next)
             .focused($focusedField, equals: .email)
             .onSubmit {
-                focusedField = .password
-            }
-        }
-        .padding(.horizontal)
-    }
-    
-    @ViewBuilder private var password: some View {
-        Group {
-            HStack {
-                CCPasswordTextField(password: $viewModel.password,
-                                    isSecure: viewModel.passwordSecure,
-                                    placeholder: "Password",
-                                    foregroundColor: .appeekFont,
-                                    backgroundColor: .clear)
-                .submitLabel(.next)
-                .focused($focusedField, equals: .password)
-                .onSubmit {
-                    focusedField = nil
-                    Task {
-                        await viewModel.handleLogin(with: authentication)
-                    }
-                }
-                
-                CCIconButton(iconName: viewModel.passwordSecure ? "lock" : "lock.open") {
-                    viewModel.passwordSecure.toggle()
+                focusedField = nil
+                Task {
+                    await viewModel.handlePasswordReset(with: authentication)
                 }
             }
         }
         .padding(.horizontal)
     }
-    
-    @ViewBuilder private var forgotPassword: some View {
-        NavigationLink("Forgot Password", value: ForgotPasswordView.Navigation())
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            .tint(Color.appeekFont)
-            .padding(.horizontal)
-    }
-    
+            
     @ViewBuilder private func error(_ message: String) -> some View {
         Text(message)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -127,17 +85,11 @@ struct LoginView: View {
     
     @ViewBuilder private var callToAction: some View {
         VStack {
-            CCPrimaryButton(title: "Login!",
+            CCPrimaryButton(title: "Reset password",
                             backgroundColor: .appeekPrimary) {
                 Task {
-                    await viewModel.handleLogin(with: authentication)
+                    await viewModel.handlePasswordReset(with: authentication)
                 }
-            }
-            
-            CCSecondaryButton(title: "Don't have an account? Create one now!",
-                              textColor: .appeekPrimary,
-                              isUnderlined: false) {
-                navigation.mainNavigation.removeLast()
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -145,13 +97,12 @@ struct LoginView: View {
     }
 }
 
-extension LoginView {
+extension ForgotPasswordView {
     struct Navigation: Hashable { }
 }
 
-struct LoginView_Previews: PreviewProvider {
+struct ForgotPasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        ForgotPasswordView()
     }
 }
-
