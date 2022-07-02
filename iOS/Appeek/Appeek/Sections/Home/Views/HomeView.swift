@@ -8,13 +8,38 @@
 import SwiftUI
 
 struct HomeView: View {
-    
     @State var isShowingSettings: Bool = false
+    @EnvironmentObject var authentication: Authentication
     
     var body: some View {
         NavigationStack {
             AppeekBackgroundView {
-                Text("Home")
+                VStack {
+                    OrganisationsPicker()
+                        .frame(height: 50)
+                        .padding(.horizontal)
+                    
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onAppear {
+                    #if DEBUG
+                    print("ACCESS TOKEN: \(authentication.currentSession?.accessToken ?? "")")
+                    Task {
+                        do {
+                            guard let userId = authentication.currentSession?.userId,
+                                  let accessToken = authentication.currentSession?.accessToken else {
+                                return
+                            }
+                            let result = try await SupabaseAPI().organisations(for: userId,
+                                                                               bearerToken: accessToken)
+                        } catch let error {
+                            print(error)
+                        }
+                        
+                    }
+                    #endif
+                }
             }
             .navigationTitle("Home")
             .toolbar {

@@ -16,6 +16,7 @@ extension SettingsView {
             do {
                 self.isLoading = true
                 try await authentication.logout()
+                
             } catch let error as AppeekError {
                 self.isLoading = false
                 self.errorMessage = error.friendlyMessage

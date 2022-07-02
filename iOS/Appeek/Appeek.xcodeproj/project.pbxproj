@@ -36,6 +36,19 @@
 		C3DA524D286DE413009A7809 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA524C286DE413009A7809 /* HomeView.swift */; };
 		C3FBEC38286E008A005DE031 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC37286E008A005DE031 /* ForgotPasswordView.swift */; };
 		C3FBEC3A286E019F005DE031 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC39286E019F005DE031 /* ForgotPasswordViewModel.swift */; };
+		C3FBEC3E287071E0005DE031 /* OrganisationsPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC3D287071E0005DE031 /* OrganisationsPicker.swift */; };
+		C3FBEC4128707DD7005DE031 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC4028707DD7005DE031 /* HomeViewModel.swift */; };
+		C3FBEC4328707E23005DE031 /* Organisation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC4228707E23005DE031 /* Organisation.swift */; };
+		C3FBEC462870828F005DE031 /* Optional+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC452870828F005DE031 /* Optional+Extensions.swift */; };
+		C3FBEC482870BC22005DE031 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC472870BC22005DE031 /* Network.swift */; };
+		C3FBEC4A2870C044005DE031 /* ServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC492870C044005DE031 /* ServerError.swift */; };
+		C3FBEC4C2870C272005DE031 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC4B2870C272005DE031 /* Endpoint.swift */; };
+		C3FBEC4E2870CEE7005DE031 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC4D2870CEE7005DE031 /* RequestBuilder.swift */; };
+		C3FBEC512870CF01005DE031 /* SupabaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC502870CF01005DE031 /* SupabaseRequest.swift */; };
+		C3FBEC552870CF24005DE031 /* URLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC542870CF24005DE031 /* URLBuilder.swift */; };
+		C3FBEC572870E99A005DE031 /* JSONSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC562870E99A005DE031 /* JSONSerializer.swift */; };
+		C3FBEC592870E9E5005DE031 /* JsonSerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC582870E9E5005DE031 /* JsonSerializationError.swift */; };
+		C3FBEC5B2870F707005DE031 /* UserOrganisationRelation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC5A2870F707005DE031 /* UserOrganisationRelation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +99,19 @@
 		C3DA524C286DE413009A7809 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C3FBEC37286E008A005DE031 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		C3FBEC39286E019F005DE031 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
+		C3FBEC3D287071E0005DE031 /* OrganisationsPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationsPicker.swift; sourceTree = "<group>"; };
+		C3FBEC4028707DD7005DE031 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		C3FBEC4228707E23005DE031 /* Organisation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organisation.swift; sourceTree = "<group>"; };
+		C3FBEC452870828F005DE031 /* Optional+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Extensions.swift"; sourceTree = "<group>"; };
+		C3FBEC472870BC22005DE031 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		C3FBEC492870C044005DE031 /* ServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerError.swift; sourceTree = "<group>"; };
+		C3FBEC4B2870C272005DE031 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		C3FBEC4D2870CEE7005DE031 /* RequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
+		C3FBEC502870CF01005DE031 /* SupabaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseRequest.swift; sourceTree = "<group>"; };
+		C3FBEC542870CF24005DE031 /* URLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBuilder.swift; sourceTree = "<group>"; };
+		C3FBEC562870E99A005DE031 /* JSONSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSerializer.swift; sourceTree = "<group>"; };
+		C3FBEC582870E9E5005DE031 /* JsonSerializationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonSerializationError.swift; sourceTree = "<group>"; };
+		C3FBEC5A2870F707005DE031 /* UserOrganisationRelation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOrganisationRelation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,8 +207,14 @@
 		C30A38232869D2170003FB4A /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				C3FBEC4F2870CEF8005DE031 /* Requests */,
 				C3B67C73286A46BE001CB727 /* SupabaseAPI.swift */,
 				C3B67C81286A4F29001CB727 /* Authentication.swift */,
+				C3FBEC472870BC22005DE031 /* Network.swift */,
+				C3FBEC4B2870C272005DE031 /* Endpoint.swift */,
+				C3FBEC4D2870CEE7005DE031 /* RequestBuilder.swift */,
+				C3FBEC542870CF24005DE031 /* URLBuilder.swift */,
+				C3FBEC562870E99A005DE031 /* JSONSerializer.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -201,6 +233,7 @@
 				C3B67C7A286A4A20001CB727 /* APIConfigError.swift */,
 				C3B67C7E286A4C96001CB727 /* NetworkError.swift */,
 				C3B67C9B286B84D0001CB727 /* ValidationError.swift */,
+				C3FBEC582870E9E5005DE031 /* JsonSerializationError.swift */,
 			);
 			path = Errors;
 			sourceTree = "<group>";
@@ -208,7 +241,9 @@
 		C30A38262869D2290003FB4A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				C3FBEC4428707F1B005DE031 /* Responses */,
 				C3B67C75286A48C6001CB727 /* AuthSession.swift */,
+				C3FBEC4228707E23005DE031 /* Organisation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -217,6 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				C3B67C8C286B0AC7001CB727 /* Color+Extensions.swift */,
+				C3FBEC452870828F005DE031 /* Optional+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -239,6 +275,7 @@
 		C30A382B2869D2470003FB4A /* Sections */ = {
 			isa = PBXGroup;
 			children = (
+				C3FBEC3B287071A4005DE031 /* Organisations */,
 				C3DA524A286DE3F8009A7809 /* Home */,
 				C36DED72286DC6920054F1AB /* Settings */,
 				C3B67C8E286B0B43001CB727 /* Shared */,
@@ -362,6 +399,7 @@
 		C3DA524A286DE3F8009A7809 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				C3FBEC3F28707DC5005DE031 /* ViewModels */,
 				C3DA524B286DE3FE009A7809 /* Views */,
 			);
 			path = Home;
@@ -373,6 +411,47 @@
 				C3DA524C286DE413009A7809 /* HomeView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		C3FBEC3B287071A4005DE031 /* Organisations */ = {
+			isa = PBXGroup;
+			children = (
+				C3FBEC3C287071D5005DE031 /* Views */,
+			);
+			path = Organisations;
+			sourceTree = "<group>";
+		};
+		C3FBEC3C287071D5005DE031 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C3FBEC3D287071E0005DE031 /* OrganisationsPicker.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C3FBEC3F28707DC5005DE031 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				C3FBEC4028707DD7005DE031 /* HomeViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		C3FBEC4428707F1B005DE031 /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				C3FBEC492870C044005DE031 /* ServerError.swift */,
+				C3FBEC5A2870F707005DE031 /* UserOrganisationRelation.swift */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
+		C3FBEC4F2870CEF8005DE031 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				C3FBEC502870CF01005DE031 /* SupabaseRequest.swift */,
+			);
+			path = Requests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -514,24 +593,37 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3B67C71286A45EF001CB727 /* EnvironmentKeys.swift in Sources */,
+				C3FBEC4C2870C272005DE031 /* Endpoint.swift in Sources */,
 				C3FBEC38286E008A005DE031 /* ForgotPasswordView.swift in Sources */,
 				C3B67C7F286A4C96001CB727 /* NetworkError.swift in Sources */,
+				C3FBEC462870828F005DE031 /* Optional+Extensions.swift in Sources */,
 				C3B67C7B286A4A20001CB727 /* APIConfigError.swift in Sources */,
 				C3B67C8B286B0A64001CB727 /* OnboardingView.swift in Sources */,
 				C3B67C9C286B84D0001CB727 /* ValidationError.swift in Sources */,
 				C3FBEC3A286E019F005DE031 /* ForgotPasswordViewModel.swift in Sources */,
 				C3B67C76286A48C6001CB727 /* AuthSession.swift in Sources */,
 				C3B67C7D286A4A45001CB727 /* AppeekError.swift in Sources */,
+				C3FBEC4328707E23005DE031 /* Organisation.swift in Sources */,
 				C3B67C9A286B76AE001CB727 /* SignUpViewModel.swift in Sources */,
+				C3FBEC572870E99A005DE031 /* JSONSerializer.swift in Sources */,
 				C36DED78286DC7B80054F1AB /* SettingsViewModel.swift in Sources */,
+				C3FBEC552870CF24005DE031 /* URLBuilder.swift in Sources */,
+				C3FBEC4A2870C044005DE031 /* ServerError.swift in Sources */,
+				C3FBEC4E2870CEE7005DE031 /* RequestBuilder.swift in Sources */,
 				C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */,
+				C3FBEC512870CF01005DE031 /* SupabaseRequest.swift in Sources */,
 				C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */,
 				C3B67C94286B1304001CB727 /* SignUpView.swift in Sources */,
 				C37E17E7286DD792003689CB /* LoginView.swift in Sources */,
+				C3FBEC3E287071E0005DE031 /* OrganisationsPicker.swift in Sources */,
+				C3FBEC5B2870F707005DE031 /* UserOrganisationRelation.swift in Sources */,
 				C3DA524D286DE413009A7809 /* HomeView.swift in Sources */,
 				C3B67C97286B391B001CB727 /* Navigation.swift in Sources */,
 				C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */,
+				C3FBEC4128707DD7005DE031 /* HomeViewModel.swift in Sources */,
 				C3B67C8D286B0AC7001CB727 /* Color+Extensions.swift in Sources */,
+				C3FBEC592870E9E5005DE031 /* JsonSerializationError.swift in Sources */,
+				C3FBEC482870BC22005DE031 /* Network.swift in Sources */,
 				C3B67C90286B0B52001CB727 /* AppeekBackgroundView.swift in Sources */,
 				C37E17E9286DD7A6003689CB /* LoginViewModel.swift in Sources */,
 				C3B67C82286A4F29001CB727 /* Authentication.swift in Sources */,

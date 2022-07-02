@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     
     @EnvironmentObject var authentication: Authentication
+    @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel: ViewModel = ViewModel()
     
     var body: some View {
@@ -19,6 +20,9 @@ struct SettingsView: View {
                     Button("Log Out") {
                         Task {
                             await viewModel.logout(with: authentication)
+                            if viewModel.errorMessage == nil {
+                                presentationMode.wrappedValue.dismiss()
+                            }
                         }
                     }
                 }

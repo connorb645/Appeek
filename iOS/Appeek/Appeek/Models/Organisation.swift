@@ -1,36 +1,41 @@
 //
-//  AuthSession.swift
+//  Organisation.swift
 //  Appeek
 //
-//  Created by Connor Black on 27/06/2022.
+//  Created by Connor Black on 02/07/2022.
 //
 
 import Foundation
 
-public struct AuthSession {
-    let userId: UUID
-    let accessToken: String
+public struct Organisation {
+    let id: UUID
+    let name: String
+    let createdAt: String
 }
 
-extension AuthSession: Codable {
-    enum CodingKeys: CodingKey {
-        case userId, accessToken
+extension Organisation: Codable {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case createdAt = "created_at"
+        case name = "name"
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.userId = try container.decode(UUID.self, forKey: .userId)
-        self.accessToken = try container.decode(String.self, forKey: .accessToken)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.createdAt = try container.decode(String.self, forKey: .createdAt)
+        self.name = try container.decode(String.self, forKey: .name)
     }
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(userId, forKey: .userId)
-        try container.encode(accessToken, forKey: .accessToken)
+        try container.encode(id, forKey: .id)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(name, forKey: .name)
     }
 }
 
-extension AuthSession: RawRepresentable {
+extension Organisation: RawRepresentable {
     public init?(rawValue: String) {
         guard let data = rawValue.data(using: .utf8),
               let result = try? JSONDecoder().decode(Self.self, from: data)
