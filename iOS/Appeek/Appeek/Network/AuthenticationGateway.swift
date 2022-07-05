@@ -1,5 +1,5 @@
 //
-//  Authentication.swift
+//  AuthenticationGateway.swift
 //  Appeek
 //
 //  Created by Connor Black on 27/06/2022.
@@ -13,11 +13,12 @@ protocol AuthenticationProtocol: ObservableObject {
     
     func login(email: String, password: String) async throws -> AuthSession
     func signUp(email: String, password: String) async throws -> AuthSession
+    func refreshSession(token: String) async throws -> AuthSession
     func logout() async throws
     func resetPassword(email: String) async throws
 }
 
-class Authentication: AuthenticationProtocol {
+class AuthenticationGateway: AuthenticationProtocol {
     let api: APIProtocol
     @MainActor @AppStorage("current_auth_session", store: .standard) private(set) var currentSession: AuthSession?
     
@@ -33,6 +34,12 @@ class Authentication: AuthenticationProtocol {
     
     @MainActor func signUp(email: String, password: String) async throws -> AuthSession {
         let authSession = try await api.signUp(email: email, password: password)
+        self.currentSession = authSession
+        return authSession
+    }
+    
+    @MainActor func refreshSession(token: String) async throws -> AuthSession {
+        let authSession = try await api.refreshSession(token: token)
         self.currentSession = authSession
         return authSession
     }
