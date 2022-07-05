@@ -8,17 +8,7 @@
 import Foundation
 import SwiftUI
 
-protocol AuthenticationProtocol: ObservableObject {
-    var currentSession: AuthSession? { get }
-    
-    func login(email: String, password: String) async throws -> AuthSession
-    func signUp(email: String, password: String) async throws -> AuthSession
-    func refreshSession(token: String) async throws -> AuthSession
-    func logout() async throws
-    func resetPassword(email: String) async throws
-}
-
-class AuthenticationGateway: AuthenticationProtocol {
+class AuthenticationGateway: ObservableObject {
     let api: APIProtocol
     @MainActor @AppStorage("current_auth_session", store: .standard) private(set) var currentSession: AuthSession?
     
@@ -26,30 +16,42 @@ class AuthenticationGateway: AuthenticationProtocol {
         self.api = api
     }
     
-    @MainActor func login(email: String, password: String) async throws -> AuthSession {
+    @MainActor func login(email: String, password: String, updateCurrentSession: Bool = true) async throws -> AuthSession {
         let authSession = try await api.login(email: email, password: password)
-        self.currentSession = authSession
+        if updateCurrentSession {
+            self.currentSession = authSession
+        }
         return authSession
     }
     
-    @MainActor func signUp(email: String, password: String) async throws -> AuthSession {
+    @MainActor func signUp(email: String, password: String, updateCurrentSession: Bool = true) async throws -> AuthSession {
         let authSession = try await api.signUp(email: email, password: password)
-        self.currentSession = authSession
+        if updateCurrentSession {
+            self.currentSession = authSession
+        }
         return authSession
     }
     
-    @MainActor func refreshSession(token: String) async throws -> AuthSession {
+    @MainActor func refreshSession(token: String, updateCurrentSession: Bool = true) async throws -> AuthSession {
         let authSession = try await api.refreshSession(token: token)
-        self.currentSession = authSession
+        if updateCurrentSession {
+            self.currentSession = authSession
+        }
         return authSession
     }
     
-    @MainActor func logout() async throws {
+    @MainActor func logout(updateCurrentSession: Bool = true) async throws {
         try await api.logout()
-        self.currentSession = nil
+        if updateCurrentSession {
+            self.currentSession = nil
+        }
     }
     
     func resetPassword(email: String) async throws {
         try await api.resetPassword(email: email)
+    }
+    
+    @MainActor func removeCurrentSession() {
+        self.currentSession = nil
     }
 }

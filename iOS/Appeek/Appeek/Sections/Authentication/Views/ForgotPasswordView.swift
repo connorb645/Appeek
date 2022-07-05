@@ -14,7 +14,7 @@ struct ForgotPasswordView: View {
     }
     
     @EnvironmentObject var navigation: AppNavigation
-    @EnvironmentObject var authentication: Authentication
+    @EnvironmentObject var authentication: AuthenticationGateway
     @StateObject var viewModel: ViewModel = ViewModel()
     @FocusState private var focusedField: FocusField?
     

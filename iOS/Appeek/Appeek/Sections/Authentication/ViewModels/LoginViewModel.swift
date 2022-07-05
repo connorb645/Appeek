@@ -16,7 +16,7 @@ extension LoginView {
         @MainActor @Published var isLoading = false
         @MainActor @Published var errorMessage: String?
         
-        @MainActor func handleLogin(with authentication: some AuthenticationProtocol) async {
+        @MainActor func handleLogin(with authentication: AuthenticationGateway) async {
             do {
                 isLoading = true
                 errorMessage = nil

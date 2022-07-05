@@ -14,7 +14,7 @@ struct LoginView: View {
     }
     
     @EnvironmentObject var navigation: AppNavigation
-    @EnvironmentObject var authentication: Authentication
+    @EnvironmentObject var authentication: AuthenticationGateway
     @StateObject var viewModel: ViewModel = ViewModel()
     @FocusState private var focusedField: FocusField?
     
@@ -98,6 +98,7 @@ struct LoginView: View {
                     focusedField = nil
                     Task {
                         await viewModel.handleLogin(with: authentication)
+                        navigation.mainNavigation = .init()
                     }
                 }
                 
@@ -131,6 +132,7 @@ struct LoginView: View {
                             backgroundColor: .appeekPrimary) {
                 Task {
                     await viewModel.handleLogin(with: authentication)
+                    navigation.mainNavigation = .init()
                 }
             }
             

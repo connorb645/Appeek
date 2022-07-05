@@ -27,8 +27,10 @@ struct Network {
         let successfulCodeRange = 200..<300
         
         if !successfulCodeRange.contains(statusCodeAndData.statusCode) {
-            let unsuccessfulResponse: ServerError = try jsonSerializer.decode(data: statusCodeAndData.data)
-            throw unsuccessfulResponse
+            let serverError: ServerError = try jsonSerializer.decode(data: statusCodeAndData.data)
+            throw NetworkError.serverError(message: serverError.message,
+                                           code: serverError.code,
+                                           details: serverError.details)
         }
         
         let successfulResponse: ResponseType = try jsonSerializer.decode(data: statusCodeAndData.data)

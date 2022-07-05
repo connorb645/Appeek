@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct OrganisationsPicker: View {
-    let companies: [String] = ["Company One", "Company Two", "Company Three"]
-    @State var selectedCompany: String = "Company One"
-    
+    var organisations: [Organisation]
+    @Binding var selectedOrganisation: Organisation?
+
     var body: some View {
         ZStack {
             Color.appeekBackgroundOffset
-            Picker("Selected Company", selection: $selectedCompany) {
-                ForEach(companies, id: \.self) { Text($0) }
+            HStack {
+                Picker("Selected Company", selection: $selectedOrganisation) {
+                    ForEach(organisations, id: \.self) { Text($0.name).tag($0) }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .pickerStyle(.menu)
+                .tint(.appeekFont)
+                
+                Text(selectedOrganisation?.name ?? "No Organisations")
+                    .foregroundColor(.appeekFont)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .pickerStyle(.menu)
-            .tint(.appeekFont)
         }
         .cornerRadius(5)
     }
@@ -27,6 +32,7 @@ struct OrganisationsPicker: View {
 
 struct OrganisationsPicker_Previews: PreviewProvider {
     static var previews: some View {
-        OrganisationsPicker()
+        let org = Organisation(id: UUID(), name: "Example Org", createdAt: "someDateTime")
+        OrganisationsPicker(organisations: [org], selectedOrganisation: .constant(org))
     }
 }

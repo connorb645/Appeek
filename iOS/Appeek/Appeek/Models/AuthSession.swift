@@ -10,23 +10,26 @@ import Foundation
 public struct AuthSession {
     let userId: UUID
     let accessToken: String
+    let refreshToken: String
 }
 
 extension AuthSession: Codable {
     enum CodingKeys: CodingKey {
-        case userId, accessToken
+        case userId, accessToken, refreshToken
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.userId = try container.decode(UUID.self, forKey: .userId)
         self.accessToken = try container.decode(String.self, forKey: .accessToken)
+        self.refreshToken = try container.decode(String.self, forKey: .refreshToken)
     }
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(userId, forKey: .userId)
         try container.encode(accessToken, forKey: .accessToken)
+        try container.encode(refreshToken, forKey: .refreshToken)
     }
 }
 

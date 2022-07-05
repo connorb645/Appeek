@@ -59,20 +59,27 @@ enum Endpoint {
     
     var path: String {
         switch self {
+        case .usersOrganisationRelations:
+            return "\(prefix)/users_organisations"
+        case .organisations:
+            return "\(prefix)/organisations"
+        }
+    }
+    
+    var queryParams: [(key: String, value: String)] {
+        switch self {
         case .usersOrganisationRelations(let userId):
-            return "\(prefix)/users_organisations?user_id=eq.\(userId)&select=*"
-            
-            //Don't know why this string can't parse to a URL... maybe we need a more involved solution... URLComponents?
-        case .organisations(let organisationIds):
-            return "\(prefix)/organisations?id=in.%28\"a50c3752-da8b-4099-9699-9c452f5baca2\",\"21aec15d-0442-46ef-b448-ca4e29b7b035\"%29&select=*"
+            return [("user_id","eq.\(userId)"),
+                    ("select", "*")]
+        case .organisations(let ids):
+            return [("id","in.\(ids.path)"),
+                    ("select", "*")]
         }
     }
     
     var httpMethod: HTTPMethod {
         switch self {
-        case .usersOrganisationRelations:
-            return .get
-        case .organisations:
+        case .usersOrganisationRelations, .organisations:
             return .get
         }
     }
@@ -83,8 +90,12 @@ enum Endpoint {
 }
 
 extension Array where Element: CustomStringConvertible {
+    var pathWithPercentEncoding: String {
+        return self.path.stringByAddingPercentEncodingForRFC3986()
+    }
+    
     var path: String {
-        var toReturn = "%28"
+        var toReturn = "("
         self.enumerated().forEach { i, string in
             if i == 0 {
                 toReturn.append("\"\(string)\"")
@@ -92,7 +103,16 @@ extension Array where Element: CustomStringConvertible {
                 toReturn.append(",\"\(string)\"")
             }
         }
-        toReturn.append("%29")
+        toReturn.append(")")
         return toReturn
     }
+}
+
+extension String {
+  func stringByAddingPercentEncodingForRFC3986() -> String {
+    let unreserved = "-._~/?"
+    let allowed = NSMutableCharacterSet.alphanumeric()
+    allowed.addCharacters(in: unreserved)
+    return addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? self
+  }
 }

@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct AppeekApp: App {
     @StateObject var navigation = AppNavigation()
-    @StateObject var authentication = Authentication()
+    @StateObject var authentication = AuthenticationGateway()
     
     var body: some Scene {
         WindowGroup {

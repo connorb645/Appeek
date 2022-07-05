@@ -14,7 +14,7 @@ extension ForgotPasswordView {
         @MainActor @Published var isLoading: Bool = false
         @MainActor @Published var errorMessage: String?
         
-        @MainActor func handlePasswordReset(with authentication: some AuthenticationProtocol) async {
+        @MainActor func handlePasswordReset(with authentication: AuthenticationGateway) async {
             do {
                 isLoading = true
                 errorMessage = nil

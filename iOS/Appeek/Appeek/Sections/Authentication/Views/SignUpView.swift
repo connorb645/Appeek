@@ -14,7 +14,7 @@ struct SignUpView: View {
     }
     
     @EnvironmentObject var navigation: AppNavigation
-    @EnvironmentObject var authentication: Authentication
+    @EnvironmentObject var authentication: AuthenticationGateway
     @StateObject var viewModel: ViewModel = ViewModel()
     @FocusState private var focusedField: FocusField?
     
@@ -107,6 +107,7 @@ struct SignUpView: View {
                     focusedField = nil
                     Task {
                         await viewModel.handleAccountCreation(with: authentication)
+                        navigation.mainNavigation = .init()
                     }
                 }
                 
@@ -133,6 +134,7 @@ struct SignUpView: View {
                             backgroundColor: .appeekPrimary) {
                 Task {
                     await viewModel.handleAccountCreation(with: authentication)
+                    navigation.mainNavigation = .init()
                 }
             }
             

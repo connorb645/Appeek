@@ -12,11 +12,10 @@ extension SettingsView {
         @MainActor @Published var isLoading: Bool = false
         @MainActor @Published var errorMessage: String?
         
-        @MainActor func logout(with authentication: some Authentication) async {
+        @MainActor func logout(with authentication: AuthenticationGateway) async {
             do {
                 self.isLoading = true
-                try await authentication.logout()
-                
+                try await authentication.logout(updateCurrentSession: false)
             } catch let error as AppeekError {
                 self.isLoading = false
                 self.errorMessage = error.friendlyMessage

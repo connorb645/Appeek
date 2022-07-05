@@ -7,15 +7,10 @@
 
 import Foundation
 
-struct ServerError: AppeekError {
-    var friendlyMessage: String {
-        message ?? "No error message returned"
-    }
-    let message: String?
+struct ServerError {
+    let message: String
     let code: String?
     let details: String?
 }
 
-extension ServerError: Codable {
-    
-}
+extension ServerError: Codable { }

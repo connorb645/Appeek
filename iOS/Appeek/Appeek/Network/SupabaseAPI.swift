@@ -13,6 +13,7 @@ protocol APIProtocol {
     func signUp(email: String, password: String) async throws -> AuthSession
     func logout() async throws
     func resetPassword(email: String) async throws
+    func refreshSession(token: String) async throws -> AuthSession
     
     func organisations(for user: UUID, bearerToken: String) async throws -> [Organisation]
 }
@@ -21,11 +22,13 @@ struct SupabaseAPI: APIProtocol {
     private let client: SupabaseClient
     private let network: Network
     
-    init(network: Network = Network()) {
-        guard let supabaseUrl = URL(string: EnvironmentKey.supabaseBaseUrl.value) else {
+    init(network: Network = Network(),
+         urlBuilder: URLBuilder = URLBuilder()) {
+        guard let url = try? urlBuilder.build(baseUrl: EnvironmentKey.supabaseBaseUrl.value) else {
             fatalError(APIConfigError.invalidUrl.friendlyMessage)
         }
-        self.client = .init(supabaseURL: supabaseUrl, supabaseKey: EnvironmentKey.supabaseKey.value)
+        self.client = .init(supabaseURL: url,
+                            supabaseKey: EnvironmentKey.supabaseKey.value)
         self.network = network
     }
     
@@ -37,21 +40,28 @@ struct SupabaseAPI: APIProtocol {
             throw NetworkError.noUserId
         }
         let accessToken = response.accessToken
-        return .init(userId: userId, accessToken: accessToken)
+        let refreshToken = response.refreshToken
+        return .init(userId: userId,
+                     accessToken: accessToken,
+                     refreshToken: refreshToken)
     }
     
     func signUp(email: String, password: String) async throws -> AuthSession {
         let response = try await client.auth.signUp(email: email, password: password)
-        guard let accessToken = response.session?.accessToken else {
+        
+        guard let session = response.session else {
             try await logout()
-            throw NetworkError.noAccessToken
+            throw NetworkError.noSession
         }
-        guard let uid = response.session?.user.id,
-              let userId = UUID(uuidString: uid) else {
+        
+        guard let idUuid = UUID(uuidString: "session.user.id") else {
             try await logout()
             throw NetworkError.noUserId
         }
-        return .init(userId: userId, accessToken: accessToken)
+
+        return .init(userId: idUuid,
+                     accessToken: session.accessToken,
+                     refreshToken: session.refreshToken)
     }
     
     func logout() async throws {
@@ -62,10 +72,24 @@ struct SupabaseAPI: APIProtocol {
         try await client.auth.resetPasswordForEmail(email)
     }
     
+    func refreshSession(token: String) async throws -> AuthSession {
+        let response = try await client.auth.refreshSession(refreshToken: token)
+        let uid = response.user.id
+        guard let userId = UUID(uuidString: uid) else {
+            try await logout()
+            throw NetworkError.noUserId
+        }
+        let accessToken = response.accessToken
+        let refreshToken = response.refreshToken
+        return .init(userId: userId,
+                     accessToken: accessToken,
+                     refreshToken: refreshToken)
+    }
+    
     func organisations(for user: UUID,
                        bearerToken: String) async throws -> [Organisation] {
         let relations: [UserOrganisationRelation] = try await network.get(.usersOrganisationRelations(user),
-                                                                         bearerToken: bearerToken)
+                                                                          bearerToken: bearerToken)
         
         let organisationIds = relations.map { $0.organisationId }
         

@@ -9,50 +9,40 @@ import SwiftUI
 
 struct HomeView: View {
     @State var isShowingSettings: Bool = false
-    @EnvironmentObject var authentication: Authentication
+    @EnvironmentObject var authentication: AuthenticationGateway
+    @StateObject var viewModel = ViewModel()
     
     var body: some View {
         NavigationStack {
             AppeekBackgroundView {
                 VStack {
-                    OrganisationsPicker()
-                        .frame(height: 50)
-                        .padding(.horizontal)
+                    AppeekPicker(items: viewModel.usersOrganisations,
+                                 isLoading: viewModel.isLoading,
+                                 selectedItem: $viewModel.selectedOrganisation)
+                    .frame(height: 50)
+                    .padding(.horizontal)
                     
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onAppear {
-                    #if DEBUG
-                    print("ACCESS TOKEN: \(authentication.currentSession?.accessToken ?? "")")
                     Task {
-                        do {
-                            guard let userId = authentication.currentSession?.userId,
-                                  let accessToken = authentication.currentSession?.accessToken else {
-                                return
-                            }
-                            let result = try await SupabaseAPI().organisations(for: userId,
-                                                                               bearerToken: accessToken)
-                        } catch let error {
-                            print(error)
-                        }
-                        
+                        await self.viewModel.fetchUsersOrganisations(using: self.authentication)
                     }
-                    #endif
                 }
             }
             .navigationTitle("Home")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        isShowingSettings.toggle()
+                        isShowingSettings = true
                     } label: {
                         Image(systemName: "gear")
                     }
                 }
             }
             .sheet(isPresented: $isShowingSettings) {
-                SettingsView()
+                SettingsView(isPresented: $isShowingSettings)
             }
         }
     }

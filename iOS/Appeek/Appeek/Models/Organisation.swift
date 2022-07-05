@@ -54,3 +54,9 @@ extension Organisation: RawRepresentable {
         return result
     }
 }
+
+extension Organisation: Hashable { }
+
+extension Organisation: AppeekPickable {
+    var title: String { self.name }
+}

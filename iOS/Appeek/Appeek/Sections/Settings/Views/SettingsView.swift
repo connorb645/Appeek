@@ -9,9 +9,9 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @EnvironmentObject var authentication: Authentication
-    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var authentication: AuthenticationGateway
     @StateObject var viewModel: ViewModel = ViewModel()
+    @Binding var isPresented: Bool
     
     var body: some View {
         AppeekBackgroundView {
@@ -21,7 +21,8 @@ struct SettingsView: View {
                         Task {
                             await viewModel.logout(with: authentication)
                             if viewModel.errorMessage == nil {
-                                presentationMode.wrappedValue.dismiss()
+                                self.isPresented = false
+                                authentication.removeCurrentSession()
                             }
                         }
                     }
@@ -37,6 +38,6 @@ extension SettingsView {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(isPresented: .constant(true))
     }
 }

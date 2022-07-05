@@ -17,7 +17,7 @@ extension SignUpView {
         @MainActor @Published var isLoading = false
         @MainActor @Published var errorMessage: String?
         
-        @MainActor func handleAccountCreation(with authentication: some AuthenticationProtocol) async {
+        @MainActor func handleAccountCreation(with authentication: AuthenticationGateway) async {
             do {
                 isLoading = true
                 errorMessage = nil
