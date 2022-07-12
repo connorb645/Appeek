@@ -19,6 +19,7 @@
 		C36DED78286DC7B80054F1AB /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36DED77286DC7B80054F1AB /* SettingsViewModel.swift */; };
 		C37E17E7286DD792003689CB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37E17E6286DD792003689CB /* LoginView.swift */; };
 		C37E17E9286DD7A6003689CB /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37E17E8286DD7A6003689CB /* LoginViewModel.swift */; };
+		C3AC0EBF287E070B00EA757F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = C3AC0EBE287E070B00EA757F /* ComposableArchitecture */; };
 		C3B67C6F2869F838001CB727 /* ConnorsComponents in Frameworks */ = {isa = PBXBuildFile; productRef = C3B67C6E2869F838001CB727 /* ConnorsComponents */; };
 		C3B67C71286A45EF001CB727 /* EnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C70286A45EF001CB727 /* EnvironmentKeys.swift */; };
 		C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C73286A46BE001CB727 /* SupabaseAPI.swift */; };
@@ -127,6 +128,7 @@
 			files = (
 				C3B67C79286A49CB001CB727 /* Supabase in Frameworks */,
 				C3B67C6F2869F838001CB727 /* ConnorsComponents in Frameworks */,
+				C3AC0EBF287E070B00EA757F /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,6 +492,7 @@
 			packageProductDependencies = (
 				C3B67C6E2869F838001CB727 /* ConnorsComponents */,
 				C3B67C78286A49CB001CB727 /* Supabase */,
+				C3AC0EBE287E070B00EA757F /* ComposableArchitecture */,
 			);
 			productName = Appeek;
 			productReference = C30A37F62869CF4F0003FB4A /* Appeek.app */;
@@ -566,6 +569,7 @@
 			packageReferences = (
 				C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */,
 				C3B67C77286A49CB001CB727 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				C3AC0EBD287E070B00EA757F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = C30A37F72869CF4F0003FB4A /* Products */;
 			projectDirPath = "";
@@ -974,6 +978,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C3AC0EBD287E070B00EA757F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:pointfreeco/swift-composable-architecture.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.38.2;
+			};
+		};
 		C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/connorb645/ConnorsComponents.git";
@@ -993,6 +1005,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C3AC0EBE287E070B00EA757F /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3AC0EBD287E070B00EA757F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
 		C3B67C6E2869F838001CB727 /* ConnorsComponents */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */;
