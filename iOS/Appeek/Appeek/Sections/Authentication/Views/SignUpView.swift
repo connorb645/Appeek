@@ -36,6 +36,7 @@ enum SignUpAction: Equatable {
 // MARK: - Environment
 
 struct SignUpEnvironment {
+    // TODO: - Dont think we need to full authenticateClient
     var authenticateClient: AuthenticateClientProtocol
     var validationClient: ValidationClientProtocol
     

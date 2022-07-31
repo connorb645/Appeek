@@ -7,64 +7,116 @@
 
 import SwiftUI
 import ConnorsComponents
+import ComposableArchitecture
+
+// MARK: - State
+
+struct LoginState: Equatable {
+    var emailAddress: String = ""
+    var password: String = ""
+    var errorMessage: String? = nil
+    var isLoading: Bool = false
+    var securePassword: Bool = true
+    
+    static let preview = Self()
+}
+
+// MARK: - Action
+
+enum LoginAction: Equatable {
+    case emailAddressChanged(String)
+    case passwordChanged(String)
+    case passwordSecurityToggled
+    case loginTapped
+    case loginResponse(Result<AuthSession, AppeekError>)
+}
+
+// MARK: - Environment
+
+struct LoginEnvironment {
+    // TODO: - Dont think we need to full authenticateClient
+    var authenticateClient: AuthenticateClientProtocol
+    var validationClient: ValidationClientProtocol
+    
+    var mainQueue: AnySchedulerOf<DispatchQueue>
+    
+    static let preview = Self(authenticateClient: AuthenticateClient.live,
+                              validationClient: ValidationClient.live,
+                              mainQueue: .immediate)
+}
+
+// MARK: - Reducer
+
+let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> { state, action, environment in
+    switch action {
+    case let .emailAddressChanged(emailAddress):
+        state.emailAddress = emailAddress
+        return .none
+    case let .passwordChanged(password):
+        state.password = password
+        return .none
+    case .passwordSecurityToggled:
+        state.securePassword.toggle()
+    case .loginTapped:
+        // TODO: - Validate email before making call.
+        return environment
+            .authenticateClient
+            .login(email: state.emailAddress, password: state.password)
+            .receive(on: environment.mainQueue)
+            .catchToEffect(LoginAction.loginResponse)
+    case let .loginResponse(.success(response)):
+        environment.authenticateClient.persistAuthenticationState(response)
+        return .none
+    case let .loginResponse(.failure(error)):
+        state.errorMessage = error.friendlyMessage
+        return .none
+    }
+}
+
+// MARK: - View
 
 struct LoginView: View {
-    
-    // MARK: - State
-    
-    // MARK: - Action
-    
-    // MARK: - Environment
-    
-    // MARK: - Reducer
-    
-    // MARK: - View
-    
-    // MARK: - Preview
     
     enum FocusField: Hashable {
         case email, password
     }
     
-    @EnvironmentObject var navigation: AppNavigation
-    @EnvironmentObject var authentication: AuthenticationGateway
-    @StateObject var viewModel: ViewModel = ViewModel()
+    let store: Store<LoginState, LoginAction>
+    
     @FocusState private var focusedField: FocusField?
     
     var body: some View {
-        AppeekBackgroundView {
-            ZStack {
-                VStack {
-                    ScrollView {
-                        VStack {
-                            header
-                            
-                            email
-                            
-                            Divider()
-                            
-                            password
-                            
-                            forgotPassword
-                            
-                            Divider()
-                            
-                            if let errorMessage = viewModel.errorMessage {
-                                error(errorMessage)
+        WithViewStore(self.store) { viewStore in
+            AppeekBackgroundView {
+                ZStack {
+                    VStack {
+                        ScrollView {
+                            VStack {
+                                header
+                                
+                                email(viewStore: viewStore)
+                                
+                                Divider()
+                                
+                                password(viewStore: viewStore)
+                                
+                                forgotPassword
+                                
+                                Divider()
+                                
+                                if let errorMessage = viewStore.errorMessage {
+                                    error(errorMessage)
+                                }
                             }
                         }
+                        callToAction(viewStore: viewStore)
                     }
-                                    
-                    callToAction
+                    
+                    if viewStore.isLoading {
+                        CCProgressView(foregroundColor: .appeekPrimary,
+                                       backgroundColor: .appeekBackgroundOffset)
+                    }
                 }
-                
-                if viewModel.isLoading {
-                    CCProgressView(foregroundColor: .appeekPrimary,
-                                   backgroundColor: .appeekBackgroundOffset)
-                }
-            }
-            .navigationDestination(for: ForgotPasswordView.Navigation.self) { _ in
-                ForgotPasswordView()
             }
         }
     }
@@ -82,9 +134,10 @@ struct LoginView: View {
             .padding(.top)
     }
     
-    @ViewBuilder private var email: some View {
+    private func email(viewStore: ViewStore<LoginState, LoginAction>) -> some View {
         Group {
-            CCEmailTextField(emailAddress: $viewModel.emailAddress,
+            CCEmailTextField(emailAddress: viewStore.binding(get: \.emailAddress,
+                                                             send: LoginAction.emailAddressChanged),
                              placeholder: "Email Address",
                              foregroundColor: .appeekFont,
                              backgroundColor: .clear)
@@ -97,11 +150,12 @@ struct LoginView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder private var password: some View {
+    private func password(viewStore: ViewStore<LoginState, LoginAction>) -> some View {
         Group {
             HStack {
-                CCPasswordTextField(password: $viewModel.password,
-                                    isSecure: viewModel.passwordSecure,
+                CCPasswordTextField(password: viewStore.binding(get: \.password,
+                                                                send: LoginAction.passwordChanged),
+                                    isSecure: viewStore.securePassword,
                                     placeholder: "Password",
                                     foregroundColor: .appeekFont,
                                     backgroundColor: .clear)
@@ -109,14 +163,11 @@ struct LoginView: View {
                 .focused($focusedField, equals: .password)
                 .onSubmit {
                     focusedField = nil
-                    Task {
-                        await viewModel.handleLogin(with: authentication)
-                        navigation.mainNavigation = .init()
-                    }
+                    viewStore.send(.loginTapped)
                 }
                 
-                CCIconButton(iconName: viewModel.passwordSecure ? "lock" : "lock.open") {
-                    viewModel.passwordSecure.toggle()
+                CCIconButton(iconName: viewStore.securePassword ? "lock" : "lock.open") {
+                    viewStore.send(.passwordSecurityToggled)
                 }
             }
         }
@@ -124,6 +175,7 @@ struct LoginView: View {
     }
     
     @ViewBuilder private var forgotPassword: some View {
+        // TODO: - Make this work with new navigation style...
         NavigationLink("Forgot Password", value: ForgotPasswordView.Navigation())
             .frame(maxWidth: .infinity, alignment: .trailing)
             .tint(Color.appeekFont)
@@ -139,20 +191,18 @@ struct LoginView: View {
             .padding(.horizontal)
     }
     
-    @ViewBuilder private var callToAction: some View {
+    private func callToAction(viewStore: ViewStore<LoginState, LoginAction>) -> some View {
         VStack {
             CCPrimaryButton(title: "Login!",
                             backgroundColor: .appeekPrimary) {
-                Task {
-                    await viewModel.handleLogin(with: authentication)
-                    navigation.mainNavigation = .init()
-                }
+                viewStore.send(.loginTapped)
             }
             
             CCSecondaryButton(title: "Don't have an account? Create one now!",
                               textColor: .appeekPrimary,
                               isUnderlined: false) {
-                navigation.mainNavigation.removeLast()
+                // TODO: - Need to pop off a screen...
+//                navigation.mainNavigation.removeLast()
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -160,12 +210,11 @@ struct LoginView: View {
     }
 }
 
-extension LoginView {
-    struct Navigation: Hashable { }
-}
+// MARK: - Preview
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
+        // TODO: - Get preview working
         LoginView()
     }
 }
