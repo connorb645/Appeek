@@ -15,7 +15,7 @@ struct JsonSerializer {
         do {
             return try decoder.decode(T.self, from: data)
         } catch (let error) {
-            throw JsonSerializerError.decodingFailed(error: error)
+            throw AppeekError.jsonSerializaionError(.decodingFailed(error: error))
         }
     }
     
@@ -25,7 +25,7 @@ struct JsonSerializer {
         do {
             return try encoder.encode(object)
         } catch (let error) {
-            throw JsonSerializerError.encodingFailed(error: error)
+            throw AppeekError.jsonSerializaionError(.encodingFailed(error: error))
         }
     }
     
@@ -33,12 +33,12 @@ struct JsonSerializer {
         do {
             let paramsData = try encode(object: object)
             guard let params = try JSONSerialization.jsonObject(with: paramsData, options: []) as? [String: Any] else {
-                throw JsonSerializerError.jsonRepresentationFailed(error: nil)
+                throw AppeekError.jsonSerializaionError(.jsonRepresentationFailed(error: AppeekError.unknown))
             }
             
             return params
         } catch (let error) {
-            throw JsonSerializerError.jsonRepresentationFailed(error: error)
+            throw AppeekError.jsonSerializaionError(.jsonRepresentationFailed(error: error))
         }
     }
 }

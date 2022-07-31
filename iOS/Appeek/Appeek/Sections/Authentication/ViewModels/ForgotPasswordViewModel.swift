@@ -19,7 +19,7 @@ extension ForgotPasswordView {
                 isLoading = true
                 errorMessage = nil
                 guard !emailAddress.isEmpty else {
-                    throw ValidationError.emailAddressRequired
+                    throw AppeekError.validationError(.emailAddressRequired)
                 }
                 
                 _ = try await authentication.resetPassword(email: emailAddress)

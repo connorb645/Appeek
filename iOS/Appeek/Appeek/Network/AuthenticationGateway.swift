@@ -12,7 +12,7 @@ class AuthenticationGateway: ObservableObject {
     let api: APIProtocol
     @MainActor @AppStorage("current_auth_session", store: .standard) private(set) var currentSession: AuthSession?
     
-    init(api: APIProtocol = SupabaseAPI()) {
+    init(api: APIProtocol = SupabaseAPI.live) {
         self.api = api
     }
     

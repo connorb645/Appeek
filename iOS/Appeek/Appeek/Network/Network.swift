@@ -13,8 +13,8 @@ struct Network {
     private let urlSession: URLSession
     private let jsonSerializer: JsonSerializer
     
-    init(urlSession: URLSession = URLSession.shared,
-         jsonSerializer: JsonSerializer = JsonSerializer()) {
+    init(urlSession: URLSession,
+         jsonSerializer: JsonSerializer) {
         self.urlSession = urlSession
         self.jsonSerializer = jsonSerializer
     }
@@ -28,9 +28,9 @@ struct Network {
         
         if !successfulCodeRange.contains(statusCodeAndData.statusCode) {
             let serverError: ServerError = try jsonSerializer.decode(data: statusCodeAndData.data)
-            throw NetworkError.serverError(message: serverError.message,
-                                           code: serverError.code,
-                                           details: serverError.details)
+            throw AppeekError.networkError(.serverError(message: serverError.message,
+                                                        code: serverError.code,
+                                                        details: serverError.details))
         }
         
         let successfulResponse: ResponseType = try jsonSerializer.decode(data: statusCodeAndData.data)
@@ -42,11 +42,11 @@ struct Network {
         let (data, response) = try await urlSession.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw NetworkError.httpResponseParse
+            throw AppeekError.networkError(.httpResponseParse)
         }
         
         guard !data.isEmpty else {
-            throw NetworkError.emptyResponse
+            throw AppeekError.networkError(.emptyResponse)
         }
         
         let statusCode = httpResponse.statusCode
@@ -59,4 +59,7 @@ struct Network {
         print(String(data: data, encoding: .utf8) ?? "Couldn't parse Data as String")
         #endif
     }
+    
+    static let live = Self(urlSession: .shared,
+                           jsonSerializer: .init())
 }

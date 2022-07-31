@@ -9,6 +9,19 @@ import SwiftUI
 import ConnorsComponents
 
 struct LoginView: View {
+    
+    // MARK: - State
+    
+    // MARK: - Action
+    
+    // MARK: - Environment
+    
+    // MARK: - Reducer
+    
+    // MARK: - View
+    
+    // MARK: - Preview
+    
     enum FocusField: Hashable {
         case email, password
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AuthSession {
+public struct AuthSession: Equatable {
     let userId: UUID
     let accessToken: String
     let refreshToken: String

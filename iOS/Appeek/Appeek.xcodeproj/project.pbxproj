@@ -19,15 +19,12 @@
 		C36DED78286DC7B80054F1AB /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36DED77286DC7B80054F1AB /* SettingsViewModel.swift */; };
 		C37E17E7286DD792003689CB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37E17E6286DD792003689CB /* LoginView.swift */; };
 		C37E17E9286DD7A6003689CB /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37E17E8286DD7A6003689CB /* LoginViewModel.swift */; };
-		C3AC0EBF287E070B00EA757F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = C3AC0EBE287E070B00EA757F /* ComposableArchitecture */; };
 		C3B67C6F2869F838001CB727 /* ConnorsComponents in Frameworks */ = {isa = PBXBuildFile; productRef = C3B67C6E2869F838001CB727 /* ConnorsComponents */; };
 		C3B67C71286A45EF001CB727 /* EnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C70286A45EF001CB727 /* EnvironmentKeys.swift */; };
 		C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C73286A46BE001CB727 /* SupabaseAPI.swift */; };
 		C3B67C76286A48C6001CB727 /* AuthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C75286A48C6001CB727 /* AuthSession.swift */; };
 		C3B67C79286A49CB001CB727 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = C3B67C78286A49CB001CB727 /* Supabase */; };
-		C3B67C7B286A4A20001CB727 /* APIConfigError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C7A286A4A20001CB727 /* APIConfigError.swift */; };
 		C3B67C7D286A4A45001CB727 /* AppeekError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C7C286A4A45001CB727 /* AppeekError.swift */; };
-		C3B67C7F286A4C96001CB727 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C7E286A4C96001CB727 /* NetworkError.swift */; };
 		C3B67C82286A4F29001CB727 /* AuthenticationGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C81286A4F29001CB727 /* AuthenticationGateway.swift */; };
 		C3B67C8B286B0A64001CB727 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C8A286B0A64001CB727 /* OnboardingView.swift */; };
 		C3B67C8D286B0AC7001CB727 /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C8C286B0AC7001CB727 /* Color+Extensions.swift */; };
@@ -35,7 +32,11 @@
 		C3B67C94286B1304001CB727 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C93286B1304001CB727 /* SignUpView.swift */; };
 		C3B67C97286B391B001CB727 /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C96286B391B001CB727 /* Navigation.swift */; };
 		C3B67C9A286B76AE001CB727 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C99286B76AE001CB727 /* SignUpViewModel.swift */; };
-		C3B67C9C286B84D0001CB727 /* ValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B67C9B286B84D0001CB727 /* ValidationError.swift */; };
+		C3BDE82128871E0D001E24EB /* ValidationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BDE82028871E0D001E24EB /* ValidationClient.swift */; };
+		C3BDE82428873DC4001E24EB /* SignUpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BDE82328873DC4001E24EB /* SignUpClient.swift */; };
+		C3BDE828288D241D001E24EB /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = C3BDE827288D241D001E24EB /* SwiftUINavigation */; };
+		C3BDE82B288D245D001E24EB /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = C3BDE82A288D245D001E24EB /* ComposableArchitecture */; };
+		C3BDE82D2895C3D0001E24EB /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BDE82C2895C3D0001E24EB /* Route.swift */; };
 		C3DA524D286DE413009A7809 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA524C286DE413009A7809 /* HomeView.swift */; };
 		C3FBEC38286E008A005DE031 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC37286E008A005DE031 /* ForgotPasswordView.swift */; };
 		C3FBEC3A286E019F005DE031 /* ForgotPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC39286E019F005DE031 /* ForgotPasswordViewModel.swift */; };
@@ -50,7 +51,6 @@
 		C3FBEC512870CF01005DE031 /* SupabaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC502870CF01005DE031 /* SupabaseRequest.swift */; };
 		C3FBEC552870CF24005DE031 /* URLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC542870CF24005DE031 /* URLBuilder.swift */; };
 		C3FBEC572870E99A005DE031 /* JSONSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC562870E99A005DE031 /* JSONSerializer.swift */; };
-		C3FBEC592870E9E5005DE031 /* JsonSerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC582870E9E5005DE031 /* JsonSerializationError.swift */; };
 		C3FBEC5B2870F707005DE031 /* UserOrganisationRelation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC5A2870F707005DE031 /* UserOrganisationRelation.swift */; };
 		C3FBEC5D2871DF88005DE031 /* APIGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC5C2871DF88005DE031 /* APIGateway.swift */; };
 /* End PBXBuildFile section */
@@ -91,9 +91,7 @@
 		C3B67C70286A45EF001CB727 /* EnvironmentKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentKeys.swift; sourceTree = "<group>"; };
 		C3B67C73286A46BE001CB727 /* SupabaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAPI.swift; sourceTree = "<group>"; };
 		C3B67C75286A48C6001CB727 /* AuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSession.swift; sourceTree = "<group>"; };
-		C3B67C7A286A4A20001CB727 /* APIConfigError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfigError.swift; sourceTree = "<group>"; };
 		C3B67C7C286A4A45001CB727 /* AppeekError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppeekError.swift; sourceTree = "<group>"; };
-		C3B67C7E286A4C96001CB727 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		C3B67C81286A4F29001CB727 /* AuthenticationGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationGateway.swift; sourceTree = "<group>"; };
 		C3B67C8A286B0A64001CB727 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		C3B67C8C286B0AC7001CB727 /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
@@ -101,7 +99,9 @@
 		C3B67C93286B1304001CB727 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		C3B67C96286B391B001CB727 /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
 		C3B67C99286B76AE001CB727 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
-		C3B67C9B286B84D0001CB727 /* ValidationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationError.swift; sourceTree = "<group>"; };
+		C3BDE82028871E0D001E24EB /* ValidationClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationClient.swift; sourceTree = "<group>"; };
+		C3BDE82328873DC4001E24EB /* SignUpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpClient.swift; sourceTree = "<group>"; };
+		C3BDE82C2895C3D0001E24EB /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		C3DA524C286DE413009A7809 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C3FBEC37286E008A005DE031 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		C3FBEC39286E019F005DE031 /* ForgotPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewModel.swift; sourceTree = "<group>"; };
@@ -116,7 +116,6 @@
 		C3FBEC502870CF01005DE031 /* SupabaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseRequest.swift; sourceTree = "<group>"; };
 		C3FBEC542870CF24005DE031 /* URLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBuilder.swift; sourceTree = "<group>"; };
 		C3FBEC562870E99A005DE031 /* JSONSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSerializer.swift; sourceTree = "<group>"; };
-		C3FBEC582870E9E5005DE031 /* JsonSerializationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonSerializationError.swift; sourceTree = "<group>"; };
 		C3FBEC5A2870F707005DE031 /* UserOrganisationRelation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOrganisationRelation.swift; sourceTree = "<group>"; };
 		C3FBEC5C2871DF88005DE031 /* APIGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGateway.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -128,7 +127,8 @@
 			files = (
 				C3B67C79286A49CB001CB727 /* Supabase in Frameworks */,
 				C3B67C6F2869F838001CB727 /* ConnorsComponents in Frameworks */,
-				C3AC0EBF287E070B00EA757F /* ComposableArchitecture in Frameworks */,
+				C3BDE82B288D245D001E24EB /* ComposableArchitecture in Frameworks */,
+				C3BDE828288D241D001E24EB /* SwiftUINavigation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,6 +172,7 @@
 		C30A37F82869CF4F0003FB4A /* Appeek */ = {
 			isa = PBXGroup;
 			children = (
+				C3BDE81F28871E01001E24EB /* Clients */,
 				C3B67C95286B38C6001CB727 /* Navigation */,
 				C3B67C72286A46A6001CB727 /* Constants */,
 				C30A382B2869D2470003FB4A /* Sections */,
@@ -239,10 +240,6 @@
 			isa = PBXGroup;
 			children = (
 				C3B67C7C286A4A45001CB727 /* AppeekError.swift */,
-				C3B67C7A286A4A20001CB727 /* APIConfigError.swift */,
-				C3B67C7E286A4C96001CB727 /* NetworkError.swift */,
-				C3B67C9B286B84D0001CB727 /* ValidationError.swift */,
-				C3FBEC582870E9E5005DE031 /* JsonSerializationError.swift */,
 			);
 			path = Errors;
 			sourceTree = "<group>";
@@ -415,6 +412,16 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
+		C3BDE81F28871E01001E24EB /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				C3BDE82028871E0D001E24EB /* ValidationClient.swift */,
+				C3BDE82328873DC4001E24EB /* SignUpClient.swift */,
+				C3BDE82C2895C3D0001E24EB /* Route.swift */,
+			);
+			path = Clients;
+			sourceTree = "<group>";
+		};
 		C3DA524A286DE3F8009A7809 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -492,7 +499,8 @@
 			packageProductDependencies = (
 				C3B67C6E2869F838001CB727 /* ConnorsComponents */,
 				C3B67C78286A49CB001CB727 /* Supabase */,
-				C3AC0EBE287E070B00EA757F /* ComposableArchitecture */,
+				C3BDE827288D241D001E24EB /* SwiftUINavigation */,
+				C3BDE82A288D245D001E24EB /* ComposableArchitecture */,
 			);
 			productName = Appeek;
 			productReference = C30A37F62869CF4F0003FB4A /* Appeek.app */;
@@ -569,7 +577,8 @@
 			packageReferences = (
 				C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */,
 				C3B67C77286A49CB001CB727 /* XCRemoteSwiftPackageReference "supabase-swift" */,
-				C3AC0EBD287E070B00EA757F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				C3BDE826288D241D001E24EB /* XCRemoteSwiftPackageReference "swiftui-navigation" */,
+				C3BDE829288D245D001E24EB /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = C30A37F72869CF4F0003FB4A /* Products */;
 			projectDirPath = "";
@@ -616,11 +625,8 @@
 				C3B67C71286A45EF001CB727 /* EnvironmentKeys.swift in Sources */,
 				C3FBEC4C2870C272005DE031 /* Endpoint.swift in Sources */,
 				C3FBEC38286E008A005DE031 /* ForgotPasswordView.swift in Sources */,
-				C3B67C7F286A4C96001CB727 /* NetworkError.swift in Sources */,
 				C3FBEC462870828F005DE031 /* Optional+Extensions.swift in Sources */,
-				C3B67C7B286A4A20001CB727 /* APIConfigError.swift in Sources */,
 				C3B67C8B286B0A64001CB727 /* OnboardingView.swift in Sources */,
-				C3B67C9C286B84D0001CB727 /* ValidationError.swift in Sources */,
 				C3FBEC3A286E019F005DE031 /* ForgotPasswordViewModel.swift in Sources */,
 				C3B67C76286A48C6001CB727 /* AuthSession.swift in Sources */,
 				C3B67C7D286A4A45001CB727 /* AppeekError.swift in Sources */,
@@ -631,9 +637,11 @@
 				C3FBEC5D2871DF88005DE031 /* APIGateway.swift in Sources */,
 				C3FBEC552870CF24005DE031 /* URLBuilder.swift in Sources */,
 				C3FBEC4A2870C044005DE031 /* ServerError.swift in Sources */,
+				C3BDE82428873DC4001E24EB /* SignUpClient.swift in Sources */,
 				C3FBEC4E2870CEE7005DE031 /* RequestBuilder.swift in Sources */,
 				C34A51B72873489000B5ECE4 /* AppeekPicker.swift in Sources */,
 				C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */,
+				C3BDE82128871E0D001E24EB /* ValidationClient.swift in Sources */,
 				C3FBEC512870CF01005DE031 /* SupabaseRequest.swift in Sources */,
 				C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */,
 				C3B67C94286B1304001CB727 /* SignUpView.swift in Sources */,
@@ -645,8 +653,8 @@
 				C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */,
 				C34A51B92874B0C900B5ECE4 /* Popup.swift in Sources */,
 				C3FBEC4128707DD7005DE031 /* HomeViewModel.swift in Sources */,
+				C3BDE82D2895C3D0001E24EB /* Route.swift in Sources */,
 				C3B67C8D286B0AC7001CB727 /* Color+Extensions.swift in Sources */,
-				C3FBEC592870E9E5005DE031 /* JsonSerializationError.swift in Sources */,
 				C3FBEC482870BC22005DE031 /* Network.swift in Sources */,
 				C3B67C90286B0B52001CB727 /* AppeekBackgroundView.swift in Sources */,
 				C37E17E9286DD7A6003689CB /* LoginViewModel.swift in Sources */,
@@ -978,14 +986,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C3AC0EBD287E070B00EA757F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:pointfreeco/swift-composable-architecture.git";
-			requirement = {
-				kind = exactVersion;
-				version = 0.38.2;
-			};
-		};
 		C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/connorb645/ConnorsComponents.git";
@@ -1002,14 +1002,25 @@
 				version = 0.0.5;
 			};
 		};
+		C3BDE826288D241D001E24EB /* XCRemoteSwiftPackageReference "swiftui-navigation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:pointfreeco/swiftui-navigation.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.2.0;
+			};
+		};
+		C3BDE829288D245D001E24EB /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:pointfreeco/swift-composable-architecture.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.38.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C3AC0EBE287E070B00EA757F /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C3AC0EBD287E070B00EA757F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
 		C3B67C6E2869F838001CB727 /* ConnorsComponents */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C3B67C6D2869F838001CB727 /* XCRemoteSwiftPackageReference "ConnorsComponents" */;
@@ -1019,6 +1030,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C3B67C77286A49CB001CB727 /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		C3BDE827288D241D001E24EB /* SwiftUINavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3BDE826288D241D001E24EB /* XCRemoteSwiftPackageReference "swiftui-navigation" */;
+			productName = SwiftUINavigation;
+		};
+		C3BDE82A288D245D001E24EB /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3BDE829288D245D001E24EB /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

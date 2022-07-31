@@ -16,7 +16,7 @@ struct URLBuilder {
         components.path = endpoint.path
         components.queryItems = endpoint.queryParams.map { .init(name: $0.key, value: $0.value) }
         guard let url = components.url else {
-            throw NetworkError.stringToUrlParse
+            throw AppeekError.networkError(.stringToUrlParse)
         }
         return url
     }
@@ -25,8 +25,10 @@ struct URLBuilder {
         components.scheme = "https"
         components.host = baseUrl
         guard let url = components.url else {
-            throw NetworkError.stringToUrlParse
+            throw AppeekError.networkError(.stringToUrlParse)
         }
         return url
     }
+    
+    static let live = Self()
 }

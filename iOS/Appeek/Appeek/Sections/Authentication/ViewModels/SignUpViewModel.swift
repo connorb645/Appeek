@@ -22,19 +22,19 @@ extension SignUpView {
                 isLoading = true
                 errorMessage = nil
                 guard !emailAddress.isEmpty else {
-                    throw ValidationError.emailAddressRequired
+                    throw AppeekError.validationError(.emailAddressRequired)
                 }
                 
                 guard !password.isEmpty else {
-                    throw ValidationError.passwordRequired
+                    throw AppeekError.validationError(.passwordRequired)
                 }
                 
                 guard !confirmPassword.isEmpty else {
-                    throw ValidationError.passwordConfirmationRequired
+                    throw AppeekError.validationError(.passwordConfirmationRequired)
                 }
                 
                 guard password == confirmPassword else {
-                    throw ValidationError.passwordsDontMatch
+                    throw AppeekError.validationError(.passwordsDontMatch)
                 }
                 _ = try await authentication.signUp(email: emailAddress,
                                                     password: password)

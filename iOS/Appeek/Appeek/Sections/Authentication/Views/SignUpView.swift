@@ -7,49 +7,148 @@
 
 import SwiftUI
 import ConnorsComponents
+import ComposableArchitecture
+
+// MARK: - State
+
+struct SignUpState: Equatable {
+    var errorMessage: String?
+    var isLoading: Bool = false
+    var emailAddress: String = ""
+    var password: String = ""
+    var confirmPassword: String = ""
+    var passwordSecure: Bool = true
+    
+    static let preview = Self()
+}
+
+// MARK: - Action
+
+enum SignUpAction: Equatable {
+    case emailAddressChanged(String)
+    case passwordChanged(String)
+    case confirmPasswordChanged(String)
+    case passwordSecurityToggled
+    case createAccount
+    case creationResponse(Result<AuthSession, AppeekError>)
+}
+
+// MARK: - Environment
+
+struct SignUpEnvironment {
+    var authenticateClient: AuthenticateClientProtocol
+    var validationClient: ValidationClientProtocol
+    
+    var mainQueue: AnySchedulerOf<DispatchQueue>
+    
+    static let preview = Self(authenticateClient: AuthenticateClient.live,
+                              validationClient: ValidationClient.live,
+                              mainQueue: .immediate)
+}
+
+// MARK: - Reducer
+
+let signUpReducer = Reducer<SignUpState, SignUpAction, SignUpEnvironment> { state, action, environment in
+    switch action {
+    case let .emailAddressChanged(email):
+        state.emailAddress = email
+        return .none
+    case let .passwordChanged(password):
+        state.password = password
+        return .none
+    case let .confirmPasswordChanged(password):
+        state.confirmPassword = password
+        return .none
+    case .passwordSecurityToggled:
+        state.passwordSecure.toggle()
+        return .none
+    case .createAccount:
+        let emailValid = environment.validationClient.validate(
+            (state.emailAddress, ValidationField.email)
+        )
+        let passwordValid = environment.validationClient.validate(
+            (state.password, ValidationField.password)
+        )
+        let confirmPasswordValid = environment.validationClient.validate(
+            (state.confirmPassword, ValidationField.confirmPassword)
+        )
+        guard emailValid else {
+            return Effect(value: SignUpAction.creationResponse(
+                .failure(.validationError(.emailAddressRequired))
+            ))
+        }
+        guard passwordValid else {
+            return Effect(value: SignUpAction.creationResponse(
+                .failure(.validationError(.passwordRequired))
+            ))
+        }
+        guard confirmPasswordValid else {
+            return Effect(value: SignUpAction.creationResponse(
+                .failure(.validationError(.passwordConfirmationRequired))
+            ))
+        }
+        guard state.password == state.confirmPassword else {
+            return Effect(value: SignUpAction.creationResponse(
+                .failure(.validationError(.passwordsDontMatch))
+            ))
+        }
+        return environment
+            .authenticateClient
+            .createAccount(email: state.emailAddress, password: state.password)
+            .receive(on: environment.mainQueue)
+            .catchToEffect(SignUpAction.creationResponse)
+    case let .creationResponse(.success(response)):
+        environment.authenticateClient.persistAuthenticationState(response)
+        return .none
+    case let .creationResponse(.failure(error)):
+        state.errorMessage = error.friendlyMessage
+        return .none
+    }
+}
+
+// MARK: - View
 
 struct SignUpView: View {
+    let store: Store<SignUpState, SignUpAction>
+    
     enum FocusField: Hashable {
         case email, password, confirmPassword
     }
-    
-    @EnvironmentObject var navigation: AppNavigation
-    @EnvironmentObject var authentication: AuthenticationGateway
-    @StateObject var viewModel: ViewModel = ViewModel()
+
+    // TODO: - Neeed to take this focus field out of the view.
     @FocusState private var focusedField: FocusField?
     
     var body: some View {
-        AppeekBackgroundView {
-            ZStack {
-                VStack {
-                    ScrollView {
-                        VStack {
-                            header
-                            
-                            email
-                            
-                            Divider()
-                            
-                            password
-                            
-                            Divider()
-                            
-                            if let errorMessage = viewModel.errorMessage {
-                                error(errorMessage)
+        WithViewStore(self.store) { viewStore in
+            AppeekBackgroundView {
+                ZStack {
+                    VStack {
+                        ScrollView {
+                            VStack {
+                                header
+                                
+                                email(viewStore)
+                                
+                                Divider()
+                                
+                                password(viewStore)
+                                
+                                Divider()
+                                
+                                if let errorMessage = viewStore.state.errorMessage {
+                                    error(errorMessage)
+                                }
                             }
                         }
+                                        
+                        callToAction(viewStore)
                     }
-                                    
-                    callToAction
+                    
+                    if viewStore.state.isLoading {
+                        CCProgressView(foregroundColor: .appeekPrimary,
+                                       backgroundColor: .appeekBackgroundOffset)
+                    }
                 }
-                
-                if viewModel.isLoading {
-                    CCProgressView(foregroundColor: .appeekPrimary,
-                                   backgroundColor: .appeekBackgroundOffset)
-                }
-            }
-            .navigationDestination(for: LoginView.Navigation.self) { _ in
-                LoginView()
             }
         }
     }
@@ -67,9 +166,10 @@ struct SignUpView: View {
             .padding(.top)
     }
     
-    @ViewBuilder private var email: some View {
+    @ViewBuilder private func email(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
         Group {
-            CCEmailTextField(emailAddress: $viewModel.emailAddress,
+            CCEmailTextField(emailAddress: viewStore.binding(get: \.emailAddress,
+                                                             send: SignUpAction.emailAddressChanged),
                              placeholder: "Email Address",
                              foregroundColor: .appeekFont,
                              backgroundColor: .clear)
@@ -82,10 +182,11 @@ struct SignUpView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder private var password: some View {
+    @ViewBuilder private func password(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
         Group {
-            CCPasswordTextField(password: $viewModel.password,
-                                isSecure: viewModel.passwordSecure,
+            CCPasswordTextField(password: viewStore.binding(get: \.password,
+                                                            send: SignUpAction.passwordChanged),
+                                isSecure: viewStore.state.passwordSecure,
                                 placeholder: "Password",
                                 foregroundColor: .appeekFont,
                                 backgroundColor: .clear)
@@ -96,8 +197,9 @@ struct SignUpView: View {
             }
             
             HStack {
-                CCPasswordTextField(password: $viewModel.confirmPassword,
-                                    isSecure: viewModel.passwordSecure,
+                CCPasswordTextField(password: viewStore.binding(get: \.confirmPassword,
+                                                                send: SignUpAction.confirmPasswordChanged),
+                                    isSecure: viewStore.state.passwordSecure,
                                     placeholder: "Confirm Password",
                                     foregroundColor: .appeekFont,
                                     backgroundColor: .clear)
@@ -105,14 +207,11 @@ struct SignUpView: View {
                 .focused($focusedField, equals: .confirmPassword)
                 .onSubmit {
                     focusedField = nil
-                    Task {
-                        await viewModel.handleAccountCreation(with: authentication)
-                        navigation.mainNavigation = .init()
-                    }
+                    viewStore.send(.createAccount)
                 }
                 
-                CCIconButton(iconName: viewModel.passwordSecure ? "lock" : "lock.open") {
-                    viewModel.passwordSecure.toggle()
+                CCIconButton(iconName: viewStore.state.passwordSecure ? "lock" : "lock.open") {
+                    viewStore.send(.passwordSecurityToggled)
                 }
             }
         }
@@ -128,20 +227,18 @@ struct SignUpView: View {
             .padding(.horizontal)
     }
     
-    @ViewBuilder private var callToAction: some View {
+    private func callToAction(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
         VStack {
             CCPrimaryButton(title: "Create account!",
                             backgroundColor: .appeekPrimary) {
-                Task {
-                    await viewModel.handleAccountCreation(with: authentication)
-                    navigation.mainNavigation = .init()
-                }
+                viewStore.send(.createAccount)
             }
             
-            NavigationLink("Already have an account? Log in!",
-                           value: LoginView.Navigation())
+            NavigationLink("Already have an account? Log in!") {
+                LoginView()
+            }
             .frame(height: 45)
-                .foregroundColor(.appeekPrimary)
+            .foregroundColor(.appeekPrimary)
                 
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -149,12 +246,16 @@ struct SignUpView: View {
     }
 }
 
-extension SignUpView {
-    struct Navigation: Hashable { }
-}
+// MARK: - Preview
 
 struct SignUpView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpView()
+        SignUpView(
+            store: .init(
+                initialState: SignUpState.preview,
+                reducer: signUpReducer,
+                environment: SignUpEnvironment.preview
+            )
+        )
     }
 }

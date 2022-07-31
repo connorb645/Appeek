@@ -21,11 +21,11 @@ extension LoginView {
                 isLoading = true
                 errorMessage = nil
                 guard !emailAddress.isEmpty else {
-                    throw ValidationError.emailAddressRequired
+                    throw AppeekError.validationError(.emailAddressRequired)
                 }
                 
                 guard !password.isEmpty else {
-                    throw ValidationError.passwordRequired
+                    throw AppeekError.validationError(.passwordRequired)
                 }
                 
                 _ = try await authentication.login(email: emailAddress,

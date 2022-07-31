@@ -22,8 +22,8 @@ struct SupabaseAPI: APIProtocol {
     private let client: SupabaseClient
     private let network: Network
     
-    init(network: Network = Network(),
-         urlBuilder: URLBuilder = URLBuilder()) {
+    init(network: Network,
+         urlBuilder: URLBuilder) {
         guard let url = try? urlBuilder.build(baseUrl: EnvironmentKey.supabaseBaseUrl.value) else {
             fatalError(APIConfigError.invalidUrl.friendlyMessage)
         }
@@ -37,7 +37,7 @@ struct SupabaseAPI: APIProtocol {
         let uid = response.user.id
         guard let userId = UUID(uuidString: uid) else {
             try await logout()
-            throw NetworkError.noUserId
+            throw AppeekError.networkError(.noUserId)
         }
         let accessToken = response.accessToken
         let refreshToken = response.refreshToken
@@ -51,12 +51,12 @@ struct SupabaseAPI: APIProtocol {
         
         guard let session = response.session else {
             try await logout()
-            throw NetworkError.noSession
+            throw AppeekError.networkError(.noSession)
         }
         
         guard let idUuid = UUID(uuidString: "session.user.id") else {
             try await logout()
-            throw NetworkError.noUserId
+            throw AppeekError.networkError(.noUserId)
         }
 
         return .init(userId: idUuid,
@@ -77,7 +77,7 @@ struct SupabaseAPI: APIProtocol {
         let uid = response.user.id
         guard let userId = UUID(uuidString: uid) else {
             try await logout()
-            throw NetworkError.noUserId
+            throw AppeekError.networkError(.noUserId)
         }
         let accessToken = response.accessToken
         let refreshToken = response.refreshToken
@@ -98,4 +98,7 @@ struct SupabaseAPI: APIProtocol {
         
         return organisations
     }
+    
+    static let live = Self(network: Network.live,
+                           urlBuilder: URLBuilder.live)
 }
