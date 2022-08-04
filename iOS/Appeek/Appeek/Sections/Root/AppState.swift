@@ -1,0 +1,67 @@
+//
+//  AppState.swift
+//  Appeek
+//
+//  Created by Connor Black on 01/08/2022.
+//
+
+import ComposableArchitecture
+
+struct AppState: Equatable {
+    var onboarding: OnboardingState
+    private var signUp: SignUpState
+    private var login: LoginState
+    private var forgotPassword: ForgotPasswordState
+    
+    var route: AppRoute
+    
+    private var _onboardingRouteStack: OnboardingRouteStack? {
+        get {
+            (/AppRoute.onboarding).extract(from: self.route)
+        }
+        set {
+            guard let newValue = newValue else { return }
+            self.route = (/AppRoute.onboarding).embed(newValue)
+        }
+    }
+    
+    var signUpStateWithRoute: SignUpStateWithRoute {
+        get {
+            .init(signUpState: self.signUp,
+                  route: _onboardingRouteStack ?? OnboardingRouteStack.SignUpState)
+        }
+        set {
+            self.signUp = newValue.signUpState
+            _onboardingRouteStack = newValue.route
+        }
+    }
+    
+    var loginStateWithRoute: LoginStateWithRoute {
+        get {
+            .init(loginState: self.login,
+                  route: _onboardingRouteStack ?? OnboardingRouteStack.LoginState)
+        }
+        set {
+            self.login = newValue.loginState
+            _onboardingRouteStack = newValue.route
+        }
+    }
+                          
+    var forgotPasswordStateWithRoute: ForgotPasswordStateWithRoute {
+         get {
+             .init(forgotPasswordState: self.forgotPassword,
+                   route: _onboardingRouteStack ?? OnboardingRouteStack.ForgotPasswordState)
+         }
+         set {
+             self.forgotPassword = newValue.forgotPasswordState
+             _onboardingRouteStack = newValue.route
+         }
+     }
+    
+    static let live = Self(onboarding: OnboardingState(),
+                           signUp: SignUpState(),
+                           login: LoginState(),
+                           forgotPassword: ForgotPasswordState(),
+                           route: .onboarding(.init()))
+
+}

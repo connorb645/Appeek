@@ -11,6 +11,14 @@ import ComposableArchitecture
 
 // MARK: - State
 
+struct LoginStateWithRoute: Equatable {
+    var loginState: LoginState
+    var route: OnboardingRouteStack
+    
+    static let preview = Self(loginState: LoginState.preview,
+                              route: .init())
+}
+
 struct LoginState: Equatable {
     var emailAddress: String = ""
     var password: String = ""
@@ -29,46 +37,55 @@ enum LoginAction: Equatable {
     case passwordSecurityToggled
     case loginTapped
     case loginResponse(Result<AuthSession, AppeekError>)
+    case goToSignUpTapped
 }
 
 // MARK: - Environment
 
 struct LoginEnvironment {
-    // TODO: - Dont think we need to full authenticateClient
-    var authenticateClient: AuthenticateClientProtocol
-    var validationClient: ValidationClientProtocol
+    var login: (String, String) -> Effect<AuthSession, AppeekError>
+    var persistAuthenticationState: (AuthSession) -> Void
+    var validate: (ValidationRequirement) -> Bool
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
     
-    static let preview = Self(authenticateClient: AuthenticateClient.live,
-                              validationClient: ValidationClient.live,
+    static let preview = Self(login: AuthenticateClient.live.login(email:password:),
+                              persistAuthenticationState: AuthenticateClient.live.persistAuthenticationState(_:),
+                              validate: ValidationClient.live.validate(_:),
                               mainQueue: .immediate)
 }
 
 // MARK: - Reducer
 
-let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> { state, action, environment in
+let loginReducer = Reducer<LoginStateWithRoute, LoginAction, LoginEnvironment> { state, action, environment in
     switch action {
     case let .emailAddressChanged(emailAddress):
-        state.emailAddress = emailAddress
+        state.loginState.emailAddress = emailAddress
         return .none
     case let .passwordChanged(password):
-        state.password = password
+        state.loginState.password = password
         return .none
     case .passwordSecurityToggled:
-        state.securePassword.toggle()
+        state.loginState.securePassword.toggle()
+        return .none
     case .loginTapped:
-        // TODO: - Validate email before making call.
+        guard environment.validate((state.loginState.emailAddress, ValidationField.email)) else {
+            return Effect(value: LoginAction.loginResponse(
+                .failure(.validationError(.emailAddressRequired))
+            ))
+        }
         return environment
-            .authenticateClient
-            .login(email: state.emailAddress, password: state.password)
+            .login(state.loginState.emailAddress, state.loginState.password)
             .receive(on: environment.mainQueue)
             .catchToEffect(LoginAction.loginResponse)
     case let .loginResponse(.success(response)):
-        environment.authenticateClient.persistAuthenticationState(response)
+        environment.persistAuthenticationState(response)
         return .none
     case let .loginResponse(.failure(error)):
-        state.errorMessage = error.friendlyMessage
+        state.loginState.errorMessage = error.friendlyMessage
+        return .none
+    case .goToSignUpTapped:
+        state.route = OnboardingRouteStack.SignUpState
         return .none
     }
 }
@@ -81,7 +98,7 @@ struct LoginView: View {
         case email, password
     }
     
-    let store: Store<LoginState, LoginAction>
+    let store: Store<LoginStateWithRoute, LoginAction>
     
     @FocusState private var focusedField: FocusField?
     
@@ -104,7 +121,7 @@ struct LoginView: View {
                                 
                                 Divider()
                                 
-                                if let errorMessage = viewStore.errorMessage {
+                                if let errorMessage = viewStore.loginState.errorMessage {
                                     error(errorMessage)
                                 }
                             }
@@ -112,7 +129,7 @@ struct LoginView: View {
                         callToAction(viewStore: viewStore)
                     }
                     
-                    if viewStore.isLoading {
+                    if viewStore.loginState.isLoading {
                         CCProgressView(foregroundColor: .appeekPrimary,
                                        backgroundColor: .appeekBackgroundOffset)
                     }
@@ -134,9 +151,9 @@ struct LoginView: View {
             .padding(.top)
     }
     
-    private func email(viewStore: ViewStore<LoginState, LoginAction>) -> some View {
+    private func email(viewStore: ViewStore<LoginStateWithRoute, LoginAction>) -> some View {
         Group {
-            CCEmailTextField(emailAddress: viewStore.binding(get: \.emailAddress,
+            CCEmailTextField(emailAddress: viewStore.binding(get: \.loginState.emailAddress,
                                                              send: LoginAction.emailAddressChanged),
                              placeholder: "Email Address",
                              foregroundColor: .appeekFont,
@@ -150,12 +167,12 @@ struct LoginView: View {
         .padding(.horizontal)
     }
     
-    private func password(viewStore: ViewStore<LoginState, LoginAction>) -> some View {
+    private func password(viewStore: ViewStore<LoginStateWithRoute, LoginAction>) -> some View {
         Group {
             HStack {
-                CCPasswordTextField(password: viewStore.binding(get: \.password,
+                CCPasswordTextField(password: viewStore.binding(get: \.loginState.password,
                                                                 send: LoginAction.passwordChanged),
-                                    isSecure: viewStore.securePassword,
+                                    isSecure: viewStore.loginState.securePassword,
                                     placeholder: "Password",
                                     foregroundColor: .appeekFont,
                                     backgroundColor: .clear)
@@ -166,7 +183,7 @@ struct LoginView: View {
                     viewStore.send(.loginTapped)
                 }
                 
-                CCIconButton(iconName: viewStore.securePassword ? "lock" : "lock.open") {
+                CCIconButton(iconName: viewStore.loginState.securePassword ? "lock" : "lock.open") {
                     viewStore.send(.passwordSecurityToggled)
                 }
             }
@@ -175,8 +192,7 @@ struct LoginView: View {
     }
     
     @ViewBuilder private var forgotPassword: some View {
-        // TODO: - Make this work with new navigation style...
-        NavigationLink("Forgot Password", value: ForgotPasswordView.Navigation())
+        NavigationLink("Forgot Password", value: OnboardingRouteStack.State.forgotPassword)
             .frame(maxWidth: .infinity, alignment: .trailing)
             .tint(Color.appeekFont)
             .padding(.horizontal)
@@ -191,7 +207,7 @@ struct LoginView: View {
             .padding(.horizontal)
     }
     
-    private func callToAction(viewStore: ViewStore<LoginState, LoginAction>) -> some View {
+    private func callToAction(viewStore: ViewStore<LoginStateWithRoute, LoginAction>) -> some View {
         VStack {
             CCPrimaryButton(title: "Login!",
                             backgroundColor: .appeekPrimary) {
@@ -201,8 +217,7 @@ struct LoginView: View {
             CCSecondaryButton(title: "Don't have an account? Create one now!",
                               textColor: .appeekPrimary,
                               isUnderlined: false) {
-                // TODO: - Need to pop off a screen...
-//                navigation.mainNavigation.removeLast()
+                viewStore.send(.goToSignUpTapped)
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -214,8 +229,9 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        // TODO: - Get preview working
-        LoginView()
+        LoginView(store: .init(initialState: LoginStateWithRoute.preview,
+                               reducer: loginReducer,
+                               environment: LoginEnvironment.preview))
     }
 }
 

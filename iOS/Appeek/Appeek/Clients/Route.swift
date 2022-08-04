@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct OnboardingRouteStack {
-    var navigationPath: NavigationPath
+    var navigationPath: NavigationPath = .init()
     
     init(_ navigationPath: State...) {
-        self.navigationPath = .init()
         navigationPath.forEach { state in
             self.navigationPath.append(state)
         }
@@ -19,9 +18,13 @@ struct OnboardingRouteStack {
 
     enum State {
         case signUp
+        case login
+        case forgotPassword
     }
     
     static let SignUpState = Self(.signUp)
+    static let LoginState = Self(.signUp, .login)
+    static let ForgotPasswordState = Self(.signUp, .login, .forgotPassword)
 }
 
 extension OnboardingRouteStack: Equatable {}

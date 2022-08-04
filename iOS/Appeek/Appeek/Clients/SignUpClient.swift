@@ -12,6 +12,7 @@ import SwiftUI
 protocol AuthenticateClientProtocol {
     func createAccount(email: String, password: String) -> Effect<AuthSession, AppeekError>
     func login(email: String, password: String) -> Effect<AuthSession, AppeekError>
+    func resetPassword(email: String) -> Effect<Bool, AppeekError>
     func persistAuthenticationState(_ session: AuthSession)
 }
 
@@ -36,6 +37,15 @@ struct AuthenticateClient: AuthenticateClientProtocol {
     func login(email: String, password: String) -> Effect<AuthSession, AppeekError> {
         Effect.task {
             try await apiClient.login(email: email, password: password)
+        }
+        .mapError { $0.toAppeekError() }
+        .eraseToEffect()
+    }
+    
+    func resetPassword(email: String) -> Effect<Bool, AppeekError> {
+        Effect.task {
+            try await apiClient.resetPassword(email: email)
+            return true
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
