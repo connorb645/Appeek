@@ -13,10 +13,10 @@ import ComposableArchitecture
 
 struct SignUpStateWithRoute: Equatable {
     var signUpState: SignUpState
-    var route: OnboardingRouteStack
+    var route: AppRoute
     
     static let preview = Self(signUpState: SignUpState.preview,
-                              route: .init())
+                              route: .onboarding(.init()))
 }
 
 struct SignUpState: Equatable {
@@ -39,21 +39,28 @@ enum SignUpAction: Equatable {
     case passwordSecurityToggled
     case createAccount
     case creationResponse(Result<AuthSession, AppeekError>)
+    case sessionPersistenceResponse(Result<AuthSession, AppeekError>)
 }
 
 // MARK: - Environment
 
 struct SignUpEnvironment {
     var createAccount: (String, String) -> Effect<AuthSession, AppeekError>
-    var persistAuthenticationState: (AuthSession) -> Void
+    var persist: (AuthSession, UserDefaults, JSONEncoder) -> Effect<AuthSession, AppeekError>
     var validationClient: ValidationClientProtocol
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
+    var userDefaults: UserDefaults
+    var encoder: JSONEncoder
+    var decoder: JSONDecoder
     
     static let preview = Self(createAccount: AuthenticateClient.live.createAccount(email:password:),
-                              persistAuthenticationState: AuthenticateClient.live.persistAuthenticationState(_:),
+                              persist: AuthenticateClient.live.persist(authSession:in:using:),
                               validationClient: ValidationClient.live,
-                              mainQueue: .immediate)
+                              mainQueue: .immediate,
+                              userDefaults: .standard,
+                              encoder: JSONEncoder(),
+                              decoder: JSONDecoder())
 }
 
 // MARK: - Reducer
@@ -102,14 +109,24 @@ let signUpReducer = Reducer<SignUpStateWithRoute, SignUpAction, SignUpEnvironmen
                 .failure(.validationError(.passwordsDontMatch))
             ))
         }
+        state.signUpState.isLoading = true
         return environment
             .createAccount(state.signUpState.emailAddress, state.signUpState.password)
             .receive(on: environment.mainQueue)
             .catchToEffect(SignUpAction.creationResponse)
     case let .creationResponse(.success(response)):
-        environment.persistAuthenticationState(response)
-        return .none
+        state.signUpState.isLoading = false
+        return environment.persist(response, environment.userDefaults, environment.encoder)
+            .receive(on: environment.mainQueue)
+            .catchToEffect(SignUpAction.sessionPersistenceResponse)
     case let .creationResponse(.failure(error)):
+        state.signUpState.isLoading = false
+        state.signUpState.errorMessage = error.friendlyMessage
+        return .none
+    case let .sessionPersistenceResponse(.success(authSession)):
+        state.route = AppRoute.home(.init())
+        return .none
+    case let .sessionPersistenceResponse(.failure(error)):
         state.signUpState.errorMessage = error.friendlyMessage
         return .none
     }

@@ -12,10 +12,20 @@ struct AppEnvironment {
     var validationClient: ValidationClientProtocol
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
+    var userDefaults: UserDefaults
+    var encoder: JSONEncoder
+    var decoder: JSONDecoder
 
     static let live = Self(
         authenticateClient: AuthenticateClient.live,
         validationClient: ValidationClient.live,
-        mainQueue: .main
+        mainQueue: .main,
+        userDefaults: UserDefaults.standard,
+        encoder: JSONEncoder(),
+        decoder: JSONDecoder()
     )
+}
+
+struct Constants {
+    static let isLoggedInKey = "isUserLoggedIn"
 }

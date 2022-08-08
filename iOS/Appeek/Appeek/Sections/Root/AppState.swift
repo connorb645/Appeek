@@ -14,47 +14,47 @@ struct AppState: Equatable {
     private var forgotPassword: ForgotPasswordState
     
     var route: AppRoute
-    
-    private var _onboardingRouteStack: OnboardingRouteStack? {
-        get {
-            (/AppRoute.onboarding).extract(from: self.route)
-        }
-        set {
-            guard let newValue = newValue else { return }
-            self.route = (/AppRoute.onboarding).embed(newValue)
-        }
-    }
+    var isLoggedIn: Bool
+
+//    private var _onboardingRouteStack: OnboardingRouteStack? {
+//        get {
+//            (/AppRoute.onboarding).extract(from: self.route)
+//        }
+//        set {
+//            guard let newValue = newValue else { return }
+//            self.route = (/AppRoute.onboarding).embed(newValue)
+//        }
+//    }
     
     var signUpStateWithRoute: SignUpStateWithRoute {
         get {
-            .init(signUpState: self.signUp,
-                  route: _onboardingRouteStack ?? OnboardingRouteStack.SignUpState)
+            .init(signUpState: self.signUp, route: self.route)
         }
         set {
             self.signUp = newValue.signUpState
-            _onboardingRouteStack = newValue.route
+            self.route = newValue.route
         }
     }
     
     var loginStateWithRoute: LoginStateWithRoute {
         get {
             .init(loginState: self.login,
-                  route: _onboardingRouteStack ?? OnboardingRouteStack.LoginState)
+                  route: self.route)
         }
         set {
             self.login = newValue.loginState
-            _onboardingRouteStack = newValue.route
+            self.route = newValue.route
         }
     }
                           
     var forgotPasswordStateWithRoute: ForgotPasswordStateWithRoute {
          get {
              .init(forgotPasswordState: self.forgotPassword,
-                   route: _onboardingRouteStack ?? OnboardingRouteStack.ForgotPasswordState)
+                   route: self.route)
          }
          set {
              self.forgotPassword = newValue.forgotPasswordState
-             _onboardingRouteStack = newValue.route
+             self.route = newValue.route
          }
      }
     
@@ -62,6 +62,7 @@ struct AppState: Equatable {
                            signUp: SignUpState(),
                            login: LoginState(),
                            forgotPassword: ForgotPasswordState(),
-                           route: .onboarding(.init()))
+                           route: .onboarding(.init()),
+                           isLoggedIn: false)
 
 }

@@ -21,7 +21,6 @@ let forgotPasswordReducer = ForgotPasswordReducer { state, action, environment i
         state.forgotPasswordState.emailAddress = value
         return .none
     case .submitTapped:
-        
         guard environment.validate(
             (state.forgotPasswordState.emailAddress, ValidationField.email)
         ) else {
@@ -35,7 +34,7 @@ let forgotPasswordReducer = ForgotPasswordReducer { state, action, environment i
             .receive(on: environment.mainQueue)
             .catchToEffect(ForgotPasswordAction.submissionResponse)
     case .submissionResponse(.success):
-        state.route = OnboardingRouteStack.LoginState
+        state.route = (/AppRoute.onboarding).embed(OnboardingRouteStack.LoginState)
         return .none
     case let .submissionResponse(.failure(error)):
         state.forgotPasswordState.emailAddress = error.friendlyMessage

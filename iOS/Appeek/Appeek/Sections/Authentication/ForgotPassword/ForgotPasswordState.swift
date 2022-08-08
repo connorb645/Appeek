@@ -9,10 +9,10 @@ import Foundation
 
 struct ForgotPasswordStateWithRoute: Equatable {
     var forgotPasswordState: ForgotPasswordState
-    var route: OnboardingRouteStack
+    var route: AppRoute
     
     static let preview = Self(forgotPasswordState: ForgotPasswordState.preview,
-                              route: .init())
+                              route: .onboarding(.init()))
 }
 
 struct ForgotPasswordState: Equatable {

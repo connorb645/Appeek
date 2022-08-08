@@ -13,10 +13,10 @@ import ComposableArchitecture
 
 struct LoginStateWithRoute: Equatable {
     var loginState: LoginState
-    var route: OnboardingRouteStack
+    var route: AppRoute
     
     static let preview = Self(loginState: LoginState.preview,
-                              route: .init())
+                              route: .home(.init()))
 }
 
 struct LoginState: Equatable {
@@ -38,21 +38,28 @@ enum LoginAction: Equatable {
     case loginTapped
     case loginResponse(Result<AuthSession, AppeekError>)
     case goToSignUpTapped
+    case sessionPersistenceResponse(Result<AuthSession, AppeekError>)
 }
 
 // MARK: - Environment
 
 struct LoginEnvironment {
     var login: (String, String) -> Effect<AuthSession, AppeekError>
-    var persistAuthenticationState: (AuthSession) -> Void
+    var persist: (AuthSession, UserDefaults, JSONEncoder) -> Effect<AuthSession, AppeekError>
     var validate: (ValidationRequirement) -> Bool
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
+    var userDefaults: UserDefaults
+    var encoder: JSONEncoder
+    var decoder: JSONDecoder
     
     static let preview = Self(login: AuthenticateClient.live.login(email:password:),
-                              persistAuthenticationState: AuthenticateClient.live.persistAuthenticationState(_:),
+                              persist: AuthenticateClient.live.persist(authSession:in:using:),
                               validate: ValidationClient.live.validate(_:),
-                              mainQueue: .immediate)
+                              mainQueue: .immediate,
+                              userDefaults: .standard,
+                              encoder: JSONEncoder(),
+                              decoder: JSONDecoder())
 }
 
 // MARK: - Reducer
@@ -74,18 +81,28 @@ let loginReducer = Reducer<LoginStateWithRoute, LoginAction, LoginEnvironment> {
                 .failure(.validationError(.emailAddressRequired))
             ))
         }
+        state.loginState.isLoading = true
         return environment
             .login(state.loginState.emailAddress, state.loginState.password)
             .receive(on: environment.mainQueue)
             .catchToEffect(LoginAction.loginResponse)
     case let .loginResponse(.success(response)):
-        environment.persistAuthenticationState(response)
-        return .none
+        state.loginState.isLoading = false
+        return environment.persist(response, environment.userDefaults, environment.encoder)
+            .receive(on: environment.mainQueue)
+            .catchToEffect(LoginAction.sessionPersistenceResponse)
     case let .loginResponse(.failure(error)):
+        state.loginState.isLoading = false
         state.loginState.errorMessage = error.friendlyMessage
         return .none
     case .goToSignUpTapped:
-        state.route = OnboardingRouteStack.SignUpState
+        state.route = (/AppRoute.onboarding).embed(OnboardingRouteStack.SignUpState)
+        return .none
+    case let .sessionPersistenceResponse(.success(authSession)):
+        state.route = AppRoute.home(.init())
+        return .none
+    case let .sessionPersistenceResponse(.failure(error)):
+        state.loginState.errorMessage = error.friendlyMessage
         return .none
     }
 }

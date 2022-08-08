@@ -7,12 +7,17 @@
 
 import ComposableArchitecture
 import CasePaths
+import Combine
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
-    .init { state, action, environment in
+    Reducer { state, action, environment in
         switch action {
         case .onAppear:
-            return .none
+            return environment.authenticateClient.retrieveAuthSession(from: environment.userDefaults,
+                                                                      using: environment.decoder)
+            .receive(on: environment.mainQueue)
+            .catchToEffect(AppAction.currentAuthSessionPossiblyReceived)
+
         case .onboardingNavigationPathChanged(let navigationPath):
             var currentRoute = (/AppRoute.onboarding).extract(from: state.route) ?? .init()
             currentRoute.navigationPath = navigationPath
@@ -22,6 +27,13 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             var currentRoute = (/AppRoute.home).extract(from: state.route) ?? .init()
             currentRoute.navigationPath = navigationPath
             state.route = (/AppRoute.home).embed(currentRoute)
+            return .none
+        case let .currentAuthSessionPossiblyReceived(.success(authSession)):
+            let isLoggedIn = authSession != nil
+            state.route = isLoggedIn ? AppRoute.home(.init()) : AppRoute.onboarding(.init())
+            return .none
+        case let .currentAuthSessionPossiblyReceived(.failure(error)):
+            print(error.friendlyMessage)
             return .none
         default:
             return .none
@@ -36,17 +48,23 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         state: \.signUpStateWithRoute,
         action: /AppAction.signUp,
         environment: { SignUpEnvironment(createAccount: $0.authenticateClient.createAccount(email:password:),
-                                         persistAuthenticationState: $0.authenticateClient.persistAuthenticationState(_:),
+                                         persist: $0.authenticateClient.persist(authSession:in:using:),
                                          validationClient: $0.validationClient,
-                                         mainQueue: $0.mainQueue) }
+                                         mainQueue: $0.mainQueue,
+                                         userDefaults: $0.userDefaults,
+                                         encoder: $0.encoder,
+                                         decoder: $0.decoder) }
     ),
     loginReducer.pullback(
         state: \.loginStateWithRoute,
         action: /AppAction.login,
         environment: { LoginEnvironment(login: $0.authenticateClient.login(email:password:),
-                                        persistAuthenticationState: $0.authenticateClient.persistAuthenticationState(_:),
+                                        persist: $0.authenticateClient.persist(authSession:in:using:),
                                         validate: $0.validationClient.validate(_:),
-                                        mainQueue: $0.mainQueue) }
+                                        mainQueue: $0.mainQueue,
+                                        userDefaults: $0.userDefaults,
+                                        encoder: $0.encoder,
+                                        decoder: $0.decoder) }
     ),
     forgotPasswordReducer.pullback(
         state: \.forgotPasswordStateWithRoute,

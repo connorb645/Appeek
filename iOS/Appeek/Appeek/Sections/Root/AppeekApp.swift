@@ -29,39 +29,44 @@ struct RootView: View {
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
-            switch viewStore.state.route {
-            case .onboarding:
-                NavigationStack(
-                    path: viewStore.binding { appState in
-                        ((/AppRoute.onboarding).extract(from: appState.route) ?? .init()).navigationPath
-                    } send: { localState in
-                        AppAction.onboardingNavigationPathChanged(localState)
-                    }) {
-                        OnboardingView(store: self.store.scope(state: \.onboarding,
-                                                               action: AppAction.onboarding))
-                        .navigationDestination(for: OnboardingRouteStack.State.self) { state in
-                            switch state {
-                            case .signUp:
-                                SignUpView(store: self.store.scope(state: \.signUpStateWithRoute,
-                                                                   action: AppAction.signUp))
-                            case .login:
-                                LoginView(store: self.store.scope(state: \.loginStateWithRoute,
-                                                                  action: AppAction.login))
-                            case .forgotPassword:
-                                ForgotPasswordView(store: self.store.scope(state: \.forgotPasswordStateWithRoute,
-                                                                           action: AppAction.forgotPassword))
+            Group {
+                switch viewStore.state.route {
+                case .onboarding:
+                    NavigationStack(
+                        path: viewStore.binding { appState in
+                            ((/AppRoute.onboarding).extract(from: appState.route) ?? .init()).navigationPath
+                        } send: { localState in
+                            AppAction.onboardingNavigationPathChanged(localState)
+                        }) {
+                            OnboardingView(store: self.store.scope(state: \.onboarding,
+                                                                   action: AppAction.onboarding))
+                            .navigationDestination(for: OnboardingRouteStack.State.self) { state in
+                                switch state {
+                                case .signUp:
+                                    SignUpView(store: self.store.scope(state: \.signUpStateWithRoute,
+                                                                       action: AppAction.signUp))
+                                case .login:
+                                    LoginView(store: self.store.scope(state: \.loginStateWithRoute,
+                                                                      action: AppAction.login))
+                                case .forgotPassword:
+                                    ForgotPasswordView(store: self.store.scope(state: \.forgotPasswordStateWithRoute,
+                                                                               action: AppAction.forgotPassword))
+                                }
                             }
-                        }
+                    }
+                case .home:
+                    NavigationStack(
+                        path: viewStore.binding { appState in
+                            ((/AppRoute.home).extract(from: appState.route) ?? .init()).navigationPath
+                        } send: { localState in
+                            AppAction.homeNavigationPathChanged(localState)
+                        }) {
+                            Text("Home")
+                    }
                 }
-            case .home:
-                NavigationStack(
-                    path: viewStore.binding { appState in
-                        ((/AppRoute.home).extract(from: appState.route) ?? .init()).navigationPath
-                    } send: { localState in
-                        AppAction.homeNavigationPathChanged(localState)
-                    }) {
-                        Text("Home")
-                }
+            }
+            .onAppear {
+                viewStore.send(.onAppear)
             }
         }
     }

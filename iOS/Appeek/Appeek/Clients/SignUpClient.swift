@@ -12,18 +12,19 @@ import SwiftUI
 protocol AuthenticateClientProtocol {
     func createAccount(email: String, password: String) -> Effect<AuthSession, AppeekError>
     func login(email: String, password: String) -> Effect<AuthSession, AppeekError>
+    func persist(authSession: AuthSession,
+                 in store: UserDefaults,
+                 using encoder: JSONEncoder) -> Effect<AuthSession, AppeekError>
+    func retrieveAuthSession(from store: UserDefaults,
+                             using decoder: JSONDecoder) -> Effect<AuthSession?, AppeekError>
     func resetPassword(email: String) -> Effect<Bool, AppeekError>
-    func persistAuthenticationState(_ session: AuthSession)
 }
 
 struct AuthenticateClient: AuthenticateClientProtocol {
     private let apiClient: APIProtocol
-    private let userDefaults: UserDefaults
     
-    init(apiClient: APIProtocol,
-         userDefaults: UserDefaults) {
+    init(apiClient: APIProtocol) {
         self.apiClient = apiClient
-        self.userDefaults = userDefaults
     }
     
     func createAccount(email: String, password: String) -> Effect<AuthSession, AppeekError> {
@@ -51,13 +52,31 @@ struct AuthenticateClient: AuthenticateClientProtocol {
         .eraseToEffect()
     }
     
-    func persistAuthenticationState(_ session: AuthSession) {
-        // TODO: - Move string literal to constants file somewhere
-        userDefaults.set(session, forKey: "current_session")
+    func persist(authSession: AuthSession,
+                 in store: UserDefaults,
+                 using encoder: JSONEncoder) -> Effect<AuthSession, AppeekError> {
+        Effect.catching {
+            let encoded = try encoder.encode(authSession)
+            store.set(encoded, forKey: Constants.isLoggedInKey)
+            return authSession
+        }
+        .mapError { $0.toAppeekError() }
+        .eraseToEffect()
     }
     
-    static let live = Self(apiClient: SupabaseAPI.live,
-                           userDefaults: .standard)
+    func retrieveAuthSession(from store: UserDefaults,
+                             using decoder: JSONDecoder) -> Effect<AuthSession?, AppeekError> {
+        Effect.catching {
+            guard let encodedAuthSession = store.object(forKey: Constants.isLoggedInKey) as? Data else {
+                return nil
+            }
+            return try? decoder.decode(AuthSession?.self, from: encodedAuthSession)
+        }
+        .mapError { $0.toAppeekError() }
+        .eraseToEffect()
+    }
+    
+    static let live = Self(apiClient: SupabaseAPI.live)
 }
 
 // TODO: - Move this
