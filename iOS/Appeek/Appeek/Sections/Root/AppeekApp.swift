@@ -62,6 +62,9 @@ struct RootView: View {
                             AppAction.homeNavigationPathChanged(localState)
                         }) {
                             Text("Home")
+                                .onTapGesture {
+                                    viewStore.send(AppAction.onHomeTapped)
+                                }
                     }
                 }
             }

@@ -18,6 +18,8 @@ protocol AuthenticateClientProtocol {
     func retrieveAuthSession(from store: UserDefaults,
                              using decoder: JSONDecoder) -> Effect<AuthSession?, AppeekError>
     func resetPassword(email: String) -> Effect<Bool, AppeekError>
+    func refresh(token: String) -> Effect<AuthSession, AppeekError>
+    func clearAuthSession(from store: UserDefaults)
 }
 
 struct AuthenticateClient: AuthenticateClientProtocol {
@@ -74,6 +76,18 @@ struct AuthenticateClient: AuthenticateClientProtocol {
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
+    }
+    
+    func refresh(token: String) -> Effect<AuthSession, AppeekError> {
+        Effect.task {
+            try await apiClient.refreshSession(token: token)
+        }
+        .mapError { $0.toAppeekError() }
+        .eraseToEffect()
+    }
+    
+    func clearAuthSession(from store: UserDefaults) {
+        store.removeObject(forKey: Constants.isLoggedInKey)
     }
     
     static let live = Self(apiClient: SupabaseAPI.live)

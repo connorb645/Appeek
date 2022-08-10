@@ -21,10 +21,10 @@
     {
       "identity" : "connorscomponents",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/connorb645/ConnorsComponents.git",
+      "location" : "git@github.com:connorb645/ConnorsComponents.git",
       "state" : {
         "branch" : "main",
-        "revision" : "e66d937263aefc04dcdb24303d25e041f67c9804"
+        "revision" : "3a21d4dff7e2f52c72f4107fd98e3a489d5b5afa"
       }
     },
     {

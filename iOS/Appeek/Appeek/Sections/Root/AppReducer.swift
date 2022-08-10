@@ -35,6 +35,10 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case let .currentAuthSessionPossiblyReceived(.failure(error)):
             print(error.friendlyMessage)
             return .none
+        case .onHomeTapped:
+            environment.authenticateClient.clearAuthSession(from: environment.userDefaults)
+            state.route = AppRoute.onboarding(.init())
+            return .none
         default:
             return .none
         }

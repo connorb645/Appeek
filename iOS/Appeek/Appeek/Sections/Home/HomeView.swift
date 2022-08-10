@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
+import SwiftUINavigation
+import ComposableArchitecture
 
 struct HomeView: View {
-    @State var isShowingSettings: Bool = false
-    @EnvironmentObject var authentication: AuthenticationGateway
-    @StateObject var viewModel = ViewModel()
+    let store: ViewStore<HomeState, HomeAction>
     
     var body: some View {
-        NavigationStack {
+        WithViewStore(self.store) { viewStore in
             AppeekBackgroundView {
                 VStack {
                     AppeekPicker(items: viewModel.usersOrganisations,
