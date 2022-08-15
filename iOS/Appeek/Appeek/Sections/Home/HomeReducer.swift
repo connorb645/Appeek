@@ -26,5 +26,11 @@ let homeReducer = HomeReducer { state, action, environment in
         return .none
     case let .usersOrganisationsReceived(.failure(error)):
         return .none
+    case let .selectedOrganisationUpdated(organisation):
+        state.state.selectedOrganisation = organisation
+        return .none
+    case let .homeRouteChanged(route):
+        state.state.homeRoute = route
+        return .none
     }
 }

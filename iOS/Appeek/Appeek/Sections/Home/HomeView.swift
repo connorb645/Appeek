@@ -10,15 +10,16 @@ import SwiftUINavigation
 import ComposableArchitecture
 
 struct HomeView: View {
-    let store: ViewStore<HomeState, HomeAction>
+    let store: Store<HomeStateWithRouteAndSession, HomeAction>
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
             AppeekBackgroundView {
                 VStack {
-                    AppeekPicker(items: viewModel.usersOrganisations,
-                                 isLoading: viewModel.isLoading,
-                                 selectedItem: $viewModel.selectedOrganisation)
+                    AppeekPicker(items: viewStore.state.state.usersOrganisations,
+                                 isLoading: viewStore.state.state.isLoading,
+                                 selectedItem: viewStore.binding(get: \.state.selectedOrganisation,
+                                                                 send: HomeAction.selectedOrganisationUpdated))
                     .frame(height: 50)
                     .padding(.horizontal)
                     
@@ -26,30 +27,34 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onAppear {
-                    Task {
-                        await self.viewModel.fetchUsersOrganisations(using: self.authentication)
-                    }
+//                    Task {
+//                        await self.viewModel.fetchUsersOrganisations(using: self.authentication)
+//                    }
                 }
             }
             .navigationTitle("Home")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        isShowingSettings = true
+                        viewStore.send(HomeAction.settingsTapped)
                     } label: {
                         Image(systemName: "gear")
                     }
                 }
             }
-            .sheet(isPresented: $isShowingSettings) {
-                SettingsView(isPresented: $isShowingSettings)
-            }
+            .sheet(unwrapping: viewStore.binding(get: \.state.homeRoute,
+                                                 send: HomeAction.homeRouteChanged),
+                   case: /HomeState.Route.settings) { $settings in
+                       Text("Settings")
+                   }
         }
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        HomeView(store: .init(initialState: HomeStateWithRouteAndSession.preview,
+                              reducer: homeReducer,
+                              environment: HomeEnvironment.preview))
     }
 }

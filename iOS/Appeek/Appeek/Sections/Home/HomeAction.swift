@@ -11,4 +11,6 @@ enum HomeAction: Equatable {
     case onAppear
     case settingsTapped
     case usersOrganisationsReceived(Result<[Organisation], AppeekError>)
+    case selectedOrganisationUpdated(Organisation?)
+    case homeRouteChanged(HomeState.Route?)
 }

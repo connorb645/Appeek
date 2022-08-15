@@ -96,10 +96,6 @@ struct ForgotPasswordView: View {
     }
 }
 
-extension ForgotPasswordView {
-    struct Navigation: Hashable { }
-}
-
 struct ForgotPasswordView_Previews: PreviewProvider {
     static var previews: some View {
         ForgotPasswordView(store: .init(initialState: ForgotPasswordStateWithRoute.preview,
