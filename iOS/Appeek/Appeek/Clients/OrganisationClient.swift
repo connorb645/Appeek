@@ -10,24 +10,28 @@ import ComposableArchitecture
 import SwiftUI
 
 protocol OrganisationClientProtocol {
-    func usersOrganisations(_ usersId: UUID, bearerToken: String) -> Effect<[Organisation], AppeekError>
+    func usersOrganisations() -> Effect<[Organisation], AppeekError>
 }
 
 struct OrganisationClient: OrganisationClientProtocol {
-    private let apiClient: APIProtocol
+    let organisations: (UUID, Middleware, () throws -> AuthSession) async throws -> [Organisation]
+    let refreshMiddleware: RefreshMiddleware
+    let currentAuthSession: () throws -> AuthSession
     
-    init(apiClient: APIProtocol) {
-        self.apiClient = apiClient
-    }
-    
-    // TODO: - Need to figure out how to refresh the token if it has expired
-    func usersOrganisations(_ usersId: UUID, bearerToken: String) -> Effect<[Organisation], AppeekError> {
+    func usersOrganisations() -> Effect<[Organisation], AppeekError> {
         Effect.task {
-            try await apiClient.organisations(for: usersId, bearerToken: bearerToken)
+            let userId = try currentAuthSession().userId
+            return try await organisations(userId,
+                                           refreshMiddleware,
+                                           currentAuthSession)
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
     }
     
-    static let live = Self(apiClient: SupabaseAPI.live)
+    static let preview: OrganisationClientProtocol = Self.init(organisations: SupabaseAPI.preview.organisations(for:refreshMiddleware:currentAuthSession:),
+                                                               refreshMiddleware: RefreshMiddleware.preview,
+                                                               currentAuthSession: {
+            .init(userId: UUID(), accessToken: "", refreshToken: "")
+    })
 }

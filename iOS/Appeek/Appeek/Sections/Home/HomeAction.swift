@@ -13,4 +13,5 @@ enum HomeAction: Equatable {
     case usersOrganisationsReceived(Result<[Organisation], AppeekError>)
     case selectedOrganisationUpdated(Organisation?)
     case homeRouteChanged(HomeState.Route?)
+//    case retrievedAuthSession(Result<AuthSession, AppeekError>)
 }

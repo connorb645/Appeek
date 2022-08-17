@@ -12,10 +12,11 @@ enum AppAction: Equatable {
     case signUp(SignUpAction)
     case login(LoginAction)
     case forgotPassword(ForgotPasswordAction)
+    case homeAction(HomeAction)
     
     case onAppear
     case onboardingNavigationPathChanged(NavigationPath)
     case homeNavigationPathChanged(NavigationPath)
-    case currentAuthSessionPossiblyReceived(Result<AuthSession?, AppeekError>)
+    case receivedAuthSession(Result<AuthSession, AppeekError>)
     case onHomeTapped
 }

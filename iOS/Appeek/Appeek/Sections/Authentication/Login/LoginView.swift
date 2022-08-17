@@ -45,21 +45,15 @@ enum LoginAction: Equatable {
 
 struct LoginEnvironment {
     var login: (String, String) -> Effect<AuthSession, AppeekError>
-    var persist: (AuthSession, UserDefaults, JSONEncoder) -> Effect<AuthSession, AppeekError>
+    var persist: (AuthSession) -> Effect<AuthSession, AppeekError>
     var validate: (ValidationRequirement) -> Bool
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
-    var userDefaults: UserDefaults
-    var encoder: JSONEncoder
-    var decoder: JSONDecoder
     
-    static let preview = Self(login: AuthenticateClient.live.login(email:password:),
-                              persist: AuthenticateClient.live.persist(authSession:in:using:),
-                              validate: ValidationClient.live.validate(_:),
-                              mainQueue: .immediate,
-                              userDefaults: .standard,
-                              encoder: JSONEncoder(),
-                              decoder: JSONDecoder())
+    static let preview = Self(login: AuthenticateClient.preview.login(email:password:),
+                              persist: AuthenticateClient.preview.persist(authSession:),
+                              validate: ValidationClient.preview.validate(_:),
+                              mainQueue: .immediate)
 }
 
 // MARK: - Reducer
@@ -88,7 +82,7 @@ let loginReducer = Reducer<LoginStateWithRoute, LoginAction, LoginEnvironment> {
             .catchToEffect(LoginAction.loginResponse)
     case let .loginResponse(.success(response)):
         state.loginState.isLoading = false
-        return environment.persist(response, environment.userDefaults, environment.encoder)
+        return environment.persist(response)
             .receive(on: environment.mainQueue)
             .catchToEffect(LoginAction.sessionPersistenceResponse)
     case let .loginResponse(.failure(error)):

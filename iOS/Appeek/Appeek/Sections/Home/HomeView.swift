@@ -10,7 +10,7 @@ import SwiftUINavigation
 import ComposableArchitecture
 
 struct HomeView: View {
-    let store: Store<HomeStateWithRouteAndSession, HomeAction>
+    let store: Store<HomeStateWithRoute, HomeAction>
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
@@ -27,16 +27,14 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onAppear {
-//                    Task {
-//                        await self.viewModel.fetchUsersOrganisations(using: self.authentication)
-//                    }
+                    viewStore.send(.onAppear)
                 }
             }
             .navigationTitle("Home")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        viewStore.send(HomeAction.settingsTapped)
+                        viewStore.send(.settingsTapped)
                     } label: {
                         Image(systemName: "gear")
                     }
@@ -53,7 +51,7 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(store: .init(initialState: HomeStateWithRouteAndSession.preview,
+        HomeView(store: .init(initialState: HomeStateWithRoute.preview,
                               reducer: homeReducer,
                               environment: HomeEnvironment.preview))
     }

@@ -29,7 +29,7 @@ struct ValidationClient: ValidationClientProtocol {
     
     var match: (String, String) -> Bool = { $0 == $1 }
     
-    static let live = Self()
+    static let preview = Self()
 }
 
 enum ValidationField {

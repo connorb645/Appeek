@@ -14,7 +14,7 @@ struct ForgotPasswordEnvironment {
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
     
-    static let preview = Self(resetPassword: AuthenticateClient.live.resetPassword(email:),
-                              validate: ValidationClient.live.validate(_:),
+    static let preview = Self(resetPassword: AuthenticateClient.preview.resetPassword(email:),
+                              validate: ValidationClient.preview.validate(_:),
                               mainQueue: .immediate)
 }

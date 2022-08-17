@@ -12,26 +12,28 @@ import SwiftUI
 protocol AuthenticateClientProtocol {
     func createAccount(email: String, password: String) -> Effect<AuthSession, AppeekError>
     func login(email: String, password: String) -> Effect<AuthSession, AppeekError>
-    func persist(authSession: AuthSession,
-                 in store: UserDefaults,
-                 using encoder: JSONEncoder) -> Effect<AuthSession, AppeekError>
-    func retrieveAuthSession(from store: UserDefaults,
-                             using decoder: JSONDecoder) -> Effect<AuthSession?, AppeekError>
+    func persist(authSession: AuthSession) -> Effect<AuthSession, AppeekError>
+    func persist(authSession: AuthSession) throws -> AuthSession
+    func retrieveAuthSession() -> Effect<AuthSession, AppeekError>
+    func retrieveAuthSession() throws -> AuthSession
     func resetPassword(email: String) -> Effect<Bool, AppeekError>
-    func refresh(token: String) -> Effect<AuthSession, AppeekError>
-    func clearAuthSession(from store: UserDefaults)
+    func refreshToken() -> Effect<AuthSession, AppeekError>
+    func refreshToken() async throws -> AuthSession
+    func clearAuthSession()
 }
 
 struct AuthenticateClient: AuthenticateClientProtocol {
-    private let apiClient: APIProtocol
-    
-    init(apiClient: APIProtocol) {
-        self.apiClient = apiClient
-    }
+    let signUp: (String, String) async throws -> AuthSession
+    let login: (String, String) async throws -> AuthSession
+    let resetPassword: (String) async throws -> Void
+    let refreshSession: (String) async throws -> AuthSession
+    let userDefaults: UserDefaults
+    let encoder: JSONEncoder
+    let decoder: JSONDecoder
     
     func createAccount(email: String, password: String) -> Effect<AuthSession, AppeekError> {
         Effect.task {
-            try await apiClient.signUp(email: email, password: password)
+            try await signUp(email, password)
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
@@ -39,7 +41,7 @@ struct AuthenticateClient: AuthenticateClientProtocol {
     
     func login(email: String, password: String) -> Effect<AuthSession, AppeekError> {
         Effect.task {
-            try await apiClient.login(email: email, password: password)
+            try await login(email, password)
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
@@ -47,50 +49,67 @@ struct AuthenticateClient: AuthenticateClientProtocol {
     
     func resetPassword(email: String) -> Effect<Bool, AppeekError> {
         Effect.task {
-            try await apiClient.resetPassword(email: email)
+            try await resetPassword(email)
             return true
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
     }
     
-    func persist(authSession: AuthSession,
-                 in store: UserDefaults,
-                 using encoder: JSONEncoder) -> Effect<AuthSession, AppeekError> {
+    func persist(authSession: AuthSession) -> Effect<AuthSession, AppeekError> {
         Effect.catching {
-            let encoded = try encoder.encode(authSession)
-            store.set(encoded, forKey: Constants.isLoggedInKey)
-            return authSession
+            try persist(authSession: authSession)
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
     }
     
-    func retrieveAuthSession(from store: UserDefaults,
-                             using decoder: JSONDecoder) -> Effect<AuthSession?, AppeekError> {
+    func persist(authSession: AuthSession) throws -> AuthSession {
+        let encoded = try encoder.encode(authSession)
+        userDefaults.set(encoded, forKey: Constants.isLoggedInKey)
+        return authSession
+    }
+    
+    func retrieveAuthSession() -> Effect<AuthSession, AppeekError> {
         Effect.catching {
-            guard let encodedAuthSession = store.object(forKey: Constants.isLoggedInKey) as? Data else {
-                return nil
-            }
-            return try? decoder.decode(AuthSession?.self, from: encodedAuthSession)
+            try retrieveAuthSession()
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
     }
     
-    func refresh(token: String) -> Effect<AuthSession, AppeekError> {
+    func retrieveAuthSession() throws -> AuthSession {
+        guard let encodedAuthSession = userDefaults.object(forKey: Constants.isLoggedInKey) as? Data,
+              let decodedAuthSession = try? decoder.decode(AuthSession?.self, from: encodedAuthSession) else {
+            throw AppeekError.noAuthSession
+        }
+        return decodedAuthSession
+    }
+    
+    func refreshToken() -> Effect<AuthSession, AppeekError> {
         Effect.task {
-            try await apiClient.refreshSession(token: token)
+            try await refreshToken()
         }
         .mapError { $0.toAppeekError() }
         .eraseToEffect()
     }
     
-    func clearAuthSession(from store: UserDefaults) {
-        store.removeObject(forKey: Constants.isLoggedInKey)
+    func refreshToken() async throws -> AuthSession {
+        let token = try retrieveAuthSession().refreshToken
+        return try await refreshSession(token)
     }
     
-    static let live = Self(apiClient: SupabaseAPI.live)
+    func clearAuthSession() {
+        userDefaults.removeObject(forKey: Constants.isLoggedInKey)
+    }
+    
+    static let preview = Self.init(signUp: SupabaseAPI.preview.signUp(email:password:),
+                                   login: SupabaseAPI.preview.login(email:password:),
+                                   resetPassword: SupabaseAPI.preview.resetPassword(email:),
+                                   refreshSession: SupabaseAPI.preview.refreshSession(token:),
+                                   userDefaults: .standard,
+                                   encoder: JSONEncoder(),
+                                   decoder: JSONDecoder())
 }
 
 // TODO: - Move this

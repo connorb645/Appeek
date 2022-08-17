@@ -61,7 +61,8 @@ struct RootView: View {
                         } send: { localState in
                             AppAction.homeNavigationPathChanged(localState)
                         }) {
-                            Text("Home")
+                            HomeView(store: self.store.scope(state: \.homeStateWithRoute,
+                                                             action: AppAction.homeAction))
                                 .onTapGesture {
                                     viewStore.send(AppAction.onHomeTapped)
                                 }

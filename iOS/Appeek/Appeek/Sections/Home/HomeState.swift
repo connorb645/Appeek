@@ -7,16 +7,18 @@
 
 import Foundation
 
-struct HomeStateWithRouteAndSession: Equatable {
+struct HomeStateWithRoute: Equatable {
     var state: HomeState
     var route: AppRoute
-    var currentSession: AuthSession
+    
+    init(state: HomeState,
+         route: AppRoute) {
+        self.state = state
+        self.route = route
+    }
     
     static let preview = Self(state: HomeState.preview,
-                              route: .home(.init()),
-                              currentSession: .init(userId: .init(),
-                                                    accessToken: "randomaccesstoken",
-                                                    refreshToken: "randomrefreshtoken"))
+                              route: .home(.init()))
 }
 
 struct HomeState: Equatable {

@@ -15,7 +15,9 @@ protocol APIProtocol {
     func resetPassword(email: String) async throws
     func refreshSession(token: String) async throws -> AuthSession
     
-    func organisations(for user: UUID, bearerToken: String) async throws -> [Organisation]
+    func organisations(for user: UUID,
+                       refreshMiddleware: Middleware,
+                       currentAuthSession: () throws -> AuthSession) async throws -> [Organisation]
 }
 
 struct SupabaseAPI: APIProtocol {
@@ -87,18 +89,24 @@ struct SupabaseAPI: APIProtocol {
     }
     
     func organisations(for user: UUID,
-                       bearerToken: String) async throws -> [Organisation] {
+                       refreshMiddleware: Middleware,
+                       currentAuthSession: () throws -> AuthSession) async throws -> [Organisation] {
+        
+//        let bearerToken = try currentAuthSession().accessToken
+        
         let relations: [UserOrganisationRelation] = try await network.get(.usersOrganisationRelations(user),
-                                                                          bearerToken: bearerToken)
+                                                                          refreshMiddleware: refreshMiddleware,
+                                                                          currentAuthSession: currentAuthSession)
         
         let organisationIds = relations.map { $0.organisationId }
         
         let organisations: [Organisation] = try await network.get(.organisations(ids: organisationIds),
-                                                                  bearerToken: bearerToken)
+                                                                  refreshMiddleware: refreshMiddleware,
+                                                                  currentAuthSession: currentAuthSession)
         
         return organisations
     }
     
-    static let live = Self(network: Network.live,
-                           urlBuilder: URLBuilder.live)
+    static let preview = Self(network: Network.preview,
+                           urlBuilder: URLBuilder.preview)
 }

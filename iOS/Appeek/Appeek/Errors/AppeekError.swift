@@ -27,6 +27,7 @@ enum AppeekError: Error, Equatable, FriendlyMessagable {
     case networkError(NetworkError)
     case validationError(ValidationError)
     case jsonSerializaionError(JsonSerializerError)
+    case noAuthSession
     
     var friendlyMessage: String {
         switch self {
@@ -42,6 +43,8 @@ enum AppeekError: Error, Equatable, FriendlyMessagable {
             return validationError.friendlyMessage
         case .jsonSerializaionError(let jsonSerializerError):
             return jsonSerializerError.friendlyMessage
+        case .noAuthSession:
+            return "No user is currently logged in"
         }
     }
     

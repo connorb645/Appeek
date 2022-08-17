@@ -9,11 +9,11 @@ import Foundation
 import ComposableArchitecture
 
 struct HomeEnvironment {
-    var clearAuthSession: (UserDefaults) -> Void
-    var usersOrganisations: (UUID, String) -> Effect<[Organisation], AppeekError>
+    var clearAuthSession: () -> Void
+    var usersOrganisations: () -> Effect<[Organisation], AppeekError>
     var mainQueue: AnySchedulerOf<DispatchQueue>
     
-    static let preview = Self(clearAuthSession: AuthenticateClient.live.clearAuthSession(from:),
-                              usersOrganisations: OrganisationClient.live.usersOrganisations(_:bearerToken:),
+    static let preview = Self(clearAuthSession: AuthenticateClient.preview.clearAuthSession,
+                              usersOrganisations: OrganisationClient.preview.usersOrganisations,
                               mainQueue: .immediate)
 }

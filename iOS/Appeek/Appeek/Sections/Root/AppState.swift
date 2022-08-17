@@ -12,19 +12,9 @@ struct AppState: Equatable {
     private var signUp: SignUpState
     private var login: LoginState
     private var forgotPassword: ForgotPasswordState
+    private var home: HomeState
     
     var route: AppRoute
-    var isLoggedIn: Bool
-
-//    private var _onboardingRouteStack: OnboardingRouteStack? {
-//        get {
-//            (/AppRoute.onboarding).extract(from: self.route)
-//        }
-//        set {
-//            guard let newValue = newValue else { return }
-//            self.route = (/AppRoute.onboarding).embed(newValue)
-//        }
-//    }
     
     var signUpStateWithRoute: SignUpStateWithRoute {
         get {
@@ -58,11 +48,22 @@ struct AppState: Equatable {
          }
      }
     
+    var homeStateWithRoute: HomeStateWithRoute {
+        get {
+            .init(state: self.home,
+                  route: self.route)
+        }
+        set {
+            self.home = newValue.state
+            self.route = newValue.route
+        }
+    }
+    
     static let live = Self(onboarding: OnboardingState(),
                            signUp: SignUpState(),
                            login: LoginState(),
                            forgotPassword: ForgotPasswordState(),
-                           route: .onboarding(.init()),
-                           isLoggedIn: false)
+                           home: HomeState(),
+                           route: .onboarding(.init()))
 
 }

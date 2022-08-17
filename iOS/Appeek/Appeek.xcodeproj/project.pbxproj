@@ -472,7 +472,6 @@
 			isa = PBXGroup;
 			children = (
 				C3FBEC3F28707DC5005DE031 /* ViewModels */,
-				C3DA524B286DE3FE009A7809 /* Views */,
 				C3DA524C286DE413009A7809 /* HomeView.swift */,
 				C38627B228A2F9E3000E0591 /* HomeState.swift */,
 				C38627B428A2F9F4000E0591 /* HomeAction.swift */,
@@ -480,13 +479,6 @@
 				C38627B828A2FA0F000E0591 /* HomeReducer.swift */,
 			);
 			path = Home;
-			sourceTree = "<group>";
-		};
-		C3DA524B286DE3FE009A7809 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		C3FBEC3B287071A4005DE031 /* Organisations */ = {

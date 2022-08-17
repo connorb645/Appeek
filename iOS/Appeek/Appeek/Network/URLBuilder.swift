@@ -30,5 +30,5 @@ struct URLBuilder {
         return url
     }
     
-    static let live = Self()
+    static let preview = Self()
 }
