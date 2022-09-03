@@ -5,12 +5,19 @@
 //  Created by Connor Black on 01/08/2022.
 //
 
+import Foundation
 import ComposableArchitecture
 
 struct AppEnvironment {
-    var authenticateClient: AuthenticateClientProtocol
     var validationClient: ValidationClientProtocol
-    var organisationClient: OrganisationClientProtocol
+    var signUpClient: SignUpClient
+    var loginClient: LoginClient
+    
+    var resetPassword: (String) async throws -> Void
+    var retrieveAuthSession: () throws -> AuthSession
+    var logout: () async throws -> Void
+    var clearAuthSession: () -> Void
+    var usersOrganisations: () async throws -> [Organisation]
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
     var userDefaults: UserDefaults
@@ -34,35 +41,66 @@ struct AppEnvironment {
             network: network,
             urlBuilder: urlBuilder)
         
-        let authenticateClient: AuthenticateClientProtocol = AuthenticateClient(
-            signUp: apiClient.signUp(email:password:),
-            login: apiClient.login(email:password:),
-            resetPassword: apiClient.resetPassword(email:),
-            refreshSession: apiClient.refreshSession(token:),
-            userDefaults: userDefaults,
-            encoder: encoder,
-            decoder: decoder)
+        let persist: (AuthSession) throws -> AuthSession = { authSession in
+            let encoded = try encoder.encode(authSession)
+            userDefaults.set(encoded, forKey: Constants.isLoggedInKey)
+            return authSession
+        }
+        
+        let clearAuthSession: () -> Void = {
+            userDefaults.removeObject(forKey: Constants.isLoggedInKey)
+        }
+        
+        let retrieveAuthSession: () throws -> AuthSession = {
+            guard let encodedAuthSession = userDefaults.object(forKey: Constants.isLoggedInKey) as? Data,
+                  let decodedAuthSession = try? decoder.decode(AuthSession?.self, from: encodedAuthSession) else {
+                throw AppeekError.noAuthSession
+            }
+            return decodedAuthSession
+        }
+        
+        let refreshToken: () async throws -> AuthSession = {
+            let token = try retrieveAuthSession().refreshToken
+            return try await apiClient.refreshSession(token: token)
+        }
         
         let refreshMiddleware = RefreshMiddleware(
             userDefaults: userDefaults,
             decoder: decoder,
             encoder: encoder,
-            currentAuthSession: authenticateClient.retrieveAuthSession,
-            refreshToken: authenticateClient.refreshToken,
-            persistAuthSession: authenticateClient.persist(authSession:))
+            currentAuthSession: retrieveAuthSession,
+            refreshToken: refreshToken,
+            persistAuthSession: persist)
+        
+        let usersOrganisations: () async throws -> [Organisation] = {
+            let currentAuthSession = try retrieveAuthSession()
+            return try await apiClient.organisations((currentAuthSession.userId,
+                                                      refreshMiddleware,
+                                                      retrieveAuthSession))
+        }
         
         let validationClient: ValidationClientProtocol = ValidationClient()
         
-        let organisationClient: OrganisationClientProtocol = OrganisationClient(
-            organisations: apiClient.organisations(for:refreshMiddleware:currentAuthSession:),
-            refreshMiddleware: refreshMiddleware,
-            currentAuthSession: authenticateClient.retrieveAuthSession)
-    
+        let signUpClient = SignUpClient(
+            createUserDetails: apiClient.createUserPublicDetails(_:),
+            createAccount: apiClient.signUp(email:password:),
+            currentAuthSession: retrieveAuthSession,
+            persist: persist,
+            refreshMiddleware: refreshMiddleware)
         
+        let loginClient = LoginClient(
+            login: apiClient.login(email:password:),
+            persist: persist)
+    
         return .init(
-            authenticateClient: authenticateClient,
             validationClient: validationClient,
-            organisationClient: organisationClient,
+            signUpClient: signUpClient,
+            loginClient: loginClient,
+            resetPassword: apiClient.resetPassword(email:),
+            retrieveAuthSession: retrieveAuthSession,
+            logout: apiClient.logout,
+            clearAuthSession: clearAuthSession,
+            usersOrganisations: usersOrganisations,
             mainQueue: mainQueue,
             userDefaults: userDefaults,
             encoder: encoder,

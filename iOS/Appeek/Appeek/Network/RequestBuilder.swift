@@ -9,9 +9,12 @@ import Foundation
 
 class RequestBuilder {
     var request: URLRequest
+    let encoder: JSONEncoder
     
     init(endpoint: Endpoint,
-         urlBuilder: URLBuilder = URLBuilder()) throws {
+         urlBuilder: URLBuilder = URLBuilder(),
+         encoder: JSONEncoder = JSONEncoder()) throws {
+        self.encoder = encoder
         let url = try urlBuilder.build(endpoint: endpoint)
         request = URLRequest(url: url)
     }
@@ -28,6 +31,14 @@ class RequestBuilder {
     
     func addHttpMethod(_ method: HTTPMethod) -> RequestBuilder {
         self.request.httpMethod = method.rawValue
+        return self
+    }
+    
+    func addBody(_ object: (any Encodable)?) -> RequestBuilder {
+        if let unwrapped = object,
+           let data = try? encoder.encode(unwrapped) {
+            self.request.httpBody = data
+        }
         return self
     }
 }

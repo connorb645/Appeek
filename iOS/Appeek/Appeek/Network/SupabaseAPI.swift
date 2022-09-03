@@ -8,6 +8,8 @@
 import Foundation
 import Supabase
 
+typealias RequestWithMiddleware<T> = (T, RefreshMiddleware, () throws -> AuthSession)
+
 protocol APIProtocol {
     func login(email: String, password: String) async throws -> AuthSession
     func signUp(email: String, password: String) async throws -> AuthSession
@@ -15,9 +17,8 @@ protocol APIProtocol {
     func resetPassword(email: String) async throws
     func refreshSession(token: String) async throws -> AuthSession
     
-    func organisations(for user: UUID,
-                       refreshMiddleware: Middleware,
-                       currentAuthSession: () throws -> AuthSession) async throws -> [Organisation]
+    func organisations(_ request: RequestWithMiddleware<UUID>) async throws -> [Organisation]
+    func createUserPublicDetails(_ request: RequestWithMiddleware<UserPublicDetails.Creation>) async throws -> Void
 }
 
 struct SupabaseAPI: APIProtocol {
@@ -56,7 +57,7 @@ struct SupabaseAPI: APIProtocol {
             throw AppeekError.networkError(.noSession)
         }
         
-        guard let idUuid = UUID(uuidString: "session.user.id") else {
+        guard let idUuid = UUID(uuidString: session.user.id) else {
             try await logout()
             throw AppeekError.networkError(.noUserId)
         }
@@ -88,15 +89,14 @@ struct SupabaseAPI: APIProtocol {
                      refreshToken: refreshToken)
     }
     
-    func organisations(for user: UUID,
-                       refreshMiddleware: Middleware,
-                       currentAuthSession: () throws -> AuthSession) async throws -> [Organisation] {
-        
-//        let bearerToken = try currentAuthSession().accessToken
-        
-        let relations: [UserOrganisationRelation] = try await network.get(.usersOrganisationRelations(user),
-                                                                          refreshMiddleware: refreshMiddleware,
-                                                                          currentAuthSession: currentAuthSession)
+    func organisations(_ request: RequestWithMiddleware<UUID>) async throws -> [Organisation] {
+        let (user,
+             refreshMiddleware,
+             currentAuthSession) = request
+        let relations: [UserOrganisationRelation] = try await network.get(
+            .usersOrganisationRelations(user),
+            refreshMiddleware: refreshMiddleware,
+            currentAuthSession: currentAuthSession)
         
         let organisationIds = relations.map { $0.organisationId }
         
@@ -105,6 +105,16 @@ struct SupabaseAPI: APIProtocol {
                                                                   currentAuthSession: currentAuthSession)
         
         return organisations
+    }
+    
+    func createUserPublicDetails(_ request: RequestWithMiddleware<UserPublicDetails.Creation>) async throws -> Void {
+        let (details,
+             refreshMiddleware,
+             currentAuthSession) = request
+        try await network.post(.createUserPublicDetails,
+                               body: details,
+                               refreshMiddleware: refreshMiddleware,
+                               currentAuthSession: currentAuthSession)
     }
     
     static let preview = Self(network: Network.preview,

@@ -63,9 +63,6 @@ struct RootView: View {
                         }) {
                             HomeView(store: self.store.scope(state: \.homeStateWithRoute,
                                                              action: AppAction.homeAction))
-                                .onTapGesture {
-                                    viewStore.send(AppAction.onHomeTapped)
-                                }
                     }
                 }
             }

@@ -31,6 +31,7 @@ enum HeaderFieldKey {
 
 enum HeaderFieldValue {
     case xWwwFormUrlEncoded
+    case applicationJson
     case key(_ key: String)
     case bearer(_ token: String)
     
@@ -38,6 +39,8 @@ enum HeaderFieldValue {
         switch self {
         case .xWwwFormUrlEncoded:
             return "application/x-www-form-urlencoded"
+        case .applicationJson:
+            return "application/json"
         case .key(let key):
             return key
         case .bearer(let token):
@@ -56,6 +59,7 @@ enum HTTPMethod: String {
 enum Endpoint {
     case usersOrganisationRelations(_ userId: UUID)
     case organisations(ids: [UUID])
+    case createUserPublicDetails
     
     var path: String {
         switch self {
@@ -63,10 +67,12 @@ enum Endpoint {
             return "\(prefix)/users_organisations"
         case .organisations:
             return "\(prefix)/organisations"
+        case .createUserPublicDetails:
+            return "\(prefix)/user_public_details"
         }
     }
     
-    var queryParams: [(key: String, value: String)] {
+    var queryParams: [(key: String, value: String)]? {
         switch self {
         case .usersOrganisationRelations(let userId):
             return [("user_id","eq.\(userId)"),
@@ -74,13 +80,8 @@ enum Endpoint {
         case .organisations(let ids):
             return [("id","in.\(ids.path)"),
                     ("select", "*")]
-        }
-    }
-    
-    var httpMethod: HTTPMethod {
-        switch self {
-        case .usersOrganisationRelations, .organisations:
-            return .get
+        case .createUserPublicDetails:
+            return nil
         }
     }
     

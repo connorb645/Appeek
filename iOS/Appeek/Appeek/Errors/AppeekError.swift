@@ -150,7 +150,9 @@ enum ValidationError: Equatable, FriendlyMessagable {
     case passwordsDontMatch,
          emailAddressRequired,
          passwordRequired,
-         passwordConfirmationRequired
+         passwordConfirmationRequired,
+         firstNameRequired,
+         lastNameRequired
     
     var friendlyMessage: String {
         switch self {
@@ -162,6 +164,10 @@ enum ValidationError: Equatable, FriendlyMessagable {
             return "Your password is required"
         case .passwordConfirmationRequired:
             return "You must confirm your password"
+        case .firstNameRequired:
+            return "You must enter your first name"
+        case .lastNameRequired:
+            return "You must enter your last name"
         }
     }
     

@@ -32,34 +32,35 @@ struct LoginState: Equatable {
 // MARK: - Action
 
 enum LoginAction: Equatable {
+    case onAppear
     case emailAddressChanged(String)
     case passwordChanged(String)
     case passwordSecurityToggled
     case loginTapped
-    case loginResponse(Result<AuthSession, AppeekError>)
+    case loginResponse(TaskResult<AuthSession>)
     case goToSignUpTapped
-    case sessionPersistenceResponse(Result<AuthSession, AppeekError>)
 }
 
 // MARK: - Environment
 
 struct LoginEnvironment {
-    var login: (String, String) -> Effect<AuthSession, AppeekError>
-    var persist: (AuthSession) -> Effect<AuthSession, AppeekError>
+    var loginClient: LoginClient
     var validate: (ValidationRequirement) -> Bool
-    
-    var mainQueue: AnySchedulerOf<DispatchQueue>
-    
-    static let preview = Self(login: AuthenticateClient.preview.login(email:password:),
-                              persist: AuthenticateClient.preview.persist(authSession:),
-                              validate: ValidationClient.preview.validate(_:),
-                              mainQueue: .immediate)
+        
+    static let preview = Self(loginClient: LoginClient.preview,
+                              validate: ValidationClient.preview.validate(_:))
 }
 
 // MARK: - Reducer
 
 let loginReducer = Reducer<LoginStateWithRoute, LoginAction, LoginEnvironment> { state, action, environment in
     switch action {
+    case .onAppear:
+        #if DEBUG
+        state.loginState.emailAddress = "connor.b645@gmail.com"
+        state.loginState.password = "Password"
+        #endif
+        return .none
     case let .emailAddressChanged(emailAddress):
         state.loginState.emailAddress = emailAddress
         return .none
@@ -70,33 +71,29 @@ let loginReducer = Reducer<LoginStateWithRoute, LoginAction, LoginEnvironment> {
         state.loginState.securePassword.toggle()
         return .none
     case .loginTapped:
-        guard environment.validate((state.loginState.emailAddress, ValidationField.email)) else {
-            return Effect(value: LoginAction.loginResponse(
-                .failure(.validationError(.emailAddressRequired))
-            ))
-        }
         state.loginState.isLoading = true
-        return environment
-            .login(state.loginState.emailAddress, state.loginState.password)
-            .receive(on: environment.mainQueue)
-            .catchToEffect(LoginAction.loginResponse)
+        return .task { [state = state.loginState] in
+            await .loginResponse(TaskResult {
+                guard environment.validate((state.emailAddress, ValidationField.email)) else {
+                    throw AppeekError.validationError(.emailAddressRequired)
+                }
+                
+                return try await environment.loginClient.performLoginActions(
+                    email: state.emailAddress,
+                    password: state.password
+                )
+            })
+        }
     case let .loginResponse(.success(response)):
         state.loginState.isLoading = false
-        return environment.persist(response)
-            .receive(on: environment.mainQueue)
-            .catchToEffect(LoginAction.sessionPersistenceResponse)
+        state.route = AppRoute.home(.init())
+        return .none
     case let .loginResponse(.failure(error)):
         state.loginState.isLoading = false
         state.loginState.errorMessage = error.friendlyMessage
         return .none
     case .goToSignUpTapped:
         state.route = (/AppRoute.onboarding).embed(OnboardingRouteStack.SignUpState)
-        return .none
-    case let .sessionPersistenceResponse(.success(authSession)):
-        state.route = AppRoute.home(.init())
-        return .none
-    case let .sessionPersistenceResponse(.failure(error)):
-        state.loginState.errorMessage = error.friendlyMessage
         return .none
     }
 }
@@ -144,6 +141,9 @@ struct LoginView: View {
                         CCProgressView(foregroundColor: .appeekPrimary,
                                        backgroundColor: .appeekBackgroundOffset)
                     }
+                }
+                .onAppear {
+                    viewStore.send(.onAppear)
                 }
             }
         }

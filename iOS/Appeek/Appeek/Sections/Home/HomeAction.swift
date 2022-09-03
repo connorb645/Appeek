@@ -6,12 +6,16 @@
 //
 
 import Foundation
+import ComposableArchitecture
 
 enum HomeAction: Equatable {
+    case settingsAction(SettingsAction)
+    case organisationMembersAction(OrganisationMembersAction)
+    
     case onAppear
-    case settingsTapped
-    case usersOrganisationsReceived(Result<[Organisation], AppeekError>)
+    case goToSettingsTapped
+    case usersOrganisationsReceived(TaskResult<[Organisation]>)
     case selectedOrganisationUpdated(Organisation?)
     case homeRouteChanged(HomeState.Route?)
-//    case retrievedAuthSession(Result<AuthSession, AppeekError>)
+    case goToTeamMembersListTapped
 }

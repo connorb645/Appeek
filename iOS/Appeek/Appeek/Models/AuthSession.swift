@@ -52,3 +52,9 @@ extension AuthSession: RawRepresentable {
         return result
     }
 }
+
+extension AuthSession {
+    static let stubbed = Self(userId: .init(),
+                              accessToken: "",
+                              refreshToken: "")
+}

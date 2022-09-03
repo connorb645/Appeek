@@ -9,12 +9,9 @@ import Foundation
 import ComposableArchitecture
 
 struct ForgotPasswordEnvironment {
-    var resetPassword: (String) -> Effect<Bool, AppeekError>
+    var resetPassword: (String) async throws -> Void
     var validate: (ValidationRequirement) -> Bool
-    
-    var mainQueue: AnySchedulerOf<DispatchQueue>
-    
-    static let preview = Self(resetPassword: AuthenticateClient.preview.resetPassword(email:),
-                              validate: ValidationClient.preview.validate(_:),
-                              mainQueue: .immediate)
+        
+    static let preview = Self(resetPassword: SupabaseAPI.preview.resetPassword(email:),
+                              validate: ValidationClient.preview.validate(_:))
 }

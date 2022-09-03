@@ -19,11 +19,24 @@ struct Network {
         self.jsonSerializer = jsonSerializer
     }
     
+    func supabaseRequestBuilder(_ endpoint: Endpoint, bearerToken: String) throws -> RequestBuilder {
+        try .init(endpoint: endpoint)
+            .addHeader(.init(key: .contentType,
+                             value: .applicationJson))
+            .addHeader(.init(key: .apiKey,
+                             value: .key(EnvironmentKey.supabaseKey.value)))
+            .addHeader(.init(key: .authorization, value: .bearer(bearerToken)))
+    }
+    
     func get<ResponseType: Codable>(_ endPoint: Endpoint,
                                     refreshMiddleware: Middleware,
                                     currentAuthSession: () throws -> AuthSession) async throws -> ResponseType {
         let accessToken = try currentAuthSession().accessToken
-        let request = try RequestType.supabase(bearerToken: accessToken).request(for: endPoint)
+        
+        let request = try supabaseRequestBuilder(endPoint, bearerToken: accessToken)
+            .addHttpMethod(.get)
+            .build()
+        
         let statusCodeAndData = try await perform(request)
         
         let successfulCodeRange = 200..<300
@@ -43,21 +56,47 @@ struct Network {
             }
             
         }
-        
         let successfulResponse: ResponseType = try jsonSerializer.decode(data: statusCodeAndData.data)
-        
         return successfulResponse
     }
     
+    func post(_ endPoint: Endpoint,
+              body: any Encodable,
+              refreshMiddleware: Middleware,
+              currentAuthSession: () throws -> AuthSession) async throws -> Void {
+        let accessToken = try currentAuthSession().accessToken
+        let request = try supabaseRequestBuilder(endPoint, bearerToken: accessToken)
+            .addHttpMethod(.post)
+            .addBody(body)
+            .build()
+        
+        let statusCodeAndData = try await perform(request)
+        
+        let successfulCodeRange = 200..<300
+        
+        if !successfulCodeRange.contains(statusCodeAndData.statusCode) {
+            let serverError: ServerError = try jsonSerializer.decode(data: statusCodeAndData.data)
+            
+            if serverError.code == "PGRST301" {
+                try await refreshMiddleware.run()
+                try await post(endPoint,
+                               body: body,
+                               refreshMiddleware: refreshMiddleware,
+                               currentAuthSession: currentAuthSession)
+            } else {
+                throw AppeekError.networkError(.serverError(message: serverError.message,
+                                                            code: serverError.code,
+                                                            details: serverError.details))
+            }
+            
+        }
+    }
+
     private func perform(_ request: URLRequest) async throws -> StatusCodeAndData {
         let (data, response) = try await urlSession.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw AppeekError.networkError(.httpResponseParse)
-        }
-        
-        guard !data.isEmpty else {
-            throw AppeekError.networkError(.emptyResponse)
         }
         
         let statusCode = httpResponse.statusCode

@@ -24,6 +24,8 @@ struct ValidationClient: ValidationClientProtocol {
             return !requirement.value.isEmpty
         case .confirmPassword:
             return !requirement.value.isEmpty
+        case .notEmpty:
+            return !requirement.value.isEmpty
         }
     }
     
@@ -33,5 +35,8 @@ struct ValidationClient: ValidationClientProtocol {
 }
 
 enum ValidationField {
-    case email, password, confirmPassword
+    case email,
+         password,
+         confirmPassword,
+         notEmpty
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Organisation {
+public struct Organisation: Equatable {
     let id: UUID
     let name: String
     let createdAt: String

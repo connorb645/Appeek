@@ -13,10 +13,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     Reducer { state, action, environment in
         switch action {
         case .onAppear:
-            return environment.authenticateClient.retrieveAuthSession()
-            .receive(on: environment.mainQueue)
-            .catchToEffect(AppAction.receivedAuthSession)
-
+            return .task {
+                await .receivedAuthSession(TaskResult {
+                    try environment.retrieveAuthSession()
+                })
+            }
         case .onboardingNavigationPathChanged(let navigationPath):
             var currentRoute = (/AppRoute.onboarding).extract(from: state.route) ?? .init()
             currentRoute.navigationPath = navigationPath
@@ -33,10 +34,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case let .receivedAuthSession(.failure(error)):
             state.route = AppRoute.onboarding(.init())
             return .none
-        case .onHomeTapped:
-            environment.authenticateClient.clearAuthSession()
-            state.route = AppRoute.onboarding(.init())
-            return .none
         default:
             return .none
         }
@@ -49,30 +46,26 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     signUpReducer.pullback(
         state: \.signUpStateWithRoute,
         action: /AppAction.signUp,
-        environment: { SignUpEnvironment(createAccount: $0.authenticateClient.createAccount(email:password:),
-                                         persist: $0.authenticateClient.persist(authSession:),
-                                         validationClient: $0.validationClient,
-                                         mainQueue: $0.mainQueue) }
+        environment: { SignUpEnvironment(
+            signUpClient: $0.signUpClient,
+            validationClient: $0.validationClient) }
     ),
     loginReducer.pullback(
         state: \.loginStateWithRoute,
         action: /AppAction.login,
-        environment: { LoginEnvironment(login: $0.authenticateClient.login(email:password:),
-                                        persist: $0.authenticateClient.persist(authSession:),
-                                        validate: $0.validationClient.validate(_:),
-                                        mainQueue: $0.mainQueue) }
+        environment: { LoginEnvironment(loginClient: $0.loginClient,
+                                        validate: $0.validationClient.validate(_:)) }
     ),
     forgotPasswordReducer.pullback(
         state: \.forgotPasswordStateWithRoute,
         action: /AppAction.forgotPassword,
-        environment: { ForgotPasswordEnvironment(resetPassword: $0.authenticateClient.resetPassword(email:),
-                                                 validate: $0.validationClient.validate(_:),
-                                                 mainQueue: $0.mainQueue) }
+        environment: { ForgotPasswordEnvironment(resetPassword: $0.resetPassword,
+                                                 validate: $0.validationClient.validate(_:)) }
     ),
-    homeReducer.pullback(state: \.homeStateWithRoute,
+    homeReducer.pullback(state: \AppState.homeStateWithRoute,
                          action: /AppAction.homeAction,
-                         environment: { HomeEnvironment(clearAuthSession: $0.authenticateClient.clearAuthSession,
-                                                        usersOrganisations: $0.organisationClient.usersOrganisations,
-                                                        mainQueue: $0.mainQueue) }
+                         environment: { HomeEnvironment(logout: $0.logout,
+                                                        clearAuthSession: $0.clearAuthSession,
+                                                        usersOrganisations: $0.usersOrganisations) }
     )
 ).debug()

@@ -21,18 +21,17 @@ let forgotPasswordReducer = ForgotPasswordReducer { state, action, environment i
         state.forgotPasswordState.emailAddress = value
         return .none
     case .submitTapped:
-        guard environment.validate(
-            (state.forgotPasswordState.emailAddress, ValidationField.email)
-        ) else {
-            return Effect(value: ForgotPasswordAction.submissionResponse(
-                .failure(.validationError(.emailAddressRequired))
-            ))
+        return .task { [state = state.forgotPasswordState] in
+            await .submissionResponse(TaskResult {
+                guard environment.validate(
+                    (state.emailAddress, ValidationField.email)
+                ) else {
+                    throw AppeekError.validationError(.emailAddressRequired)
+                }
+                
+                return try await environment.resetPassword(state.emailAddress)
+            })
         }
-        
-        return environment
-            .resetPassword(state.forgotPasswordState.emailAddress)
-            .receive(on: environment.mainQueue)
-            .catchToEffect(ForgotPasswordAction.submissionResponse)
     case .submissionResponse(.success):
         state.route = (/AppRoute.onboarding).embed(OnboardingRouteStack.LoginState)
         return .none

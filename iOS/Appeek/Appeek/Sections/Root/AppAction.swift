@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 enum AppAction: Equatable {
     case onboarding(OnboardingAction)
@@ -17,6 +18,5 @@ enum AppAction: Equatable {
     case onAppear
     case onboardingNavigationPathChanged(NavigationPath)
     case homeNavigationPathChanged(NavigationPath)
-    case receivedAuthSession(Result<AuthSession, AppeekError>)
-    case onHomeTapped
+    case receivedAuthSession(TaskResult<AuthSession>)
 }

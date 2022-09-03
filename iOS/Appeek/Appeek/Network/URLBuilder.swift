@@ -14,7 +14,9 @@ struct URLBuilder {
         components.scheme = "https"
         components.host = baseUrl
         components.path = endpoint.path
-        components.queryItems = endpoint.queryParams.map { .init(name: $0.key, value: $0.value) }
+        if let queryParams = endpoint.queryParams {
+            components.queryItems = queryParams.map { .init(name: $0.key, value: $0.value) }
+        }
         guard let url = components.url else {
             throw AppeekError.networkError(.stringToUrlParse)
         }
