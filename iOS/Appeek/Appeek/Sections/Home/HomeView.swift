@@ -11,20 +11,20 @@ import ComposableArchitecture
 import ConnorsComponents
 
 struct HomeView: View {
-    let store: Store<HomeStateWithRoute, HomeAction>
+    let store: Store<HomeState, HomeAction>
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
             AppeekBackgroundView {
                 VStack {
                     HStack {
-                        AppeekPicker(items: viewStore.state.state.usersOrganisations,
-                                     isLoading: viewStore.state.state.isLoading,
-                                     selectedItem: viewStore.binding(get: \.state.selectedOrganisation,
+                        AppeekPicker(items: viewStore.state.usersOrganisations,
+                                     isLoading: viewStore.state.isLoading,
+                                     selectedItem: viewStore.binding(get: \.selectedOrganisation,
                                                                      send: HomeAction.selectedOrganisationUpdated))
                         .frame(height: 50)
                         
-                        if viewStore.state.state.selectedOrganisation != nil {
+                        if viewStore.state.selectedOrganisation != nil {
                             Menu {
                                 Button("Team members") {
                                     viewStore.send(.goToTeamMembersListTapped)
@@ -55,27 +55,27 @@ struct HomeView: View {
                     }
                 }
             }
-            .sheet(unwrapping: viewStore.binding(get: \.state.homeRoute,
-                                                 send: HomeAction.homeRouteChanged),
-                   case: /HomeState.Route.settings) { _ in
-                SettingsView(store: self.store.scope(state: \.settingsState,
-                                                     action: HomeAction.settingsAction))
-
-            }
-            .sheet(unwrapping: viewStore.binding(get: \.state.homeRoute,
-                                                 send: HomeAction.homeRouteChanged),
-                   case: /HomeState.Route.organisationMembersList) { _ in
-                OrganisationMembersView(store: self.store.scope(state: \.organisationMembersState,
-                                                                action: HomeAction.organisationMembersAction))
-
-            }
+//            .sheet(unwrapping: viewStore.binding(get: \.state.homeRoute,
+//                                                 send: HomeAction.homeRouteChanged),
+//                   case: /HomeState.Route.settings) { _ in
+//                SettingsView(store: self.store.scope(state: \.settingsState,
+//                                                     action: HomeAction.settingsAction))
+//
+//            }
+//            .sheet(unwrapping: viewStore.binding(get: \.state.homeRoute,
+//                                                 send: HomeAction.homeRouteChanged),
+//                   case: /HomeState.Route.organisationMembersList) { _ in
+//                OrganisationMembersView(store: self.store.scope(state: \.organisationMembersState,
+//                                                                action: HomeAction.organisationMembersAction))
+//
+//            }
         }
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(store: .init(initialState: HomeStateWithRoute.preview,
+        HomeView(store: .init(initialState: HomeState.preview,
                               reducer: homeReducer,
                               environment: HomeEnvironment.preview))
     }

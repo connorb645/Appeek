@@ -10,12 +10,12 @@ import ComposableArchitecture
 import CasePaths
 
 typealias HomeReducer = Reducer<
-    HomeStateWithRoute,
+    HomeState,
     HomeAction,
     HomeEnvironment
 >
 
-let homeReducer = Reducer<HomeStateWithRoute, HomeAction, HomeEnvironment>.combine(
+let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment>.combine(
     Reducer { state, action, environment in
         switch action {
         case .onAppear:
@@ -25,33 +25,33 @@ let homeReducer = Reducer<HomeStateWithRoute, HomeAction, HomeEnvironment>.combi
                 }), animation: .default)
             }
         case .goToSettingsTapped:
-            state.state.homeRoute = .settings
+//            state.state.homeRoute = .settings
             return .none
         case let .usersOrganisationsReceived(.success(organisations)):
-            state.state.selectedOrganisation = organisations.first
-            state.state.usersOrganisations = organisations
+            state.selectedOrganisation = organisations.first
+            state.usersOrganisations = organisations
             return .none
         case let .usersOrganisationsReceived(.failure(error)):
-            state.state.errorMessage = error.friendlyMessage
+            state.errorMessage = error.friendlyMessage
             return .none
         case let .selectedOrganisationUpdated(organisation):
-            state.state.selectedOrganisation = organisation
+            state.selectedOrganisation = organisation
             return .none
         case let .homeRouteChanged(route):
-            state.state.homeRoute = route
+//            state.homeRoute = route
             return .none
         case .goToTeamMembersListTapped:
-            state.state.homeRoute = .organisationMembersList
+//            state.homeRoute = .organisationMembersList
             return .none
         default:
             return .none
         }
-    },
-    settingsReducer.pullback(
-        state: \HomeStateWithRoute.settingsState,
-        action: /HomeAction.settingsAction,
-        environment: { SettingsEnvironment(logout: $0.logout,
-                                           clearAuthSession: $0.clearAuthSession,
-                                           delay: delay(for:)) }
-    )
+    }
+//    settingsReducer.pullback(
+//        state: \HomeStateWithRoute.settingsState,
+//        action: /HomeAction.settingsAction,
+//        environment: { SettingsEnvironment(logout: $0.logout,
+//                                           clearAuthSession: $0.clearAuthSession,
+//                                           delay: delay(for:)) }
+//    )
 )

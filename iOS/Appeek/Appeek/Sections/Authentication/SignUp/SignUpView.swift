@@ -82,55 +82,55 @@ struct SignUpEnvironment {
 
 // MARK: - Reducer
 
-let signUpReducer = Reducer<SignUpStateWithRoute, SignUpAction, SignUpEnvironment> { state, action, environment in
+let signUpReducer = Reducer<SignUpState, SignUpAction, SignUpEnvironment> { state, action, environment in
     switch action {
     case .onAppear:
         #if DEBUG
-        state.signUpState.firstName = "Connor"
-        state.signUpState.lastName = "Black"
-        state.signUpState.emailAddress = "connor.b645@gmail.com"
-        state.signUpState.password = "Password"
-        state.signUpState.confirmPassword = "Password"
+        state.firstName = "Connor"
+        state.lastName = "Black"
+        state.emailAddress = "connor.b645@gmail.com"
+        state.password = "Password"
+        state.confirmPassword = "Password"
         #endif
         return .none
     case let .firstNameChanged(firstName):
-        state.signUpState.firstName = firstName
+        state.firstName = firstName
         return .none
     case let .lastNameChanged(lastName):
-        state.signUpState.lastName = lastName
+        state.lastName = lastName
         return .none
     case let .emailAddressChanged(email):
-        state.signUpState.emailAddress = email
+        state.emailAddress = email
         return .none
     case let .passwordChanged(password):
-        state.signUpState.password = password
+        state.password = password
         return .none
     case let .confirmPasswordChanged(password):
-        state.signUpState.confirmPassword = password
+        state.confirmPassword = password
         return .none
     case .passwordSecurityToggled:
-        state.signUpState.passwordSecure.toggle()
+        state.passwordSecure.toggle()
         return .none
     case .createAccount:
         let firstNameValid = environment.validationClient.validate(
-            (state.signUpState.firstName, ValidationField.notEmpty)
+            (state.firstName, ValidationField.notEmpty)
         )
         let lastNameValid = environment.validationClient.validate(
-            (state.signUpState.lastName, ValidationField.notEmpty)
+            (state.lastName, ValidationField.notEmpty)
         )
         let emailValid = environment.validationClient.validate(
-            (state.signUpState.emailAddress, ValidationField.email)
+            (state.emailAddress, ValidationField.email)
         )
         let passwordValid = environment.validationClient.validate(
-            (state.signUpState.password, ValidationField.password)
+            (state.password, ValidationField.password)
         )
         let confirmPasswordValid = environment.validationClient.validate(
-            (state.signUpState.confirmPassword, ValidationField.confirmPassword)
+            (state.confirmPassword, ValidationField.confirmPassword)
         )
         
-        state.signUpState.isLoading = true
+        state.isLoading = true
         
-        return .task { [state = state.signUpState] in
+        return .task { [state = state] in
             guard firstNameValid else {
                 return await .signUpResponse(TaskResult {
                     throw AppeekError.validationError(.firstNameRequired)
@@ -171,12 +171,13 @@ let signUpReducer = Reducer<SignUpStateWithRoute, SignUpAction, SignUpEnvironmen
             })
         }
     case let .signUpResponse(.success(response)):
-        state.signUpState.isLoading = false
-        state.route = AppRoute.home(.init())
+        state.isLoading = false
+        // TODO: - Fix this
+//        state.route = AppRoute.home(.init())
         return .none
     case let .signUpResponse(.failure(error)):
-        state.signUpState.isLoading = false
-        state.signUpState.errorMessage = error.friendlyMessage
+        state.isLoading = false
+        state.errorMessage = error.friendlyMessage
         return .none
     }
 }
@@ -184,7 +185,7 @@ let signUpReducer = Reducer<SignUpStateWithRoute, SignUpAction, SignUpEnvironmen
 // MARK: - View
 
 struct SignUpView: View {
-    let store: Store<SignUpStateWithRoute, SignUpAction>
+    let store: Store<SignUpState, SignUpAction>
     
     enum FocusField: Hashable {
         case firstName,
@@ -212,14 +213,14 @@ struct SignUpView: View {
                                 Divider()
                                 password(viewStore)
                                 Divider()
-                                if let errorMessage = viewStore.state.signUpState.errorMessage {
+                                if let errorMessage = viewStore.errorMessage {
                                     error(errorMessage)
                                 }
                             }
                         }
                         callToAction(viewStore)
                     }
-                    if viewStore.state.signUpState.isLoading {
+                    if viewStore.state.isLoading {
                         CCProgressView(foregroundColor: .appeekPrimary,
                                        backgroundColor: .appeekBackgroundOffset)
                     }
@@ -244,9 +245,9 @@ struct SignUpView: View {
             .padding(.top)
     }
     
-    @ViewBuilder private func firstName(_ viewStore: ViewStore<SignUpStateWithRoute, SignUpAction>) -> some View {
+    @ViewBuilder private func firstName(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
         Group {
-            CCTextField(text: viewStore.binding(get: \.signUpState.firstName,
+            CCTextField(text: viewStore.binding(get: \.firstName,
                                                 send: SignUpAction.firstNameChanged),
                         placeholder: "First Name",
                         foregroundColor: .appeekFont,
@@ -260,9 +261,9 @@ struct SignUpView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder private func lastName(_ viewStore: ViewStore<SignUpStateWithRoute, SignUpAction>) -> some View {
+    @ViewBuilder private func lastName(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
         Group {
-            CCTextField(text: viewStore.binding(get: \.signUpState.lastName,
+            CCTextField(text: viewStore.binding(get: \.lastName,
                                                 send: SignUpAction.lastNameChanged),
                         placeholder: "Last Name",
                         foregroundColor: .appeekFont,
@@ -276,9 +277,9 @@ struct SignUpView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder private func email(_ viewStore: ViewStore<SignUpStateWithRoute, SignUpAction>) -> some View {
+    @ViewBuilder private func email(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
         Group {
-            CCEmailTextField(emailAddress: viewStore.binding(get: \.signUpState.emailAddress,
+            CCEmailTextField(emailAddress: viewStore.binding(get: \.emailAddress,
                                                              send: SignUpAction.emailAddressChanged),
                              placeholder: "Email Address",
                              foregroundColor: .appeekFont,
@@ -292,11 +293,11 @@ struct SignUpView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder private func password(_ viewStore: ViewStore<SignUpStateWithRoute, SignUpAction>) -> some View {
+    @ViewBuilder private func password(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
         Group {
-            CCPasswordTextField(password: viewStore.binding(get: \.signUpState.password,
+            CCPasswordTextField(password: viewStore.binding(get: \.password,
                                                             send: SignUpAction.passwordChanged),
-                                isSecure: viewStore.state.signUpState.passwordSecure,
+                                isSecure: viewStore.state.passwordSecure,
                                 placeholder: "Password",
                                 foregroundColor: .appeekFont,
                                 backgroundColor: .clear)
@@ -307,9 +308,9 @@ struct SignUpView: View {
             }
             
             HStack {
-                CCPasswordTextField(password: viewStore.binding(get: \.signUpState.confirmPassword,
+                CCPasswordTextField(password: viewStore.binding(get: \.confirmPassword,
                                                                 send: SignUpAction.confirmPasswordChanged),
-                                    isSecure: viewStore.state.signUpState.passwordSecure,
+                                    isSecure: viewStore.state.passwordSecure,
                                     placeholder: "Confirm Password",
                                     foregroundColor: .appeekFont,
                                     backgroundColor: .clear)
@@ -320,7 +321,7 @@ struct SignUpView: View {
                     viewStore.send(.createAccount)
                 }
                 
-                CCIconButton(iconName: viewStore.state.signUpState.passwordSecure ? "lock" : "lock.open") {
+                CCIconButton(iconName: viewStore.state.passwordSecure ? "lock" : "lock.open") {
                     viewStore.send(.passwordSecurityToggled)
                 }
             }
@@ -337,7 +338,7 @@ struct SignUpView: View {
             .padding(.horizontal)
     }
     
-    private func callToAction(_ viewStore: ViewStore<SignUpStateWithRoute, SignUpAction>) -> some View {
+    private func callToAction(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
         VStack {
             CCPrimaryButton(title: "Create account!",
                             backgroundColor: .appeekPrimary) {
@@ -360,7 +361,7 @@ struct SignUpView_Previews: PreviewProvider {
     static var previews: some View {
         SignUpView(
             store: .init(
-                initialState: SignUpStateWithRoute.preview,
+                initialState: SignUpState.preview,
                 reducer: signUpReducer,
                 environment: SignUpEnvironment.preview
             )

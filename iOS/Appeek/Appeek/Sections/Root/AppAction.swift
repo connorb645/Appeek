@@ -9,11 +9,11 @@ import SwiftUI
 import ComposableArchitecture
 
 enum AppAction: Equatable {
-    case onboarding(OnboardingAction)
     case signUp(SignUpAction)
     case login(LoginAction)
     case forgotPassword(ForgotPasswordAction)
     case homeAction(HomeAction)
+    case onboardingAction(OnboardingAction)
     
     case onAppear
     case onboardingNavigationPathChanged(NavigationPath)
