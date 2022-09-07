@@ -14,7 +14,7 @@ struct ForgotPasswordView: View {
         case email
     }
     
-    let store: Store<ForgotPasswordStateWithRoute, ForgotPasswordAction>
+    let store: Store<ForgotPasswordStateCombined, ForgotPasswordAction>
     
     @FocusState private var focusedField: FocusField?
     
@@ -31,7 +31,7 @@ struct ForgotPasswordView: View {
                                 
                                 Divider()
                                 
-                                if let errorMessage = viewStore.forgotPasswordState.errorMessage {
+                                if let errorMessage = viewStore.viewState.errorMessage {
                                     error(errorMessage)
                                 }
                             }
@@ -40,7 +40,7 @@ struct ForgotPasswordView: View {
                         callToAction(viewStore)
                     }
                     
-                    if viewStore.forgotPasswordState.isLoading {
+                    if viewStore.viewState.isLoading {
                         CCProgressView(foregroundColor: .appeekPrimary,
                                        backgroundColor: .appeekBackgroundOffset)
                     }
@@ -58,9 +58,9 @@ struct ForgotPasswordView: View {
             .padding(.top)
     }
     
-    private func email(_ viewStore: ViewStore<ForgotPasswordStateWithRoute, ForgotPasswordAction>) -> some View {
+    private func email(_ viewStore: ViewStore<ForgotPasswordStateCombined, ForgotPasswordAction>) -> some View {
         Group {
-            CCEmailTextField(emailAddress: viewStore.binding(get: \.forgotPasswordState.emailAddress,
+            CCEmailTextField(emailAddress: viewStore.binding(get: \.viewState.emailAddress,
                                                              send: ForgotPasswordAction.onEmailChanged),
                              placeholder: "Email Address",
                              foregroundColor: .appeekFont,
@@ -84,7 +84,7 @@ struct ForgotPasswordView: View {
             .padding(.horizontal)
     }
     
-    private func callToAction(_ viewStore: ViewStore<ForgotPasswordStateWithRoute, ForgotPasswordAction>) -> some View {
+    private func callToAction(_ viewStore: ViewStore<ForgotPasswordStateCombined, ForgotPasswordAction>) -> some View {
         VStack {
             CCPrimaryButton(title: "Reset password",
                             backgroundColor: .appeekPrimary) {
@@ -98,7 +98,7 @@ struct ForgotPasswordView: View {
 
 struct ForgotPasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        ForgotPasswordView(store: .init(initialState: ForgotPasswordStateWithRoute.preview,
+        ForgotPasswordView(store: .init(initialState: ForgotPasswordStateCombined.preview,
                                         reducer: forgotPasswordReducer,
                                         environment: ForgotPasswordEnvironment.preview))
     }

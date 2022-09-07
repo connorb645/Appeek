@@ -11,23 +11,76 @@ import ComposableArchitecture
 
 // MARK: - State
 
-struct SignUpStateWithRoute: Equatable {
-    var signUpState: SignUpState
-    var route: AppRoute
+struct SignUpStateCombined: Equatable {
+    var viewState: SignUpState
+    var navigationPath: NavigationPath
+
+    var loginStateCombined: LoginStateCombined {
+        get {
+            .init(viewState: viewState.loginState,
+                  navigationPath: navigationPath)
+        }
+        set {
+            self.viewState.loginState = newValue.viewState
+            self.navigationPath = newValue.navigationPath
+        }
+    }
     
-    static let preview = Self(signUpState: SignUpState.preview,
-                              route: .onboarding(.init()))
+    init(
+        viewState: SignUpState,
+        navigationPath: NavigationPath
+    ) {
+        self.viewState = viewState
+        self.navigationPath = navigationPath
+    }
+    
+    static let preview = Self(viewState: SignUpState.preview,
+                              navigationPath: .init())
+}
+
+enum SignUpRoute: Equatable {
+    case login
 }
 
 struct SignUpState: Equatable {
+    
+    // TODO: - clean into prop wrap
+    var loginState: LoginState {
+        get {
+            self._loginState ?? .init()
+        }
+        set {
+            self._loginState = newValue
+        }
+    }
+    private var _loginState: LoginState?
+    
     var errorMessage: String?
-    var isLoading: Bool = false
-    var firstName: String = ""
-    var lastName: String = ""
-    var emailAddress: String = ""
-    var password: String = ""
-    var confirmPassword: String = ""
-    var passwordSecure: Bool = true
+    var isLoading: Bool
+    var firstName: String
+    var lastName: String
+    var emailAddress: String
+    var password: String
+    var confirmPassword: String
+    var passwordSecure: Bool
+    
+    init(errorMessage: String? = nil,
+         isLoading: Bool = false,
+         firstName: String = "",
+         lastName: String = "",
+         emailAddress: String = "",
+         password: String = "",
+         confirmPassword: String = "",
+         passwordSecure: Bool = true) {
+        self.errorMessage = errorMessage
+        self.isLoading = isLoading
+        self.firstName = firstName
+        self.lastName = lastName
+        self.emailAddress = emailAddress
+        self.password = password
+        self.confirmPassword = confirmPassword
+        self.passwordSecure = passwordSecure
+    }
     
     static let preview = Self()
 }
@@ -35,6 +88,8 @@ struct SignUpState: Equatable {
 // MARK: - Action
 
 enum SignUpAction: Equatable {
+    case loginAction(LoginAction)
+    
     case onAppear
     case firstNameChanged(String)
     case lastNameChanged(String)
@@ -73,119 +128,133 @@ enum SignUpAction: Equatable {
 
 struct SignUpEnvironment {
     var signUpClient: SignUpClient
+    var loginClient: LoginClient
     var validationClient: ValidationClientProtocol
+    var resetPassword: (String) async throws -> Void
         
     static let preview = Self(
         signUpClient: SignUpClient.preview,
-        validationClient: ValidationClient.preview)
+        loginClient: LoginClient.preview,
+        validationClient: ValidationClient.preview,
+        resetPassword: { _ in })
 }
 
 // MARK: - Reducer
 
-let signUpReducer = Reducer<SignUpState, SignUpAction, SignUpEnvironment> { state, action, environment in
-    switch action {
-    case .onAppear:
-        #if DEBUG
-        state.firstName = "Connor"
-        state.lastName = "Black"
-        state.emailAddress = "connor.b645@gmail.com"
-        state.password = "Password"
-        state.confirmPassword = "Password"
-        #endif
-        return .none
-    case let .firstNameChanged(firstName):
-        state.firstName = firstName
-        return .none
-    case let .lastNameChanged(lastName):
-        state.lastName = lastName
-        return .none
-    case let .emailAddressChanged(email):
-        state.emailAddress = email
-        return .none
-    case let .passwordChanged(password):
-        state.password = password
-        return .none
-    case let .confirmPasswordChanged(password):
-        state.confirmPassword = password
-        return .none
-    case .passwordSecurityToggled:
-        state.passwordSecure.toggle()
-        return .none
-    case .createAccount:
-        let firstNameValid = environment.validationClient.validate(
-            (state.firstName, ValidationField.notEmpty)
-        )
-        let lastNameValid = environment.validationClient.validate(
-            (state.lastName, ValidationField.notEmpty)
-        )
-        let emailValid = environment.validationClient.validate(
-            (state.emailAddress, ValidationField.email)
-        )
-        let passwordValid = environment.validationClient.validate(
-            (state.password, ValidationField.password)
-        )
-        let confirmPasswordValid = environment.validationClient.validate(
-            (state.confirmPassword, ValidationField.confirmPassword)
-        )
-        
-        state.isLoading = true
-        
-        return .task { [state = state] in
-            guard firstNameValid else {
+let signUpReducer = Reducer<SignUpStateCombined, SignUpAction, SignUpEnvironment>.combine(
+    .init { state, action, environment in
+        switch action {
+        case .onAppear:
+            #if DEBUG
+            state.viewState.firstName = "Connor"
+            state.viewState.lastName = "Black"
+            state.viewState.emailAddress = "connor.b645@gmail.com"
+            state.viewState.password = "Password"
+            state.viewState.confirmPassword = "Password"
+            #endif
+            return .none
+        case let .firstNameChanged(firstName):
+            state.viewState.firstName = firstName
+            return .none
+        case let .lastNameChanged(lastName):
+            state.viewState.lastName = lastName
+            return .none
+        case let .emailAddressChanged(email):
+            state.viewState.emailAddress = email
+            return .none
+        case let .passwordChanged(password):
+            state.viewState.password = password
+            return .none
+        case let .confirmPasswordChanged(password):
+            state.viewState.confirmPassword = password
+            return .none
+        case .passwordSecurityToggled:
+            state.viewState.passwordSecure.toggle()
+            return .none
+        case .createAccount:
+            let firstNameValid = environment.validationClient.validate(
+                (state.viewState.firstName, ValidationField.notEmpty)
+            )
+            let lastNameValid = environment.validationClient.validate(
+                (state.viewState.lastName, ValidationField.notEmpty)
+            )
+            let emailValid = environment.validationClient.validate(
+                (state.viewState.emailAddress, ValidationField.email)
+            )
+            let passwordValid = environment.validationClient.validate(
+                (state.viewState.password, ValidationField.password)
+            )
+            let confirmPasswordValid = environment.validationClient.validate(
+                (state.viewState.confirmPassword, ValidationField.confirmPassword)
+            )
+            
+            state.viewState.isLoading = true
+            
+            return .task { [state = state] in
+                guard firstNameValid else {
+                    return await .signUpResponse(TaskResult {
+                        throw AppeekError.validationError(.firstNameRequired)
+                    })
+                }
+                guard lastNameValid else {
+                    return await .signUpResponse(TaskResult {
+                        throw AppeekError.validationError(.lastNameRequired)
+                    })
+                }
+                guard emailValid else {
+                    return await .signUpResponse(TaskResult {
+                        throw AppeekError.validationError(.emailAddressRequired)
+                    })
+                }
+                guard passwordValid else {
+                    return await .signUpResponse(TaskResult {
+                        throw AppeekError.validationError(.passwordRequired)
+                    })
+                }
+                guard confirmPasswordValid else {
+                    return await .signUpResponse(TaskResult {
+                        throw AppeekError.validationError(.passwordConfirmationRequired)
+                    })
+                }
+                guard state.viewState.password == state.viewState.confirmPassword else {
+                    return await .signUpResponse(TaskResult {
+                        throw AppeekError.validationError(.passwordsDontMatch)
+                    })
+                }
                 return await .signUpResponse(TaskResult {
-                    throw AppeekError.validationError(.firstNameRequired)
+                    try await environment.signUpClient.performSignUpActions(
+                        email: state.viewState.emailAddress,
+                        password: state.viewState.password,
+                        firstName: state.viewState.firstName,
+                        lastName: state.viewState.lastName
+                    )
                 })
             }
-            guard lastNameValid else {
-                return await .signUpResponse(TaskResult {
-                    throw AppeekError.validationError(.lastNameRequired)
-                })
-            }
-            guard emailValid else {
-                return await .signUpResponse(TaskResult {
-                    throw AppeekError.validationError(.emailAddressRequired)
-                })
-            }
-            guard passwordValid else {
-                return await .signUpResponse(TaskResult {
-                    throw AppeekError.validationError(.passwordRequired)
-                })
-            }
-            guard confirmPasswordValid else {
-                return await .signUpResponse(TaskResult {
-                    throw AppeekError.validationError(.passwordConfirmationRequired)
-                })
-            }
-            guard state.password == state.confirmPassword else {
-                return await .signUpResponse(TaskResult {
-                    throw AppeekError.validationError(.passwordsDontMatch)
-                })
-            }
-            return await .signUpResponse(TaskResult {
-                try await environment.signUpClient.performSignUpActions(
-                    email: state.emailAddress,
-                    password: state.password,
-                    firstName: state.firstName,
-                    lastName: state.lastName
-                )
-            })
+        case let .signUpResponse(.success(response)):
+            state.viewState.isLoading = false
+            state.navigationPath = .init()
+            return .none
+        case let .signUpResponse(.failure(error)):
+            state.viewState.isLoading = false
+            state.viewState.errorMessage = error.friendlyMessage
+            return .none
+        default:
+            return .none
         }
-    case let .signUpResponse(.success(response)):
-        state.isLoading = false
-        // TODO: - Fix this
-//        state.route = AppRoute.home(.init())
-        return .none
-    case let .signUpResponse(.failure(error)):
-        state.isLoading = false
-        state.errorMessage = error.friendlyMessage
-        return .none
-    }
-}
+    },
+    loginReducer.pullback(
+        state: \.loginStateCombined,
+        action: /SignUpAction.loginAction,
+        environment: { LoginEnvironment(loginClient: $0.loginClient,
+                                        validate: $0.validationClient.validate(_:),
+                                        resetPassword: $0.resetPassword) }
+    )
+)
 
 // MARK: - View
 
 struct SignUpView: View {
-    let store: Store<SignUpState, SignUpAction>
+    let store: Store<SignUpStateCombined, SignUpAction>
     
     enum FocusField: Hashable {
         case firstName,
@@ -213,20 +282,27 @@ struct SignUpView: View {
                                 Divider()
                                 password(viewStore)
                                 Divider()
-                                if let errorMessage = viewStore.errorMessage {
+                                if let errorMessage = viewStore.viewState.errorMessage {
                                     error(errorMessage)
                                 }
                             }
                         }
                         callToAction(viewStore)
                     }
-                    if viewStore.state.isLoading {
+                    if viewStore.viewState.isLoading {
                         CCProgressView(foregroundColor: .appeekPrimary,
                                        backgroundColor: .appeekBackgroundOffset)
                     }
                 }
                 .onAppear {
                     viewStore.send(.onAppear)
+                }
+            }
+            .navigationDestination(for: SignUpRoute.self) { route in
+                switch route {
+                case .login:
+                    LoginView(store: self.store.scope(state: \.loginStateCombined,
+                                                      action: SignUpAction.loginAction))
                 }
             }
         }
@@ -245,9 +321,9 @@ struct SignUpView: View {
             .padding(.top)
     }
     
-    @ViewBuilder private func firstName(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
+    @ViewBuilder private func firstName(_ viewStore: ViewStore<SignUpStateCombined, SignUpAction>) -> some View {
         Group {
-            CCTextField(text: viewStore.binding(get: \.firstName,
+            CCTextField(text: viewStore.binding(get: \.viewState.firstName,
                                                 send: SignUpAction.firstNameChanged),
                         placeholder: "First Name",
                         foregroundColor: .appeekFont,
@@ -261,9 +337,9 @@ struct SignUpView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder private func lastName(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
+    @ViewBuilder private func lastName(_ viewStore: ViewStore<SignUpStateCombined, SignUpAction>) -> some View {
         Group {
-            CCTextField(text: viewStore.binding(get: \.lastName,
+            CCTextField(text: viewStore.binding(get: \.viewState.lastName,
                                                 send: SignUpAction.lastNameChanged),
                         placeholder: "Last Name",
                         foregroundColor: .appeekFont,
@@ -277,9 +353,9 @@ struct SignUpView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder private func email(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
+    @ViewBuilder private func email(_ viewStore: ViewStore<SignUpStateCombined, SignUpAction>) -> some View {
         Group {
-            CCEmailTextField(emailAddress: viewStore.binding(get: \.emailAddress,
+            CCEmailTextField(emailAddress: viewStore.binding(get: \.viewState.emailAddress,
                                                              send: SignUpAction.emailAddressChanged),
                              placeholder: "Email Address",
                              foregroundColor: .appeekFont,
@@ -293,11 +369,11 @@ struct SignUpView: View {
         .padding(.horizontal)
     }
     
-    @ViewBuilder private func password(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
+    @ViewBuilder private func password(_ viewStore: ViewStore<SignUpStateCombined, SignUpAction>) -> some View {
         Group {
-            CCPasswordTextField(password: viewStore.binding(get: \.password,
+            CCPasswordTextField(password: viewStore.binding(get: \.viewState.password,
                                                             send: SignUpAction.passwordChanged),
-                                isSecure: viewStore.state.passwordSecure,
+                                isSecure: viewStore.viewState.passwordSecure,
                                 placeholder: "Password",
                                 foregroundColor: .appeekFont,
                                 backgroundColor: .clear)
@@ -308,9 +384,9 @@ struct SignUpView: View {
             }
             
             HStack {
-                CCPasswordTextField(password: viewStore.binding(get: \.confirmPassword,
+                CCPasswordTextField(password: viewStore.binding(get: \.viewState.confirmPassword,
                                                                 send: SignUpAction.confirmPasswordChanged),
-                                    isSecure: viewStore.state.passwordSecure,
+                                    isSecure: viewStore.viewState.passwordSecure,
                                     placeholder: "Confirm Password",
                                     foregroundColor: .appeekFont,
                                     backgroundColor: .clear)
@@ -321,7 +397,7 @@ struct SignUpView: View {
                     viewStore.send(.createAccount)
                 }
                 
-                CCIconButton(iconName: viewStore.state.passwordSecure ? "lock" : "lock.open") {
+                CCIconButton(iconName: viewStore.viewState.passwordSecure ? "lock" : "lock.open") {
                     viewStore.send(.passwordSecurityToggled)
                 }
             }
@@ -338,14 +414,14 @@ struct SignUpView: View {
             .padding(.horizontal)
     }
     
-    private func callToAction(_ viewStore: ViewStore<SignUpState, SignUpAction>) -> some View {
+    private func callToAction(_ viewStore: ViewStore<SignUpStateCombined, SignUpAction>) -> some View {
         VStack {
             CCPrimaryButton(title: "Create account!",
                             backgroundColor: .appeekPrimary) {
                 viewStore.send(.createAccount)
             }
             
-            NavigationLink("Already have an account? Log in!", value: OnboardingRouteStack.State.login)
+            NavigationLink("Already have an account? Log in!", value: SignUpRoute.login)
                 .frame(height: 45)
                 .foregroundColor(.appeekPrimary)
                 
@@ -361,7 +437,7 @@ struct SignUpView_Previews: PreviewProvider {
     static var previews: some View {
         SignUpView(
             store: .init(
-                initialState: SignUpState.preview,
+                initialState: SignUpStateCombined.preview,
                 reducer: signUpReducer,
                 environment: SignUpEnvironment.preview
             )

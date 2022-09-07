@@ -16,7 +16,5 @@ enum AppAction: Equatable {
     case onboardingAction(OnboardingAction)
     
     case onAppear
-    case onboardingNavigationPathChanged(NavigationPath)
-    case homeNavigationPathChanged(NavigationPath)
     case receivedAuthSession(TaskResult<AuthSession>)
 }

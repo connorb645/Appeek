@@ -64,6 +64,10 @@ struct AppEnvironment {
             return try await apiClient.refreshSession(token: token)
         }
         
+        let resetPassword: (String) async throws -> Void = { emailAddress in
+            
+        }
+        
         let refreshMiddleware = RefreshMiddleware(
             userDefaults: userDefaults,
             decoder: decoder,

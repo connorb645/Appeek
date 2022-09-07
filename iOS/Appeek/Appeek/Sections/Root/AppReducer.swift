@@ -21,16 +21,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
 //            return .fireAndForget {
 //                environment.clearAuthSession()
 //            }
-        case .onboardingNavigationPathChanged(let navigationPath):
-//            var currentRoute = (/AppRoute.onboarding).extract(from: state.route) ?? .init()
-//            currentRoute.navigationPath = navigationPath
-//            state.route = (/AppRoute.onboarding).embed(currentRoute)
-            return .none
-        case .homeNavigationPathChanged(let navigationPath):
-//            var currentRoute = (/AppRoute.home).extract(from: state.route) ?? .init()
-//            currentRoute.navigationPath = navigationPath
-//            state.route = (/AppRoute.home).embed(currentRoute)
-            return .none
         case let .receivedAuthSession(.success(authSession)):
             state = AppState.home(.init())
             return .none
@@ -56,7 +46,9 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         action: /AppAction.onboardingAction,
         environment: {
             OnboardingEnvironment(signUpClient: $0.signUpClient,
-                                  validationClient: $0.validationClient)
+                                  loginClient: $0.loginClient,
+                                  validationClient: $0.validationClient,
+                                  resetPassword: $0.resetPassword)
         }
     )
 ).debug()

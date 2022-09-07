@@ -10,7 +10,7 @@ import ComposableArchitecture
 import CasePaths
 
 typealias ForgotPasswordReducer = Reducer<
-    ForgotPasswordStateWithRoute,
+    ForgotPasswordStateCombined,
     ForgotPasswordAction,
     ForgotPasswordEnvironment
 >
@@ -18,25 +18,25 @@ typealias ForgotPasswordReducer = Reducer<
 let forgotPasswordReducer = ForgotPasswordReducer { state, action, environment in
     switch action {
     case let .onEmailChanged(value):
-        state.forgotPasswordState.emailAddress = value
+        state.viewState.emailAddress = value
         return .none
     case .submitTapped:
-        return .task { [state = state.forgotPasswordState] in
+        return .task { [state] in
             await .submissionResponse(TaskResult {
                 guard environment.validate(
-                    (state.emailAddress, ValidationField.email)
+                    (state.viewState.emailAddress, ValidationField.email)
                 ) else {
                     throw AppeekError.validationError(.emailAddressRequired)
                 }
                 
-                return try await environment.resetPassword(state.emailAddress)
+                return try await environment.resetPassword(state.viewState.emailAddress)
             })
         }
     case .submissionResponse(.success):
-        state.route = (/AppRoute.onboarding).embed(OnboardingRouteStack.LoginState)
+        state.navigationPath.removeLast()
         return .none
     case let .submissionResponse(.failure(error)):
-        state.forgotPasswordState.emailAddress = error.friendlyMessage
+        state.viewState.emailAddress = error.friendlyMessage
         return .none
     }
 }

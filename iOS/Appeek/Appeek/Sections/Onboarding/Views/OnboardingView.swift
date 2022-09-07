@@ -12,14 +12,33 @@ import SwiftUINavigation
 
 // MARK: - State
 
+enum OnboardingRoute: Hashable {
+    case signUp
+}
+
 struct OnboardingState: Equatable {
-    struct NavigationOptions {
-        struct SignUpView: Hashable {}
+        
+    var navigationPath: NavigationPath = .init()
+    private var _signUpState: SignUpState?
+    private var signUpState: SignUpState {
+        get {
+            _signUpState ?? .init()
+        }
+        set {
+            self._signUpState = newValue
+        }
     }
     
-    var signUpState: SignUpState?
-    
-//    var navigationPath: NavigationPath = .init()
+    var signUpStateCombined: SignUpStateCombined {
+        get {
+            .init(viewState: signUpState,
+                  navigationPath: navigationPath)
+        }
+        set {
+            self.signUpState = newValue.viewState
+            self.navigationPath = newValue.navigationPath
+        }
+    }
     
     static let preview = Self()
 }
@@ -30,17 +49,21 @@ enum OnboardingAction: Equatable {
     case signUpAction(SignUpAction)
     
     case onAppear
-    case signUpStateUpdated(SignUpState?)
+    case navigationPathUpdated(NavigationPath)
 }
 
 // MARK: - Environment
 
 struct OnboardingEnvironment {
     var signUpClient: SignUpClient
+    var loginClient: LoginClient
     var validationClient: ValidationClientProtocol
+    var resetPassword: (String) async throws -> Void
     
     static let preview = Self(signUpClient: SignUpClient.preview,
-                              validationClient: ValidationClient.preview)
+                              loginClient: LoginClient.preview,
+                              validationClient: ValidationClient.preview,
+                              resetPassword: { _ in })
 }
 
 // MARK: - Reducer
@@ -50,18 +73,20 @@ let onboardingReducer = Reducer<OnboardingState, OnboardingAction, OnboardingEnv
         switch action {
         case .onAppear:
             return .none
-        case let .signUpStateUpdated(signUpState):
-            state.signUpState = signUpState
+        case let .navigationPathUpdated(navigationPath):
+            state.navigationPath = navigationPath
             return .none
         default:
             return .none
         }
     },
-    signUpReducer.optional().pullback(
-        state: \.signUpState,
+    signUpReducer.pullback(
+        state: \.signUpStateCombined,
         action: /OnboardingAction.signUpAction,
         environment: { SignUpEnvironment(signUpClient: $0.signUpClient,
-                                         validationClient: $0.validationClient) }
+                                         loginClient: $0.loginClient,
+                                         validationClient: $0.validationClient,
+                                         resetPassword: $0.resetPassword) }
     )
 )
 
@@ -72,35 +97,21 @@ struct OnboardingView: View {
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
-            NavigationView {
+            NavigationStack(path: viewStore.binding(get: \.navigationPath,
+                                                    send: OnboardingAction.navigationPathUpdated)) {
                 AppeekBackgroundView {
-
-                    NavigationLink(unwrapping: viewStore.binding(get: \.signUpState,
-                                                                 send: OnboardingAction.signUpStateUpdated)) { $signUpState in
-                        SignUpView(store: self.store.scope(state: { _ in $signUpState.wrappedValue },
-                                                           action: OnboardingAction.signUpAction))
-                    } onNavigate: { isActive in
-                        viewStore.send(.signUpStateUpdated(isActive ? .init() : nil))
-                    } label: {
-                        Text("Sign Up Now")
-                    }
-
-                    
-//                    NavigationLink(unwrapping: viewState.signUpState,
-//                                   destination: { $ in
-//                        <#code#>
-//                    },
-//                                   onNavigate: {  },
-//                                   label: Text("Go to auth"))
-//                    NavigationLink("Go to auth", value: OnboardingState.NavigationOptions.SignUpView())
+                    NavigationLink("Sign Up Now", value: OnboardingRoute.signUp)
                 }
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
-//                .navigationDestination(for: OnboardingState.NavigationOptions.SignUpView.self) { _ in
-//                    SignUpView(store: self.store.scope(state: <#T##(OnboardingState) -> ChildState#>,
-//                                                       action: <#T##(ChildAction) -> OnboardingAction#>))
-//                }
+                .navigationDestination(for: OnboardingRoute.self) { route in
+                    switch route {
+                    case .signUp:
+                        SignUpView(store: self.store.scope(state: \.signUpStateCombined,
+                                                           action: OnboardingAction.signUpAction))
+                    }
+                }
             }
         }
     }

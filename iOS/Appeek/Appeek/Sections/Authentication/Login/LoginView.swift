@@ -9,22 +9,60 @@ import SwiftUI
 import ConnorsComponents
 import ComposableArchitecture
 
+enum LoginRoute {
+    case forgotPassword
+}
+
 // MARK: - State
 
-struct LoginStateWithRoute: Equatable {
-    var loginState: LoginState
-    var route: AppRoute
+struct LoginStateCombined: Equatable {
+    var viewState: LoginState
+    var navigationPath: NavigationPath
     
-    static let preview = Self(loginState: LoginState.preview,
-                              route: .home(.init()))
+    var forgotPasswordStateCombined: ForgotPasswordStateCombined {
+        get {
+            .init(viewState: viewState.forgotPasswordState,
+                  navigationPath: navigationPath)
+        }
+        set {
+            self.viewState.forgotPasswordState = newValue.viewState
+            self.navigationPath = newValue.navigationPath
+        }
+    }
+    
+    static let preview = Self(viewState: LoginState.preview,
+                              navigationPath: .init())
 }
 
 struct LoginState: Equatable {
-    var emailAddress: String = ""
-    var password: String = ""
-    var errorMessage: String? = nil
-    var isLoading: Bool = false
-    var securePassword: Bool = true
+    
+    var forgotPasswordState: ForgotPasswordState {
+        get {
+            self._forgotPasswordState ?? .init()
+        }
+        set {
+            self._forgotPasswordState = newValue
+        }
+    }
+    private var _forgotPasswordState: ForgotPasswordState?
+    
+    var emailAddress: String
+    var password: String
+    var errorMessage: String?
+    var isLoading: Bool
+    var securePassword: Bool
+    
+    init(emailAddress: String = "",
+         password: String = "",
+         errorMessage: String? = nil,
+         isLoading: Bool = false,
+         securePassword: Bool = true) {
+        self.emailAddress = emailAddress
+        self.password = password
+        self.errorMessage = errorMessage
+        self.isLoading = isLoading
+        self.securePassword = securePassword
+    }
     
     static let preview = Self()
 }
@@ -32,6 +70,8 @@ struct LoginState: Equatable {
 // MARK: - Action
 
 enum LoginAction: Equatable {
+    case forgotPasswordAction(ForgotPasswordAction)
+    
     case onAppear
     case emailAddressChanged(String)
     case passwordChanged(String)
@@ -46,57 +86,71 @@ enum LoginAction: Equatable {
 struct LoginEnvironment {
     var loginClient: LoginClient
     var validate: (ValidationRequirement) -> Bool
+    var resetPassword: (String) async throws -> Void
         
     static let preview = Self(loginClient: LoginClient.preview,
-                              validate: ValidationClient.preview.validate(_:))
+                              validate: ValidationClient.preview.validate(_:),
+                              resetPassword: { _ in })
 }
 
 // MARK: - Reducer
 
-let loginReducer = Reducer<LoginStateWithRoute, LoginAction, LoginEnvironment> { state, action, environment in
-    switch action {
-    case .onAppear:
-        #if DEBUG
-        state.loginState.emailAddress = "connor.b645@gmail.com"
-        state.loginState.password = "Password"
-        #endif
-        return .none
-    case let .emailAddressChanged(emailAddress):
-        state.loginState.emailAddress = emailAddress
-        return .none
-    case let .passwordChanged(password):
-        state.loginState.password = password
-        return .none
-    case .passwordSecurityToggled:
-        state.loginState.securePassword.toggle()
-        return .none
-    case .loginTapped:
-        state.loginState.isLoading = true
-        return .task { [state = state.loginState] in
-            await .loginResponse(TaskResult {
-                guard environment.validate((state.emailAddress, ValidationField.email)) else {
-                    throw AppeekError.validationError(.emailAddressRequired)
-                }
-                
-                return try await environment.loginClient.performLoginActions(
-                    email: state.emailAddress,
-                    password: state.password
-                )
-            })
+let loginReducer = Reducer<LoginStateCombined, LoginAction, LoginEnvironment>.combine(
+    .init { state, action, environment in
+        switch action {
+        case .onAppear:
+            #if DEBUG
+            state.viewState.emailAddress = "connor.b645@gmail.com"
+            state.viewState.password = "Password"
+            #endif
+            return .none
+        case let .emailAddressChanged(emailAddress):
+            state.viewState.emailAddress = emailAddress
+            return .none
+        case let .passwordChanged(password):
+            state.viewState.password = password
+            return .none
+        case .passwordSecurityToggled:
+            state.viewState.securePassword.toggle()
+            return .none
+        case .loginTapped:
+            state.viewState.isLoading = true
+            return .task { [state] in
+                await .loginResponse(TaskResult {
+                    guard environment.validate((state.viewState.emailAddress, ValidationField.email)) else {
+                        throw AppeekError.validationError(.emailAddressRequired)
+                    }
+                    
+                    return try await environment.loginClient.performLoginActions(
+                        email: state.viewState.emailAddress,
+                        password: state.viewState.password
+                    )
+                })
+            }
+        case let .loginResponse(.success(response)):
+            state.viewState.isLoading = false
+            state.navigationPath = .init()
+            return .none
+        case let .loginResponse(.failure(error)):
+            state.viewState.isLoading = false
+            state.viewState.errorMessage = error.friendlyMessage
+            return .none
+        case .goToSignUpTapped:
+            state.navigationPath.removeLast()
+            return .none
+        default:
+            return .none
         }
-    case let .loginResponse(.success(response)):
-        state.loginState.isLoading = false
-        state.route = AppRoute.home(.init())
-        return .none
-    case let .loginResponse(.failure(error)):
-        state.loginState.isLoading = false
-        state.loginState.errorMessage = error.friendlyMessage
-        return .none
-    case .goToSignUpTapped:
-        state.route = (/AppRoute.onboarding).embed(OnboardingRouteStack.SignUpState)
-        return .none
-    }
-}
+    },
+    forgotPasswordReducer.pullback(
+        state: \.forgotPasswordStateCombined,
+        action: /LoginAction.forgotPasswordAction,
+        environment: { ForgotPasswordEnvironment(
+            resetPassword: $0.resetPassword,
+            validate: $0.validate
+        ) }
+    )
+)
 
 // MARK: - View
 
@@ -106,7 +160,7 @@ struct LoginView: View {
         case email, password
     }
     
-    let store: Store<LoginStateWithRoute, LoginAction>
+    let store: Store<LoginStateCombined, LoginAction>
     
     @FocusState private var focusedField: FocusField?
     
@@ -129,7 +183,7 @@ struct LoginView: View {
                                 
                                 Divider()
                                 
-                                if let errorMessage = viewStore.loginState.errorMessage {
+                                if let errorMessage = viewStore.viewState.errorMessage {
                                     error(errorMessage)
                                 }
                             }
@@ -137,13 +191,22 @@ struct LoginView: View {
                         callToAction(viewStore: viewStore)
                     }
                     
-                    if viewStore.loginState.isLoading {
+                    if viewStore.viewState.isLoading {
                         CCProgressView(foregroundColor: .appeekPrimary,
                                        backgroundColor: .appeekBackgroundOffset)
                     }
                 }
                 .onAppear {
                     viewStore.send(.onAppear)
+                }
+                .navigationDestination(for: LoginRoute.self) { route in
+                    switch route {
+                    case .forgotPassword:
+                        ForgotPasswordView(store: self.store.scope(
+                            state: \.forgotPasswordStateCombined,
+                            action: LoginAction.forgotPasswordAction
+                        ))
+                    }
                 }
             }
         }
@@ -162,9 +225,9 @@ struct LoginView: View {
             .padding(.top)
     }
     
-    private func email(viewStore: ViewStore<LoginStateWithRoute, LoginAction>) -> some View {
+    private func email(viewStore: ViewStore<LoginStateCombined, LoginAction>) -> some View {
         Group {
-            CCEmailTextField(emailAddress: viewStore.binding(get: \.loginState.emailAddress,
+            CCEmailTextField(emailAddress: viewStore.binding(get: \.viewState.emailAddress,
                                                              send: LoginAction.emailAddressChanged),
                              placeholder: "Email Address",
                              foregroundColor: .appeekFont,
@@ -178,12 +241,12 @@ struct LoginView: View {
         .padding(.horizontal)
     }
     
-    private func password(viewStore: ViewStore<LoginStateWithRoute, LoginAction>) -> some View {
+    private func password(viewStore: ViewStore<LoginStateCombined, LoginAction>) -> some View {
         Group {
             HStack {
-                CCPasswordTextField(password: viewStore.binding(get: \.loginState.password,
+                CCPasswordTextField(password: viewStore.binding(get: \.viewState.password,
                                                                 send: LoginAction.passwordChanged),
-                                    isSecure: viewStore.loginState.securePassword,
+                                    isSecure: viewStore.viewState.securePassword,
                                     placeholder: "Password",
                                     foregroundColor: .appeekFont,
                                     backgroundColor: .clear)
@@ -194,7 +257,7 @@ struct LoginView: View {
                     viewStore.send(.loginTapped)
                 }
                 
-                CCIconButton(iconName: viewStore.loginState.securePassword ? "lock" : "lock.open") {
+                CCIconButton(iconName: viewStore.viewState.securePassword ? "lock" : "lock.open") {
                     viewStore.send(.passwordSecurityToggled)
                 }
             }
@@ -203,7 +266,7 @@ struct LoginView: View {
     }
     
     @ViewBuilder private var forgotPassword: some View {
-        NavigationLink("Forgot Password", value: OnboardingRouteStack.State.forgotPassword)
+        NavigationLink("Forgot Password", value: LoginRoute.forgotPassword)
             .frame(maxWidth: .infinity, alignment: .trailing)
             .tint(Color.appeekFont)
             .padding(.horizontal)
@@ -218,7 +281,7 @@ struct LoginView: View {
             .padding(.horizontal)
     }
     
-    private func callToAction(viewStore: ViewStore<LoginStateWithRoute, LoginAction>) -> some View {
+    private func callToAction(viewStore: ViewStore<LoginStateCombined, LoginAction>) -> some View {
         VStack {
             CCPrimaryButton(title: "Login!",
                             backgroundColor: .appeekPrimary) {
@@ -240,7 +303,7 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView(store: .init(initialState: LoginStateWithRoute.preview,
+        LoginView(store: .init(initialState: LoginStateCombined.preview,
                                reducer: loginReducer,
                                environment: LoginEnvironment.preview))
     }

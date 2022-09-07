@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import SwiftUI
 
-struct ForgotPasswordStateWithRoute: Equatable {
-    var forgotPasswordState: ForgotPasswordState
-    var route: AppRoute
+struct ForgotPasswordStateCombined: Equatable {
+    var viewState: ForgotPasswordState
+    var navigationPath: NavigationPath
     
-    static let preview = Self(forgotPasswordState: ForgotPasswordState.preview,
-                              route: .onboarding(.init()))
+    static let preview = Self(viewState: ForgotPasswordState.preview,
+                              navigationPath: .init())
 }
 
 struct ForgotPasswordState: Equatable {
