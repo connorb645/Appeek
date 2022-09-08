@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct UserPublicDetails: Equatable, Codable, Hashable {
+struct UserPublicDetails: Identifiable, Equatable, Codable, Hashable {
     let id: UUID
     let userId: UUID
     let firstName: String
@@ -22,7 +22,7 @@ public struct UserPublicDetails: Equatable, Codable, Hashable {
         case lastName = "last_name"
     }
     
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(UUID.self, forKey: .id)
         self.userId = try container.decode(UUID.self, forKey: .userId)
@@ -31,7 +31,7 @@ public struct UserPublicDetails: Equatable, Codable, Hashable {
         self.lastName = try container.decode(String.self, forKey: .lastName)
     }
     
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(userId, forKey: .userId)
@@ -43,7 +43,7 @@ public struct UserPublicDetails: Equatable, Codable, Hashable {
 
 extension UserPublicDetails {
     
-    public struct Creation: Codable, Hashable {
+    struct Creation: Codable, Hashable {
         let id: UUID
         let userId: UUID
         let firstName: String
@@ -56,17 +56,17 @@ extension UserPublicDetails {
             case lastName = "last_name"
         }
         
-        public init(id: UUID,
-                    userId: UUID,
-                    firstName: String,
-                    lastName: String) {
+        init(id: UUID,
+             userId: UUID,
+             firstName: String,
+             lastName: String) {
             self.id = id
             self.userId = userId
             self.firstName = firstName
             self.lastName = lastName
         }
         
-        public init(from decoder: Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.id = try container.decode(UUID.self, forKey: .id)
             self.userId = try container.decode(UUID.self, forKey: .userId)
@@ -74,7 +74,7 @@ extension UserPublicDetails {
             self.lastName = try container.decode(String.self, forKey: .lastName)
         }
         
-        public func encode(to encoder: Encoder) throws {
+        func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(id, forKey: .id)
             try container.encode(userId, forKey: .userId)

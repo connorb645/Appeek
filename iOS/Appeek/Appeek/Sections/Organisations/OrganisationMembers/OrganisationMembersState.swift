@@ -16,9 +16,9 @@ struct OrganisationMembersStateCombined: Equatable {
 }
 
 struct OrganisationMembersState: Equatable {
-    var homeRoute: HomeState.Route?
     var errorMessage: String? = nil
     var isLoading: Bool = false
+    var teamMembers: [UserPublicDetails] = []
     
     static let preview = Self()
 }

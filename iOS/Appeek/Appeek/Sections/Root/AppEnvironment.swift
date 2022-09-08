@@ -18,6 +18,7 @@ struct AppEnvironment {
     var logout: () async throws -> Void
     var clearAuthSession: () -> Void
     var usersOrganisations: () async throws -> [Organisation]
+    var fetchTeamMembersForOrganisation: (UUID) async throws -> [UserPublicDetails]
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
     var userDefaults: UserDefaults
@@ -65,7 +66,7 @@ struct AppEnvironment {
         }
         
         let resetPassword: (String) async throws -> Void = { emailAddress in
-            
+            // TODO: - Implement this function
         }
         
         let refreshMiddleware = RefreshMiddleware(
@@ -81,6 +82,10 @@ struct AppEnvironment {
             return try await apiClient.organisations((currentAuthSession.userId,
                                                       refreshMiddleware,
                                                       retrieveAuthSession))
+        }
+        
+        let fetchTeamMembersForOrganisation: (UUID) async throws -> [UserPublicDetails] = { orgId in
+            try await apiClient.organisationTeamMembers((orgId, refreshMiddleware, retrieveAuthSession))
         }
         
         let validationClient: ValidationClientProtocol = ValidationClient()
@@ -105,6 +110,7 @@ struct AppEnvironment {
             logout: apiClient.logout,
             clearAuthSession: clearAuthSession,
             usersOrganisations: usersOrganisations,
+            fetchTeamMembersForOrganisation: fetchTeamMembersForOrganisation,
             mainQueue: mainQueue,
             userDefaults: userDefaults,
             encoder: encoder,

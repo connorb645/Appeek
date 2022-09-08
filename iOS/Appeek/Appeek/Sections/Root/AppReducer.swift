@@ -41,10 +41,12 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         state: /AppState.home,
         action: /AppAction.homeAction,
         environment: {
-            HomeEnvironment(logout: $0.logout,
-                            clearAuthSession: $0.clearAuthSession,
-                            usersOrganisations: $0.usersOrganisations,
-                            delay: { _ in }
+            HomeEnvironment(
+                logout: $0.logout,
+                clearAuthSession: $0.clearAuthSession,
+                usersOrganisations: $0.usersOrganisations,
+                delay: { _ in },
+                fetchTeamMembersForOrganisation: $0.fetchTeamMembersForOrganisation
             )
         }
     ),

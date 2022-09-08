@@ -13,9 +13,11 @@ struct HomeEnvironment {
     var clearAuthSession: () -> Void
     var usersOrganisations: () async throws -> [Organisation]
     var delay: (TimeInterval) async -> Void
+    var fetchTeamMembersForOrganisation: (UUID) async throws -> [UserPublicDetails]
     
     static let preview = Self(logout: {},
                               clearAuthSession: {},
                               usersOrganisations: {[]},
-                              delay: { _ in })
+                              delay: { _ in },
+                              fetchTeamMembersForOrganisation: { _ in [] })
 }

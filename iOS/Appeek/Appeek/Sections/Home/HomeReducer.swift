@@ -42,6 +42,10 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment>.combine(
             return .none
         case let .homeRouteChanged(route):
             state.route = route
+            if route == nil {
+                state.organisationTeamMembersStateCombined = nil
+                state.settingsStateCombined = nil
+            }
             return .none
         case .goToTeamMembersListTapped:
             state.route = .organisationMembersList
@@ -62,7 +66,7 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment>.combine(
             return .none
         }
     },
-    settingsReducer.pullback(
+    settingsReducer.optional().pullback(
         state: \HomeState.settingsStateCombined,
         action: /HomeAction.settingsAction,
         environment: { SettingsEnvironment(logout: $0.logout,
@@ -71,6 +75,10 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment>.combine(
     organisationMembersReducer.optional().pullback(
         state: \.organisationTeamMembersStateCombined,
         action: /HomeAction.organisationMembersAction,
-        environment: { _ in OrganisationMembersEnvironment() }
+        environment: {
+            OrganisationMembersEnvironment(
+                fetchTeamMembersForOrganisation: $0.fetchTeamMembersForOrganisation
+            )
+        }
     )
 )

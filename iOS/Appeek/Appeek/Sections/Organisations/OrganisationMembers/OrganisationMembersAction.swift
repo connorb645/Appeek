@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import ComposableArchitecture
 
 enum OrganisationMembersAction: Equatable {
     case onAppear
+    case teamMembersFetchFinished(TaskResult<[UserPublicDetails]>)
 }

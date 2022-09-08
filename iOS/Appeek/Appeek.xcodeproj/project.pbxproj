@@ -67,7 +67,6 @@
 		C3FBEC4A2870C044005DE031 /* ServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC492870C044005DE031 /* ServerError.swift */; };
 		C3FBEC4C2870C272005DE031 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC4B2870C272005DE031 /* Endpoint.swift */; };
 		C3FBEC4E2870CEE7005DE031 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC4D2870CEE7005DE031 /* RequestBuilder.swift */; };
-		C3FBEC512870CF01005DE031 /* SupabaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC502870CF01005DE031 /* SupabaseRequest.swift */; };
 		C3FBEC552870CF24005DE031 /* URLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC542870CF24005DE031 /* URLBuilder.swift */; };
 		C3FBEC572870E99A005DE031 /* JSONSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC562870E99A005DE031 /* JSONSerializer.swift */; };
 		C3FBEC5B2870F707005DE031 /* UserOrganisationRelation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FBEC5A2870F707005DE031 /* UserOrganisationRelation.swift */; };
@@ -150,7 +149,6 @@
 		C3FBEC492870C044005DE031 /* ServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerError.swift; sourceTree = "<group>"; };
 		C3FBEC4B2870C272005DE031 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		C3FBEC4D2870CEE7005DE031 /* RequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
-		C3FBEC502870CF01005DE031 /* SupabaseRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseRequest.swift; sourceTree = "<group>"; };
 		C3FBEC542870CF24005DE031 /* URLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLBuilder.swift; sourceTree = "<group>"; };
 		C3FBEC562870E99A005DE031 /* JSONSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSerializer.swift; sourceTree = "<group>"; };
 		C3FBEC5A2870F707005DE031 /* UserOrganisationRelation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserOrganisationRelation.swift; sourceTree = "<group>"; };
@@ -505,7 +503,6 @@
 		C3FBEC4F2870CEF8005DE031 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				C3FBEC502870CF01005DE031 /* SupabaseRequest.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -683,7 +680,6 @@
 				C3BDE82128871E0D001E24EB /* ValidationClient.swift in Sources */,
 				B3F8E83E28AED2230084CD1B /* SettingsEnvironment.swift in Sources */,
 				B3F8E84028AED22E0084CD1B /* SettingsReducer.swift in Sources */,
-				C3FBEC512870CF01005DE031 /* SupabaseRequest.swift in Sources */,
 				C3BB857D28986FE700A80DFE /* AppState.swift in Sources */,
 				C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */,
 				C3B67C94286B1304001CB727 /* SignUpView.swift in Sources */,

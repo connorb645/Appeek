@@ -67,8 +67,10 @@ struct HomeView: View {
             .sheet(unwrapping: viewStore.binding(get: \.route,
                                                  send: HomeAction.homeRouteChanged),
                    case: /HomeState.Route.settings) { _ in
-                SettingsView(store: self.store.scope(state: \.settingsStateCombined,
-                                                     action: HomeAction.settingsAction))
+                IfLetStore(self.store.scope(state: \.settingsStateCombined,
+                                            action: HomeAction.settingsAction)) { store in
+                    SettingsView(store: store)
+                }
 
             }
             .sheet(unwrapping: viewStore.binding(get: \.route,

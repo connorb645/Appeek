@@ -23,9 +23,7 @@ struct HomeState: Equatable {
             )
         }
         set {
-            guard let newValue = newValue else { return }
-            self.selectedOrganisation = newValue.selectedOrganisaion
-            self._organisationTeamMembersState = newValue.viewState
+            self._organisationTeamMembersState = newValue?.viewState
         }
     }
     
@@ -34,19 +32,18 @@ struct HomeState: Equatable {
         get {
             _organisationTeamMembersState ?? .init()
         }
-        set {
-            self._organisationTeamMembersState = newValue
-        }
     }
     
-    var settingsStateCombined: SettingsStateCombined {
+    var settingsStateCombined: SettingsStateCombined? {
         get {
             .init(viewState: settingsState,
                   navigationPath: navigationPath)
         }
         set {
-            self.navigationPath = newValue.navigationPath
-            self.settingsState = newValue.viewState
+            if let newValue = newValue {
+                self.navigationPath = newValue.navigationPath
+            }
+            self._settingsState = newValue?.viewState
         }
     }
     
@@ -54,9 +51,6 @@ struct HomeState: Equatable {
     private var settingsState: SettingsState {
         get {
             _settingsState ?? .init()
-        }
-        set {
-            _settingsState = newValue
         }
     }
     

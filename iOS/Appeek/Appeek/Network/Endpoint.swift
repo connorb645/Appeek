@@ -57,31 +57,41 @@ enum HTTPMethod: String {
 }
 
 enum Endpoint {
-    case usersOrganisationRelations(_ userId: UUID)
+    case usersOrganisationRelationsForUser(_ userId: UUID)
+    case usersOrganisationRelationsForOrganisation(_ organisationId: UUID)
     case organisations(ids: [UUID])
     case createUserPublicDetails
+    case getUserPublicDetails(ids: [UUID])
     
     var path: String {
         switch self {
-        case .usersOrganisationRelations:
+        case .usersOrganisationRelationsForUser,
+             .usersOrganisationRelationsForOrganisation:
             return "\(prefix)/users_organisations"
         case .organisations:
             return "\(prefix)/organisations"
-        case .createUserPublicDetails:
+        case .createUserPublicDetails,
+             .getUserPublicDetails:
             return "\(prefix)/user_public_details"
         }
     }
     
     var queryParams: [(key: String, value: String)]? {
         switch self {
-        case .usersOrganisationRelations(let userId):
+        case .usersOrganisationRelationsForUser(let userId):
             return [("user_id","eq.\(userId)"),
+                    ("select", "*")]
+        case .usersOrganisationRelationsForOrganisation(let organisationId):
+            return [("organisation_id","eq.\(organisationId)"),
                     ("select", "*")]
         case .organisations(let ids):
             return [("id","in.\(ids.path)"),
                     ("select", "*")]
         case .createUserPublicDetails:
             return nil
+        case .getUserPublicDetails(let ids):
+            return [("user_id","in.\(ids.path)"),
+                    ("select", "*")]
         }
     }
     

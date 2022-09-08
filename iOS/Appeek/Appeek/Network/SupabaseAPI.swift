@@ -18,6 +18,7 @@ protocol APIProtocol {
     func refreshSession(token: String) async throws -> AuthSession
     
     func organisations(_ request: RequestWithMiddleware<UUID>) async throws -> [Organisation]
+    func organisationTeamMembers(_ request: RequestWithMiddleware<UUID>) async throws -> [UserPublicDetails]
     func createUserPublicDetails(_ request: RequestWithMiddleware<UserPublicDetails.Creation>) async throws -> Void
 }
 
@@ -94,7 +95,7 @@ struct SupabaseAPI: APIProtocol {
              refreshMiddleware,
              currentAuthSession) = request
         let relations: [UserOrganisationRelation] = try await network.get(
-            .usersOrganisationRelations(user),
+            .usersOrganisationRelationsForUser(user),
             refreshMiddleware: refreshMiddleware,
             currentAuthSession: currentAuthSession)
         
@@ -106,6 +107,24 @@ struct SupabaseAPI: APIProtocol {
         
         return organisations
     }
+    
+    func organisationTeamMembers(_ request: RequestWithMiddleware<UUID>) async throws -> [UserPublicDetails] {
+            let (organisationId,
+                 refreshMiddleware,
+                 currentAuthSession) = request
+            
+            let relations: [UserOrganisationRelation] = try await network.get(
+                .usersOrganisationRelationsForOrganisation(organisationId),
+                refreshMiddleware: refreshMiddleware,
+                currentAuthSession: currentAuthSession)
+            
+            let userIds = relations.map { $0.userId }
+            
+            let teamMembers: [UserPublicDetails] = try await network.get(.getUserPublicDetails(ids: userIds),
+                                                                         refreshMiddleware: refreshMiddleware,
+                                                                         currentAuthSession: currentAuthSession)
+            return teamMembers
+        }
     
     func createUserPublicDetails(_ request: RequestWithMiddleware<UserPublicDetails.Creation>) async throws -> Void {
         let (details,

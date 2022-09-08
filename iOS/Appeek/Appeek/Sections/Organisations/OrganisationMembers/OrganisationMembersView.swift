@@ -7,12 +7,31 @@
 
 import SwiftUI
 import ComposableArchitecture
+import ConnorsComponents
 
 struct OrganisationMembersView: View {
     let store: Store<OrganisationMembersStateCombined, OrganisationMembersAction>
     
     var body: some View {
-        Text("Hello, World!")
+        WithViewStore(self.store) { viewStore in
+            AppeekBackgroundView {
+                ZStack {
+                    List {
+                        ForEach(viewStore.viewState.teamMembers) { member in
+                            Text("\(member.firstName) \(member.lastName)")
+                        }
+                    }
+                    
+                    if viewStore.viewState.isLoading {
+                        CCProgressView(foregroundColor: .appeekPrimary,
+                                       backgroundColor: .appeekBackgroundOffset)
+                    }
+                }
+            }
+            .onAppear {
+                viewStore.send(.onAppear)
+            }
+        }
     }
 }
 
