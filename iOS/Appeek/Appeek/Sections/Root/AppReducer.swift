@@ -18,14 +18,20 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                     try environment.retrieveAuthSession()
                 })
             }
-//            return .fireAndForget {
-//                environment.clearAuthSession()
-//            }
         case let .receivedAuthSession(.success(authSession)):
             state = AppState.home(.init())
             return .none
         case let .receivedAuthSession(.failure(error)):
             state = AppState.onboarding(.init())
+            return .none
+        case .onboardingAction(.signUpAction(.loggedIn)),
+             .onboardingAction(.signUpAction(.loginAction(.loggedIn))):
+            state = AppState.home(.init())
+            return .none
+        case let .homeAction(.sheetDismissalDelayEnded(loggedOut)):
+            if loggedOut {
+                state = AppState.onboarding(.init())
+            }
             return .none
         default:
             return .none
@@ -37,7 +43,8 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         environment: {
             HomeEnvironment(logout: $0.logout,
                             clearAuthSession: $0.clearAuthSession,
-                            usersOrganisations: $0.usersOrganisations
+                            usersOrganisations: $0.usersOrganisations,
+                            delay: { _ in }
             )
         }
     ),

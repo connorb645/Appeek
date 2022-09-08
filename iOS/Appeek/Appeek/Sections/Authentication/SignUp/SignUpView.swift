@@ -99,6 +99,7 @@ enum SignUpAction: Equatable {
     case passwordSecurityToggled
     case createAccount
     case signUpResponse(TaskResult<Void>)
+    case loggedIn
     
     static func == (lhs: SignUpAction, rhs: SignUpAction) -> Bool {
         switch (lhs, rhs) {
@@ -117,6 +118,8 @@ enum SignUpAction: Equatable {
         case (.createAccount, .createAccount):
             return true
         case (.signUpResponse, .signUpResponse):
+            return true
+        case (.loggedIn, .loggedIn):
             return true
         default:
             return false
@@ -232,8 +235,7 @@ let signUpReducer = Reducer<SignUpStateCombined, SignUpAction, SignUpEnvironment
             }
         case let .signUpResponse(.success(response)):
             state.viewState.isLoading = false
-            state.navigationPath = .init()
-            return .none
+            return .task { .loggedIn }
         case let .signUpResponse(.failure(error)):
             state.viewState.isLoading = false
             state.viewState.errorMessage = error.friendlyMessage

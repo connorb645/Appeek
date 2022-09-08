@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct OrganisationMembersView: View {
-    let store: Store<OrganisationMembersStateWithRoute, OrganisationMembersAction>
+    let store: Store<OrganisationMembersStateCombined, OrganisationMembersAction>
     
     var body: some View {
         Text("Hello, World!")

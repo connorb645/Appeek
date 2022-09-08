@@ -10,7 +10,7 @@ import ComposableArchitecture
 import CasePaths
 
 typealias OrganisationMembersReducer = Reducer<
-    OrganisationMembersStateWithRoute,
+    OrganisationMembersStateCombined,
     OrganisationMembersAction,
     OrganisationMembersEnvironment
 >

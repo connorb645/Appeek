@@ -7,6 +7,7 @@
 
 import Foundation
 import ComposableArchitecture
+import SwiftUI
 
 enum HomeAction: Equatable {
     case settingsAction(SettingsAction)
@@ -18,4 +19,6 @@ enum HomeAction: Equatable {
     case selectedOrganisationUpdated(Organisation?)
     case homeRouteChanged(HomeState.Route?)
     case goToTeamMembersListTapped
+    case navigationPathChanged(NavigationPath)
+    case sheetDismissalDelayEnded(loggedOut: Bool)
 }

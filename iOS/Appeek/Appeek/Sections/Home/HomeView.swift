@@ -15,60 +15,70 @@ struct HomeView: View {
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
-            AppeekBackgroundView {
-                VStack {
-                    HStack {
-                        AppeekPicker(items: viewStore.state.usersOrganisations,
-                                     isLoading: viewStore.state.isLoading,
-                                     selectedItem: viewStore.binding(get: \.selectedOrganisation,
-                                                                     send: HomeAction.selectedOrganisationUpdated))
-                        .frame(height: 50)
-                        
-                        if viewStore.state.selectedOrganisation != nil {
-                            Menu {
-                                Button("Team members") {
-                                    viewStore.send(.goToTeamMembersListTapped)
+            NavigationStack(path: viewStore.binding(get: \.navigationPath,
+                                                    send: HomeAction.navigationPathChanged)) {
+                AppeekBackgroundView {
+                    ZStack {
+                        VStack {
+                            HStack {
+                                AppeekPicker(items: viewStore.state.usersOrganisations,
+                                             isLoading: viewStore.state.isLoading,
+                                             selectedItem: viewStore.binding(get: \.selectedOrganisation,
+                                                                             send: HomeAction.selectedOrganisationUpdated))
+                                .frame(height: 50)
+                                
+                                if viewStore.state.selectedOrganisation != nil {
+                                    Menu {
+                                        Button("Team members") {
+                                            viewStore.send(.goToTeamMembersListTapped)
+                                        }
+                                    } label: {
+                                        Image(systemName: "ellipsis")
+                                            .foregroundColor(Color.appeekFont)
+                                            .frame(width: 45, height: 45)
+                                    }
                                 }
-                            } label: {
-                                Image(systemName: "ellipsis")
-                                    .foregroundColor(Color.appeekFont)
-                                    .frame(width: 45, height: 45)
                             }
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onAppear {
+                            viewStore.send(.onAppear)
                         }
                     }
-                    .padding(.horizontal)
-                    
-                    Spacer()
+                    if viewStore.isLoading {
+                        CCProgressView(foregroundColor: .appeekPrimary,
+                                       backgroundColor: .appeekBackgroundOffset)
+                    }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .onAppear {
-                    viewStore.send(.onAppear)
-                }
-            }
-            .navigationTitle("Home")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        viewStore.send(.goToSettingsTapped)
-                    } label: {
-                        Image(systemName: "gear")
+                .navigationTitle("Home")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            viewStore.send(.goToSettingsTapped)
+                        } label: {
+                            Image(systemName: "gear")
+                        }
                     }
                 }
             }
-//            .sheet(unwrapping: viewStore.binding(get: \.state.homeRoute,
-//                                                 send: HomeAction.homeRouteChanged),
-//                   case: /HomeState.Route.settings) { _ in
-//                SettingsView(store: self.store.scope(state: \.settingsState,
-//                                                     action: HomeAction.settingsAction))
-//
-//            }
-//            .sheet(unwrapping: viewStore.binding(get: \.state.homeRoute,
-//                                                 send: HomeAction.homeRouteChanged),
-//                   case: /HomeState.Route.organisationMembersList) { _ in
-//                OrganisationMembersView(store: self.store.scope(state: \.organisationMembersState,
-//                                                                action: HomeAction.organisationMembersAction))
-//
-//            }
+            .sheet(unwrapping: viewStore.binding(get: \.route,
+                                                 send: HomeAction.homeRouteChanged),
+                   case: /HomeState.Route.settings) { _ in
+                SettingsView(store: self.store.scope(state: \.settingsStateCombined,
+                                                     action: HomeAction.settingsAction))
+
+            }
+            .sheet(unwrapping: viewStore.binding(get: \.route,
+                                                 send: HomeAction.homeRouteChanged),
+                   case: /HomeState.Route.organisationMembersList) { _ in
+                IfLetStore(self.store.scope(state: \.organisationTeamMembersStateCombined,
+                                            action: HomeAction.organisationMembersAction)) { store in
+                    OrganisationMembersView(store: store)
+                }
+            }
         }
     }
 }

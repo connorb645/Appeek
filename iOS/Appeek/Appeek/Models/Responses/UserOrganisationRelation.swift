@@ -8,28 +8,24 @@
 import Foundation
 
 struct UserOrganisationRelation {
-    let id: UUID
     let userId: UUID
     let organisationId: UUID
 }
 
 extension UserOrganisationRelation: Codable {
     enum CodingKeys: String, CodingKey {
-        case id
         case userId = "user_id"
         case organisationId = "organisation_id"
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(UUID.self, forKey: .id)
         self.userId = try container.decode(UUID.self, forKey: .userId)
         self.organisationId = try container.decode(UUID.self, forKey: .organisationId)
     }
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
         try container.encode(userId, forKey: .userId)
         try container.encode(organisationId, forKey: .organisationId)
     }

@@ -11,6 +11,12 @@ public struct Organisation: Equatable {
     let id: UUID
     let name: String
     let createdAt: String
+    
+    init(id: UUID, name: String, createdAt: String) {
+        self.id = id
+        self.name = name
+        self.createdAt = createdAt
+    }
 }
 
 extension Organisation: Codable {
@@ -59,4 +65,12 @@ extension Organisation: Hashable { }
 
 extension Organisation: AppeekPickable {
     var title: String { self.name }
+}
+
+extension Organisation {
+    static let stubbed = Self(
+        id: .init(),
+        name: "Blacks Apps LTD",
+        createdAt: ""
+    )
 }

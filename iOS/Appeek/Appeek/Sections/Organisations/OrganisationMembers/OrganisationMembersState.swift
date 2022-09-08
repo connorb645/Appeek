@@ -7,21 +7,18 @@
 
 import Foundation
 
-struct OrganisationMembersStateWithRoute: Equatable {
-    var state: OrganisationMembersState
-    var route: AppRoute
+struct OrganisationMembersStateCombined: Equatable {
+    var viewState: OrganisationMembersState
+    var selectedOrganisaion: Organisation
     
-    static let preview = Self(state: OrganisationMembersState.preview,
-                              route: .home(.init()))
+    static let preview = Self(viewState: OrganisationMembersState.preview,
+                              selectedOrganisaion: Organisation.stubbed)
 }
 
 struct OrganisationMembersState: Equatable {
     var homeRoute: HomeState.Route?
-    var selectedOrganisation: Organisation
     var errorMessage: String? = nil
     var isLoading: Bool = false
     
-    static let preview = Self(selectedOrganisation: .init(id: .init(),
-                                                          name: "",
-                                                          createdAt: ""))
+    static let preview = Self()
 }

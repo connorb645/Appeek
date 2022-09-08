@@ -11,21 +11,24 @@ import ComposableArchitecture
 
 struct SettingsView: View {
     
-    let store: Store<SettingsStateWithRoute, SettingsAction>
+    let store: Store<SettingsStateCombined, SettingsAction>
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
             AppeekBackgroundView {
                 ZStack {
                     Form {
-                        Section("Sections One") {
-                            Button("Log Out") {
+                        Section("Actions") {
+                            Button("Log Out", role: .destructive) {
                                 viewStore.send(.logoutTapped)
+                            }
+                            Button("Close Settings", role: .cancel) {
+                                viewStore.send(.dismissScreenTapped)
                             }
                         }
                     }
                     
-                    if viewStore.state.state.isLoading {
+                    if viewStore.viewState.isLoading {
                         CCProgressView(foregroundColor: .appeekPrimary,
                                        backgroundColor: .appeekBackgroundOffset)
                     }
@@ -37,7 +40,7 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(store: .init(initialState: SettingsStateWithRoute.preview,
+        SettingsView(store: .init(initialState: SettingsStateCombined.preview,
                                   reducer: settingsReducer,
                                   environment: SettingsEnvironment.preview))
     }

@@ -10,7 +10,7 @@ import ComposableArchitecture
 import CasePaths
 
 typealias SettingsReducer = Reducer<
-    SettingsStateWithRoute,
+    SettingsStateCombined,
     SettingsAction,
     SettingsEnvironment
 >
@@ -18,7 +18,7 @@ typealias SettingsReducer = Reducer<
 let settingsReducer = SettingsReducer { state, action, environment in
     switch action {
     case .logoutTapped:
-        state.state.isLoading = true
+        state.viewState.isLoading = true
         return .task {
             await .logoutResponseReceived(TaskResult {
                 try await environment.logout()
@@ -26,20 +26,17 @@ let settingsReducer = SettingsReducer { state, action, environment in
         }
     case .logoutResponseReceived(.success):
         environment.clearAuthSession()
-        state.state.homeRoute = nil
         return .task {
-            await environment.delay(0.33)
-            return .delayEnded
+            .loggedOut
         }
     case let .logoutResponseReceived(.failure(error)):
         environment.clearAuthSession()
-        state.state.homeRoute = nil
         return .task {
-            await environment.delay(0.33)
-            return .delayEnded
+            .loggedOut
         }
-    case .delayEnded:
-        state.route = AppRoute.onboarding(.init())
+    case .loggedOut:
+        return .none
+    case .dismissScreenTapped:
         return .none
     }
 }

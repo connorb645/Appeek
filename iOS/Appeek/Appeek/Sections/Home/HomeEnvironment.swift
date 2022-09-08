@@ -12,8 +12,10 @@ struct HomeEnvironment {
     var logout: () async throws -> Void
     var clearAuthSession: () -> Void
     var usersOrganisations: () async throws -> [Organisation]
+    var delay: (TimeInterval) async -> Void
     
     static let preview = Self(logout: {},
                               clearAuthSession: {},
-                              usersOrganisations: {[]})
+                              usersOrganisations: {[]},
+                              delay: { _ in })
 }

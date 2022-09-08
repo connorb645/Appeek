@@ -6,17 +6,17 @@
 //
 
 import Foundation
+import SwiftUI
 
-struct SettingsStateWithRoute: Equatable {
-    var state: SettingsState
-    var route: AppRoute
+struct SettingsStateCombined: Equatable {
+    var viewState: SettingsState
+    var navigationPath: NavigationPath
     
-    static let preview = Self(state: SettingsState.preview,
-                              route: .home(.init()))
+    static let preview = Self(viewState: SettingsState.preview,
+                              navigationPath: .init())
 }
 
 struct SettingsState: Equatable {
-    var homeRoute: HomeState.Route?
     var isLoading: Bool = false
     var errorMessage: String?
     

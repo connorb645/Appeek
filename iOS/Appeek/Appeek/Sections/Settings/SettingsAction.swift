@@ -11,7 +11,8 @@ import ComposableArchitecture
 enum SettingsAction: Equatable {
     case logoutTapped
     case logoutResponseReceived(TaskResult<Void>)
-    case delayEnded
+    case loggedOut
+    case dismissScreenTapped
     
     static func == (lhs: SettingsAction, rhs: SettingsAction) -> Bool {
         switch (lhs, rhs) {
@@ -19,7 +20,9 @@ enum SettingsAction: Equatable {
             return true
         case (.logoutResponseReceived, .logoutResponseReceived):
             return true
-        case (.delayEnded, .delayEnded):
+        case (.loggedOut, .loggedOut):
+            return true
+        case (.dismissScreenTapped, .dismissScreenTapped):
             return true
         default:
             return false

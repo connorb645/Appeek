@@ -79,6 +79,7 @@ enum LoginAction: Equatable {
     case loginTapped
     case loginResponse(TaskResult<AuthSession>)
     case goToSignUpTapped
+    case loggedIn
 }
 
 // MARK: - Environment
@@ -129,14 +130,15 @@ let loginReducer = Reducer<LoginStateCombined, LoginAction, LoginEnvironment>.co
             }
         case let .loginResponse(.success(response)):
             state.viewState.isLoading = false
-            state.navigationPath = .init()
-            return .none
+            return .task { .loggedIn }
         case let .loginResponse(.failure(error)):
             state.viewState.isLoading = false
             state.viewState.errorMessage = error.friendlyMessage
             return .none
         case .goToSignUpTapped:
             state.navigationPath.removeLast()
+            return .none
+        case .loggedIn:
             return .none
         default:
             return .none
