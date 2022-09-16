@@ -18,21 +18,36 @@ typealias OrganisationMembersReducer = Reducer<
 let organisationMembersReducer = OrganisationMembersReducer { state, action, environment in
     switch action {
     case .onAppear:
+        state.viewState.isLoading = true
         return .run { [state] send in
             await send(
-                .teamMembersFetchFinished(
-                    TaskResult { try await environment.fetchTeamMembersForOrganisation(state.selectedOrganisaion.id) }
+                .fetchFinished(
+                    TaskResult {
+                        try await environment.organisationTeamMembersClient.fetch(
+                            orgId: state.selectedOrganisaion.id
+                        )
+                    }
                 ),
                 animation: .default
             )
         }
-    case let .teamMembersFetchFinished(.success(members)):
-        state.viewState.teamMembers = members
+    case let .fetchFinished(.success(result)):
+        state.viewState.admins = result.admins
+        state.viewState.nonAdmins = result.nonAdmins
+        state.viewState.isCurrentUserAdmin = result.isCurrentUserAdmin
+        state.viewState.currentUserId = result.currentUserId
         state.viewState.isLoading = false
         return .none
-    case let .teamMembersFetchFinished(.failure(error)):
+    case let .fetchFinished(.failure(error)):
         state.viewState.isLoading = false
         state.viewState.errorMessage = error.friendlyMessage
+        return .none
+    case let .navigationPathChanged(path):
+        state.viewState.navigationPath = path
+        return .none
+    case .dismissTapped:
+        return .none
+    case .inviteTeamMemberTapped:
         return .none
     }
 }

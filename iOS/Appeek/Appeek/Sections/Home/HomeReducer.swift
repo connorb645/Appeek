@@ -56,7 +56,8 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment>.combine(
                 await environment.delay(0.33)
                 return .sheetDismissalDelayEnded(loggedOut: true)
             }
-        case .settingsAction(.dismissScreenTapped):
+        case .settingsAction(.dismissScreenTapped),
+             .organisationMembersAction(.dismissTapped):
             state.route = nil
             return .task {
                 await environment.delay(0.33)
@@ -77,7 +78,7 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment>.combine(
         action: /HomeAction.organisationMembersAction,
         environment: {
             OrganisationMembersEnvironment(
-                fetchTeamMembersForOrganisation: $0.fetchTeamMembersForOrganisation
+                organisationTeamMembersClient: $0.organisationTeamMembersClient
             )
         }
     )

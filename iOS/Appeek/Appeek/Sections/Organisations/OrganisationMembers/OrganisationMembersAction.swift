@@ -7,8 +7,12 @@
 
 import Foundation
 import ComposableArchitecture
+import SwiftUI
 
 enum OrganisationMembersAction: Equatable {
     case onAppear
-    case teamMembersFetchFinished(TaskResult<[UserPublicDetails]>)
+    case fetchFinished(TaskResult<OrganisationTeamMembersClient.FetchResponse>)
+    case navigationPathChanged(NavigationPath)
+    case dismissTapped
+    case inviteTeamMemberTapped
 }

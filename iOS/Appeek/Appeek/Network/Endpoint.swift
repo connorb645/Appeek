@@ -62,6 +62,7 @@ enum Endpoint {
     case organisations(ids: [UUID])
     case createUserPublicDetails
     case getUserPublicDetails(ids: [UUID])
+    case getOrganisationAdmins(_ organisationId: UUID)
     
     var path: String {
         switch self {
@@ -73,6 +74,8 @@ enum Endpoint {
         case .createUserPublicDetails,
              .getUserPublicDetails:
             return "\(prefix)/user_public_details"
+        case .getOrganisationAdmins:
+            return "\(prefix)/organisation_admins"
         }
     }
     
@@ -91,6 +94,9 @@ enum Endpoint {
             return nil
         case .getUserPublicDetails(let ids):
             return [("user_id","in.\(ids.path)"),
+                    ("select", "*")]
+        case .getOrganisationAdmins(let organisationId):
+            return [("organisation_id","eq.\(organisationId)"),
                     ("select", "*")]
         }
     }

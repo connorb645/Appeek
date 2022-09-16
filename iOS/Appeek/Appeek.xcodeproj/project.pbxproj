@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B318737628B8AD340094770A /* SignUpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B318737528B8AD340094770A /* SignUpClient.swift */; };
 		B344061628C22DE900D116B2 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = B344061528C22DE900D116B2 /* SwiftUINavigation */; };
+		B362B38828CB1E13004C9450 /* OrganisationTeamMembersClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B362B38728CB1E13004C9450 /* OrganisationTeamMembersClient.swift */; };
 		B3E10C2828B1454300E60AA3 /* OrganisationMembersState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E10C2728B1454300E60AA3 /* OrganisationMembersState.swift */; };
 		B3E10C2A28B1454F00E60AA3 /* OrganisationMembersAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E10C2928B1454F00E60AA3 /* OrganisationMembersAction.swift */; };
 		B3E10C2C28B1456600E60AA3 /* OrganisationMembersReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E10C2B28B1456600E60AA3 /* OrganisationMembersReducer.swift */; };
@@ -91,6 +92,7 @@
 
 /* Begin PBXFileReference section */
 		B318737528B8AD340094770A /* SignUpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpClient.swift; sourceTree = "<group>"; };
+		B362B38728CB1E13004C9450 /* OrganisationTeamMembersClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationTeamMembersClient.swift; sourceTree = "<group>"; };
 		B3E10C2728B1454300E60AA3 /* OrganisationMembersState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationMembersState.swift; sourceTree = "<group>"; };
 		B3E10C2928B1454F00E60AA3 /* OrganisationMembersAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationMembersAction.swift; sourceTree = "<group>"; };
 		B3E10C2B28B1456600E60AA3 /* OrganisationMembersReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationMembersReducer.swift; sourceTree = "<group>"; };
@@ -458,6 +460,7 @@
 				C3BDE82028871E0D001E24EB /* ValidationClient.swift */,
 				B318737528B8AD340094770A /* SignUpClient.swift */,
 				B3E2975028C36D0D00DED656 /* LoginClient.swift */,
+				B362B38728CB1E13004C9450 /* OrganisationTeamMembersClient.swift */,
 			);
 			path = Clients;
 			sourceTree = "<group>";
@@ -684,6 +687,7 @@
 				C36DED75286DC6AA0054F1AB /* SettingsView.swift in Sources */,
 				C3B67C94286B1304001CB727 /* SignUpView.swift in Sources */,
 				C37E17E7286DD792003689CB /* LoginView.swift in Sources */,
+				B362B38828CB1E13004C9450 /* OrganisationTeamMembersClient.swift in Sources */,
 				C3FBEC3E287071E0005DE031 /* OrganisationsPicker.swift in Sources */,
 				B3E10C2C28B1456600E60AA3 /* OrganisationMembersReducer.swift in Sources */,
 				C3FBEC5B2870F707005DE031 /* UserOrganisationRelation.swift in Sources */,

@@ -12,13 +12,13 @@ struct AppEnvironment {
     var validationClient: ValidationClientProtocol
     var signUpClient: SignUpClient
     var loginClient: LoginClient
+    var organisationTeamMembersClient: OrganisationTeamMembersClient
     
     var resetPassword: (String) async throws -> Void
     var retrieveAuthSession: () throws -> AuthSession
     var logout: () async throws -> Void
     var clearAuthSession: () -> Void
     var usersOrganisations: () async throws -> [Organisation]
-    var fetchTeamMembersForOrganisation: (UUID) async throws -> [UserPublicDetails]
     
     var mainQueue: AnySchedulerOf<DispatchQueue>
     var userDefaults: UserDefaults
@@ -88,6 +88,10 @@ struct AppEnvironment {
             try await apiClient.organisationTeamMembers((orgId, refreshMiddleware, retrieveAuthSession))
         }
         
+        let fetchAdminsForOrganisation: (UUID) async throws -> [UserPublicDetails] = { orgId in
+            try await apiClient.fetchOrganisationAdmins((orgId, refreshMiddleware, retrieveAuthSession))
+        }
+        
         let validationClient: ValidationClientProtocol = ValidationClient()
         
         let signUpClient = SignUpClient(
@@ -100,17 +104,23 @@ struct AppEnvironment {
         let loginClient = LoginClient(
             login: apiClient.login(email:password:),
             persist: persist)
+        
+        let organisationTeamMembersClient = OrganisationTeamMembersClient(
+            fetchTeamMembersForOrganisation: fetchTeamMembersForOrganisation,
+            fetchAdminsForOrganisation: fetchAdminsForOrganisation,
+            currentAuthSession: retrieveAuthSession
+        )
     
         return .init(
             validationClient: validationClient,
             signUpClient: signUpClient,
             loginClient: loginClient,
+            organisationTeamMembersClient: organisationTeamMembersClient,
             resetPassword: apiClient.resetPassword(email:),
             retrieveAuthSession: retrieveAuthSession,
             logout: apiClient.logout,
             clearAuthSession: clearAuthSession,
             usersOrganisations: usersOrganisations,
-            fetchTeamMembersForOrganisation: fetchTeamMembersForOrganisation,
             mainQueue: mainQueue,
             userDefaults: userDefaults,
             encoder: encoder,

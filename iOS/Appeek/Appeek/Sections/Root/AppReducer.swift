@@ -46,7 +46,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 clearAuthSession: $0.clearAuthSession,
                 usersOrganisations: $0.usersOrganisations,
                 delay: { _ in },
-                fetchTeamMembersForOrganisation: $0.fetchTeamMembersForOrganisation
+                organisationTeamMembersClient: $0.organisationTeamMembersClient
             )
         }
     ),

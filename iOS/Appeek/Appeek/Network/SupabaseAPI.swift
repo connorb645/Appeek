@@ -20,6 +20,7 @@ protocol APIProtocol {
     func organisations(_ request: RequestWithMiddleware<UUID>) async throws -> [Organisation]
     func organisationTeamMembers(_ request: RequestWithMiddleware<UUID>) async throws -> [UserPublicDetails]
     func createUserPublicDetails(_ request: RequestWithMiddleware<UserPublicDetails.Creation>) async throws -> Void
+    func fetchOrganisationAdmins(_ request: RequestWithMiddleware<UUID>) async throws -> [UserPublicDetails]
 }
 
 struct SupabaseAPI: APIProtocol {
@@ -134,6 +135,25 @@ struct SupabaseAPI: APIProtocol {
                                body: details,
                                refreshMiddleware: refreshMiddleware,
                                currentAuthSession: currentAuthSession)
+    }
+    
+    func fetchOrganisationAdmins(_ request: RequestWithMiddleware<UUID>) async throws -> [UserPublicDetails] {
+        let (organisationId,
+             refreshMiddleware,
+             currentAuthSession) = request
+        
+        let relations: [UserOrganisationRelation] = try await network.get(
+            .getOrganisationAdmins(organisationId),
+            refreshMiddleware: refreshMiddleware,
+            currentAuthSession: currentAuthSession
+        )
+        let userIds = relations.map { $0.userId }
+        
+        let teamAdmins: [UserPublicDetails] = try await network.get(.getUserPublicDetails(ids: userIds),
+                                                                    refreshMiddleware: refreshMiddleware,
+                                                                    currentAuthSession: currentAuthSession)
+        
+        return teamAdmins
     }
     
     static let preview = Self(network: Network.preview,

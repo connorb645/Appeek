@@ -9,7 +9,7 @@ import Foundation
 import ComposableArchitecture
 
 struct OrganisationMembersEnvironment {
-    var fetchTeamMembersForOrganisation: (UUID) async throws -> [UserPublicDetails]
+    var organisationTeamMembersClient: OrganisationTeamMembersClient
     
-    static let preview = Self(fetchTeamMembersForOrganisation: { _ in [] })
+    static let preview = Self(organisationTeamMembersClient: .preview)
 }

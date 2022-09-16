@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct OrganisationMembersStateCombined: Equatable {
     var viewState: OrganisationMembersState
@@ -18,7 +19,11 @@ struct OrganisationMembersStateCombined: Equatable {
 struct OrganisationMembersState: Equatable {
     var errorMessage: String? = nil
     var isLoading: Bool = false
-    var teamMembers: [UserPublicDetails] = []
+    var admins: [UserPublicDetails] = []
+    var nonAdmins: [UserPublicDetails] = []
+    var navigationPath: NavigationPath = .init()
+    var isCurrentUserAdmin = false
+    var currentUserId: UUID? = nil
     
     static let preview = Self()
 }
