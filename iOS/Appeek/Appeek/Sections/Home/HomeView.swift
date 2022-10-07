@@ -11,69 +11,46 @@ import ComposableArchitecture
 import ConnorsComponents
 
 struct HomeView: View {
-    let store: Store<HomeState, HomeAction>
+    let store: Store<HomeStateCombined, HomeAction>
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
-            NavigationStack(path: viewStore.binding(get: \.navigationPath,
-                                                    send: HomeAction.navigationPathChanged)) {
-                AppeekBackgroundView {
-                    ZStack {
-                        VStack {
-                            HStack {
-                                AppeekPicker(items: viewStore.state.usersOrganisations,
-                                             isLoading: viewStore.state.isLoading,
-                                             selectedItem: viewStore.binding(get: \.selectedOrganisation,
-                                                                             send: HomeAction.selectedOrganisationUpdated))
-                                .frame(height: 50)
-                                
-                                if viewStore.state.selectedOrganisation != nil {
-                                    Menu {
-                                        Button("Team members") {
-                                            viewStore.send(.goToTeamMembersListTapped)
-                                        }
-                                    } label: {
-                                        Image(systemName: "ellipsis")
-                                            .foregroundColor(Color.appeekFont)
-                                            .frame(width: 45, height: 45)
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-                            
-                            Spacer()
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .onAppear {
-                            viewStore.send(.onAppear)
-                        }
+            AppeekBackgroundView {
+                ZStack {
+                    VStack {
+                        joinTeamButton(viewStore)
+                        
+                        Spacer()
                     }
-                    if viewStore.isLoading {
-                        CCProgressView(foregroundColor: .appeekPrimary,
-                                       backgroundColor: .appeekBackgroundOffset)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .onAppear {
+                        viewStore.send(.onAppear)
                     }
                 }
-                .navigationTitle("Home")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            viewStore.send(.goToSettingsTapped)
-                        } label: {
-                            Image(systemName: "gear")
-                        }
+                if viewStore.viewState.isLoading {
+                    CCProgressView(foregroundColor: .appeekPrimary,
+                                   backgroundColor: .appeekBackgroundOffset)
+                }
+            }
+            .navigationTitle(viewStore.selectedOrganisation.name)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        viewStore.send(.goToSettingsTapped)
+                    } label: {
+                        Image(systemName: "gear")
                     }
                 }
             }
-            .sheet(unwrapping: viewStore.binding(get: \.route,
+            .sheet(unwrapping: viewStore.binding(get: \.viewState.route,
                                                  send: HomeAction.homeRouteChanged),
                    case: /HomeState.Route.settings) { _ in
                 IfLetStore(self.store.scope(state: \.settingsStateCombined,
                                             action: HomeAction.settingsAction)) { store in
                     SettingsView(store: store)
                 }
-
             }
-            .sheet(unwrapping: viewStore.binding(get: \.route,
+            .sheet(unwrapping: viewStore.binding(get: \.viewState.route,
                                                  send: HomeAction.homeRouteChanged),
                    case: /HomeState.Route.organisationMembersList) { _ in
                 IfLetStore(self.store.scope(state: \.organisationTeamMembersStateCombined,
@@ -83,11 +60,22 @@ struct HomeView: View {
             }
         }
     }
+    
+    @ViewBuilder
+    private func joinTeamButton(_ viewStore: ViewStore<HomeStateCombined, HomeAction>) -> some View {
+        CCPrimaryButton(title: "Join Team",
+                        textColor: .appeekFont,
+                        backgroundColor: .appeekBackgroundOffset,
+                        height: 45) {
+            print("Navigate to join team")
+        }
+        .padding(.horizontal)
+    }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(store: .init(initialState: HomeState.preview,
+        HomeView(store: .init(initialState: HomeStateCombined.preview,
                               reducer: homeReducer,
                               environment: HomeEnvironment.preview))
     }

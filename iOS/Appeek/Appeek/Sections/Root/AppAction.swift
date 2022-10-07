@@ -12,8 +12,8 @@ enum AppAction: Equatable {
     case signUp(SignUpAction)
     case login(LoginAction)
     case forgotPassword(ForgotPasswordAction)
-    case homeAction(HomeAction)
     case onboardingAction(OnboardingAction)
+    case organisationsListAction(OrganisationsListAction)
     
     case onAppear
     case receivedAuthSession(TaskResult<AuthSession>)

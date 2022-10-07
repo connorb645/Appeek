@@ -15,10 +15,10 @@ enum HomeAction: Equatable {
     
     case onAppear
     case goToSettingsTapped
-    case usersOrganisationsReceived(TaskResult<[Organisation]>)
-    case selectedOrganisationUpdated(Organisation?)
+//    case usersOrganisationsReceived(TaskResult<[Organisation]>)
+//    case selectedOrganisationUpdated(Organisation?)
     case homeRouteChanged(HomeState.Route?)
     case goToTeamMembersListTapped
-    case navigationPathChanged(NavigationPath)
+//    case navigationPathChanged(NavigationPath)
     case sheetDismissalDelayEnded(loggedOut: Bool)
 }

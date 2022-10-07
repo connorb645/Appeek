@@ -8,7 +8,7 @@
 import ComposableArchitecture
 
 enum AppState: Equatable {
-    case home(HomeState)
+    case organisationsListState(OrganisationsListState)
     case onboarding(OnboardingState)
     
     static let live = AppState.onboarding(.init())

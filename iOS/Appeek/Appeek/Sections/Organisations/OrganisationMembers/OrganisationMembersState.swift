@@ -24,6 +24,14 @@ struct OrganisationMembersState: Equatable {
     var navigationPath: NavigationPath = .init()
     var isCurrentUserAdmin = false
     var currentUserId: UUID? = nil
+        
+    func dots(_ count: Int) -> String {
+        let dotsArray = (0..<count).indices.map { _ in
+            "\u{2022}"
+        }
+        
+        return dotsArray.joined(separator: "")
+    }
     
     static let preview = Self()
 }

@@ -19,6 +19,12 @@
 		B3E2974D28C23A0400DED656 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = B3E2974C28C23A0400DED656 /* ComposableArchitecture */; };
 		B3E2974F28C241B900DED656 /* Error+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2974E28C241B900DED656 /* Error+Extensions.swift */; };
 		B3E2975128C36D0D00DED656 /* LoginClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2975028C36D0D00DED656 /* LoginClient.swift */; };
+		B3EE0F1428E983100029E608 /* OrganisationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EE0F1328E983100029E608 /* OrganisationsListView.swift */; };
+		B3EE0F1628E9831B0029E608 /* OrganisationsListState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EE0F1528E9831B0029E608 /* OrganisationsListState.swift */; };
+		B3EE0F1828E983270029E608 /* OrganisationsListAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EE0F1728E983270029E608 /* OrganisationsListAction.swift */; };
+		B3EE0F1A28E9833A0029E608 /* OrganisationsListEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EE0F1928E9833A0029E608 /* OrganisationsListEnvironment.swift */; };
+		B3EE0F1C28E983470029E608 /* OrganisationsListReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EE0F1B28E983470029E608 /* OrganisationsListReducer.swift */; };
+		B3EE0F1E28ED6FB60029E608 /* OrgansationsListRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EE0F1D28ED6FB60029E608 /* OrgansationsListRoute.swift */; };
 		B3F8E83A28AED2110084CD1B /* SettingsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F8E83928AED2110084CD1B /* SettingsState.swift */; };
 		B3F8E83C28AED2180084CD1B /* SettingsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F8E83B28AED2180084CD1B /* SettingsAction.swift */; };
 		B3F8E83E28AED2230084CD1B /* SettingsEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F8E83D28AED2230084CD1B /* SettingsEnvironment.swift */; };
@@ -101,6 +107,12 @@
 		B3E10C3128B35D5600E60AA3 /* UserPublicDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPublicDetails.swift; sourceTree = "<group>"; };
 		B3E2974E28C241B900DED656 /* Error+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extensions.swift"; sourceTree = "<group>"; };
 		B3E2975028C36D0D00DED656 /* LoginClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginClient.swift; sourceTree = "<group>"; };
+		B3EE0F1328E983100029E608 /* OrganisationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationsListView.swift; sourceTree = "<group>"; };
+		B3EE0F1528E9831B0029E608 /* OrganisationsListState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationsListState.swift; sourceTree = "<group>"; };
+		B3EE0F1728E983270029E608 /* OrganisationsListAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationsListAction.swift; sourceTree = "<group>"; };
+		B3EE0F1928E9833A0029E608 /* OrganisationsListEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationsListEnvironment.swift; sourceTree = "<group>"; };
+		B3EE0F1B28E983470029E608 /* OrganisationsListReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationsListReducer.swift; sourceTree = "<group>"; };
+		B3EE0F1D28ED6FB60029E608 /* OrgansationsListRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgansationsListRoute.swift; sourceTree = "<group>"; };
 		B3F8E83928AED2110084CD1B /* SettingsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsState.swift; sourceTree = "<group>"; };
 		B3F8E83B28AED2180084CD1B /* SettingsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAction.swift; sourceTree = "<group>"; };
 		B3F8E83D28AED2230084CD1B /* SettingsEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsEnvironment.swift; sourceTree = "<group>"; };
@@ -202,6 +214,19 @@
 				B3E10C2B28B1456600E60AA3 /* OrganisationMembersReducer.swift */,
 			);
 			path = OrganisationMembers;
+			sourceTree = "<group>";
+		};
+		B3EE0F1228E982FE0029E608 /* OrganisationsList */ = {
+			isa = PBXGroup;
+			children = (
+				B3EE0F1328E983100029E608 /* OrganisationsListView.swift */,
+				B3EE0F1528E9831B0029E608 /* OrganisationsListState.swift */,
+				B3EE0F1728E983270029E608 /* OrganisationsListAction.swift */,
+				B3EE0F1928E9833A0029E608 /* OrganisationsListEnvironment.swift */,
+				B3EE0F1B28E983470029E608 /* OrganisationsListReducer.swift */,
+				B3EE0F1D28ED6FB60029E608 /* OrgansationsListRoute.swift */,
+			);
+			path = OrganisationsList;
 			sourceTree = "<group>";
 		};
 		C30A37ED2869CF4F0003FB4A = {
@@ -480,6 +505,7 @@
 		C3FBEC3B287071A4005DE031 /* Organisations */ = {
 			isa = PBXGroup;
 			children = (
+				B3EE0F1228E982FE0029E608 /* OrganisationsList */,
 				B3E10C2628B1450300E60AA3 /* OrganisationMembers */,
 				C3FBEC3C287071D5005DE031 /* Views */,
 			);
@@ -654,7 +680,9 @@
 			files = (
 				C3B67C71286A45EF001CB727 /* EnvironmentKeys.swift in Sources */,
 				B3E10C3028B21BE900E60AA3 /* OrganisationMembersView.swift in Sources */,
+				B3EE0F1A28E9833A0029E608 /* OrganisationsListEnvironment.swift in Sources */,
 				B318737628B8AD340094770A /* SignUpClient.swift in Sources */,
+				B3EE0F1628E9831B0029E608 /* OrganisationsListState.swift in Sources */,
 				C3BB858A2898777900A80DFE /* ForgotPasswordState.swift in Sources */,
 				C3BB85902898785700A80DFE /* ForgotPasswordReducer.swift in Sources */,
 				C3FBEC4C2870C272005DE031 /* Endpoint.swift in Sources */,
@@ -680,6 +708,7 @@
 				C3FBEC4E2870CEE7005DE031 /* RequestBuilder.swift in Sources */,
 				C34A51B72873489000B5ECE4 /* AppeekPicker.swift in Sources */,
 				C3B67C74286A46BE001CB727 /* SupabaseAPI.swift in Sources */,
+				B3EE0F1E28ED6FB60029E608 /* OrgansationsListRoute.swift in Sources */,
 				C3BDE82128871E0D001E24EB /* ValidationClient.swift in Sources */,
 				B3F8E83E28AED2230084CD1B /* SettingsEnvironment.swift in Sources */,
 				B3F8E84028AED22E0084CD1B /* SettingsReducer.swift in Sources */,
@@ -690,6 +719,7 @@
 				B362B38828CB1E13004C9450 /* OrganisationTeamMembersClient.swift in Sources */,
 				C3FBEC3E287071E0005DE031 /* OrganisationsPicker.swift in Sources */,
 				B3E10C2C28B1456600E60AA3 /* OrganisationMembersReducer.swift in Sources */,
+				B3EE0F1C28E983470029E608 /* OrganisationsListReducer.swift in Sources */,
 				C3FBEC5B2870F707005DE031 /* UserOrganisationRelation.swift in Sources */,
 				B3E10C2A28B1454F00E60AA3 /* OrganisationMembersAction.swift in Sources */,
 				C3BB858C289877D300A80DFE /* ForgotPasswordAction.swift in Sources */,
@@ -698,6 +728,7 @@
 				C3DA524D286DE413009A7809 /* HomeView.swift in Sources */,
 				C30A37FA2869CF4F0003FB4A /* AppeekApp.swift in Sources */,
 				C34A51B92874B0C900B5ECE4 /* Popup.swift in Sources */,
+				B3EE0F1828E983270029E608 /* OrganisationsListAction.swift in Sources */,
 				C3BDE82D2895C3D0001E24EB /* Route.swift in Sources */,
 				B3E10C2828B1454300E60AA3 /* OrganisationMembersState.swift in Sources */,
 				C3B67C8D286B0AC7001CB727 /* Color+Extensions.swift in Sources */,
@@ -706,6 +737,7 @@
 				B3E2974F28C241B900DED656 /* Error+Extensions.swift in Sources */,
 				C38627B328A2F9E3000E0591 /* HomeState.swift in Sources */,
 				B3F8E83C28AED2180084CD1B /* SettingsAction.swift in Sources */,
+				B3EE0F1428E983100029E608 /* OrganisationsListView.swift in Sources */,
 				C3B67C90286B0B52001CB727 /* AppeekBackgroundView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

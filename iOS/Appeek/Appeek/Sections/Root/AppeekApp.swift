@@ -30,9 +30,9 @@ struct RootView: View {
     var body: some View {
         WithViewStore(self.store) { viewStore in
             SwitchStore(self.store) {
-                CaseLet(state: /AppState.home,
-                        action: AppAction.homeAction) { store in
-                    HomeView(store: store)
+                CaseLet(state: /AppState.organisationsListState,
+                        action: AppAction.organisationsListAction) { store in
+                    OrganisationsListView(store: store)
                 }
                 CaseLet(state: /AppState.onboarding,
                         action: AppAction.onboardingAction) { store in

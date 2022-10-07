@@ -21,6 +21,9 @@ struct OrganisationMembersView: View {
                 ) {
                     ZStack {
                         List {
+                            Section("Team Identifier") {
+                                teamIdentifier(viewStore)
+                            }
                             
                             if viewStore.viewState.isCurrentUserAdmin {
                                 Section("Admin Actions") {
@@ -77,6 +80,42 @@ struct OrganisationMembersView: View {
             viewStore.send(.dismissTapped)
         } label: {
             Image(systemName: "xmark")
+        }
+        .tint(.appeekFont)
+    }
+    
+    @ViewBuilder
+    private func teamIdentifier(
+        _ viewStore: ViewStore<OrganisationMembersStateCombined, OrganisationMembersAction>
+    ) -> some View {
+        Button {
+            print("Copy the uuid")
+        } label: {
+            HStack {
+                Group {
+                    Text("\(String(viewStore.selectedOrganisaion.id.uuidString.prefix(8)))")
+                        .font(.subheadline) +
+                    Text(" - ")
+                        .font(.subheadline) +
+                    Text("\(viewStore.viewState.dots(4))")
+                        .fontWeight(.black) +
+                    Text(" - ")
+                        .font(.subheadline) +
+                    Text("\(viewStore.viewState.dots(4))")
+                        .fontWeight(.black) +
+                    Text(" - ")
+                        .font(.subheadline) +
+                    Text("\(viewStore.viewState.dots(4))")
+                        .fontWeight(.black) +
+                    Text(" - ")
+                        .font(.subheadline) +
+                    Text("\(viewStore.viewState.dots(12))")
+                        .fontWeight(.black)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Image(systemName: "doc.on.doc")
+            }
         }
         .tint(.appeekFont)
     }

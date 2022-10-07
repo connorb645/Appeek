@@ -10,55 +10,38 @@ import ComposableArchitecture
 import CasePaths
 
 typealias HomeReducer = Reducer<
-    HomeState,
+    HomeStateCombined,
     HomeAction,
     HomeEnvironment
 >
 
-let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment>.combine(
+let homeReducer = Reducer<HomeStateCombined, HomeAction, HomeEnvironment>.combine(
     Reducer { state, action, environment in
         switch action {
         case .onAppear:
-            state.isLoading = true
-            return .run { send in
-                await send(.usersOrganisationsReceived(TaskResult {
-                    try await environment.usersOrganisations()
-                }), animation: .default)
-            }
+            return .none
         case .goToSettingsTapped:
-            state.route = .settings
-            return .none
-        case let .usersOrganisationsReceived(.success(organisations)):
-            state.selectedOrganisation = organisations.first
-            state.usersOrganisations = organisations
-            state.isLoading = false
-            return .none
-        case let .usersOrganisationsReceived(.failure(error)):
-            state.isLoading = false
-            state.errorMessage = error.friendlyMessage
-            return .none
-        case let .selectedOrganisationUpdated(organisation):
-            state.selectedOrganisation = organisation
+            state.viewState.route = .settings
             return .none
         case let .homeRouteChanged(route):
-            state.route = route
+            state.viewState.route = route
             if route == nil {
                 state.organisationTeamMembersStateCombined = nil
                 state.settingsStateCombined = nil
             }
             return .none
         case .goToTeamMembersListTapped:
-            state.route = .organisationMembersList
+            state.viewState.route = .organisationMembersList
             return .none
         case .settingsAction(.loggedOut):
-            state.route = nil
+            state.viewState.route = nil
             return .task {
                 await environment.delay(0.33)
                 return .sheetDismissalDelayEnded(loggedOut: true)
             }
         case .settingsAction(.dismissScreenTapped),
              .organisationMembersAction(.dismissTapped):
-            state.route = nil
+            state.viewState.route = nil
             return .task {
                 await environment.delay(0.33)
                 return .sheetDismissalDelayEnded(loggedOut: false)
@@ -68,7 +51,7 @@ let homeReducer = Reducer<HomeState, HomeAction, HomeEnvironment>.combine(
         }
     },
     settingsReducer.optional().pullback(
-        state: \HomeState.settingsStateCombined,
+        state: \.settingsStateCombined,
         action: /HomeAction.settingsAction,
         environment: { SettingsEnvironment(logout: $0.logout,
                                            clearAuthSession: $0.clearAuthSession) }

@@ -8,15 +8,13 @@
 import Foundation
 import SwiftUI
 
-struct HomeState: Equatable {
-    enum Route: Equatable {
-        case settings
-        case organisationMembersList
-    }
+struct HomeStateCombined: Equatable {
+    var viewState: HomeState
+    var navigationPath: NavigationPath
+    var selectedOrganisation: Organisation
     
     var organisationTeamMembersStateCombined: OrganisationMembersStateCombined? {
         get {
-            guard let selectedOrganisation = self.selectedOrganisation else { return nil }
             return OrganisationMembersStateCombined(
                 viewState: organisationTeamMembersState,
                 selectedOrganisaion: selectedOrganisation
@@ -27,8 +25,8 @@ struct HomeState: Equatable {
         }
     }
     
-    private var _organisationTeamMembersState: OrganisationMembersState?
-    private var organisationTeamMembersState: OrganisationMembersState {
+    var _organisationTeamMembersState: OrganisationMembersState?
+    var organisationTeamMembersState: OrganisationMembersState {
         get {
             _organisationTeamMembersState ?? .init()
         }
@@ -47,17 +45,31 @@ struct HomeState: Equatable {
         }
     }
     
-    private var _settingsState: SettingsState?
-    private var settingsState: SettingsState {
+    var _settingsState: SettingsState?
+    var settingsState: SettingsState {
         get {
             _settingsState ?? .init()
         }
     }
     
-    var navigationPath: NavigationPath = .init()
+    static let preview = Self(
+        viewState: HomeState.preview,
+        navigationPath: .init(),
+        selectedOrganisation: .init(
+            id: .init(),
+            name: "",
+            createdAt: ""
+        )
+    )
+}
+
+struct HomeState: Equatable {
+    enum Route: Equatable {
+        case settings
+        case organisationMembersList
+    }
+    
     var route: Route?
-    var usersOrganisations: [Organisation] = []
-    var selectedOrganisation: Organisation?
     var errorMessage: String?
     var isLoading: Bool = false
     

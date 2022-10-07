@@ -19,16 +19,16 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 })
             }
         case let .receivedAuthSession(.success(authSession)):
-            state = AppState.home(.init())
+            state = AppState.organisationsListState(.init())
             return .none
         case let .receivedAuthSession(.failure(error)):
             state = AppState.onboarding(.init())
             return .none
         case .onboardingAction(.signUpAction(.loggedIn)),
              .onboardingAction(.signUpAction(.loginAction(.loggedIn))):
-            state = AppState.home(.init())
+            state = AppState.organisationsListState(.init())
             return .none
-        case let .homeAction(.sheetDismissalDelayEnded(loggedOut)):
+        case let .organisationsListAction(.homeAction(.sheetDismissalDelayEnded(loggedOut))):
             if loggedOut {
                 state = AppState.onboarding(.init())
             }
@@ -37,15 +37,15 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             return .none
         }
     },
-    homeReducer.pullback(
-        state: /AppState.home,
-        action: /AppAction.homeAction,
+    organisationsListReducer.pullback(
+        state: /AppState.organisationsListState,
+        action: /AppAction.organisationsListAction,
         environment: {
-            HomeEnvironment(
+            OrganisationsListEnvironment(
+                usersOrganisations: $0.usersOrganisations,
                 logout: $0.logout,
                 clearAuthSession: $0.clearAuthSession,
-                usersOrganisations: $0.usersOrganisations,
-                delay: { _ in },
+                delay: delay(for:),
                 organisationTeamMembersClient: $0.organisationTeamMembersClient
             )
         }
@@ -54,11 +54,13 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         state: /AppState.onboarding,
         action: /AppAction.onboardingAction,
         environment: {
-            OnboardingEnvironment(signUpClient: $0.signUpClient,
-                                  loginClient: $0.loginClient,
-                                  validationClient: $0.validationClient,
-                                  resetPassword: $0.resetPassword)
+            OnboardingEnvironment(
+                signUpClient: $0.signUpClient,
+                loginClient: $0.loginClient,
+                validationClient: $0.validationClient,
+                resetPassword: $0.resetPassword
+            )
         }
     )
-).debug()
+)
 
