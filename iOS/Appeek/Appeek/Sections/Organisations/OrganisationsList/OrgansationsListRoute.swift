@@ -8,5 +8,5 @@
 import Foundation
 
 enum OrganisationsListRoute {
-    case home
+    case home, joinTeam
 }

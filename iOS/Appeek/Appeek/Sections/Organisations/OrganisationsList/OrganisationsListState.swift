@@ -37,6 +37,28 @@ struct OrganisationsListState: Equatable {
         }
     }
     
+    var joinOrganisationStateCombined: JoinOrganisationStateCombined? {
+        get {
+            return JoinOrganisationStateCombined(
+                viewState: joinOrganisationState,
+                navigationPath: navigationPath
+            )
+        }
+        set {
+            if let newValue = newValue {
+                self.navigationPath = newValue.navigationPath
+            }
+            self._joinOrganisationState = newValue?.viewState
+        }
+    }
+    
+    private var _joinOrganisationState: JoinOrganisationState?
+    private var joinOrganisationState: JoinOrganisationState {
+        get {
+            _joinOrganisationState ?? .init()
+        }
+    }
+    
     var navigationPath: NavigationPath = .init()
     var isLoading: Bool = false
     var errorMessage: String? = nil

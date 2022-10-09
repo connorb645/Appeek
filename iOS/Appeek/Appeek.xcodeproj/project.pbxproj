@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		B318737628B8AD340094770A /* SignUpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B318737528B8AD340094770A /* SignUpClient.swift */; };
 		B344061628C22DE900D116B2 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = B344061528C22DE900D116B2 /* SwiftUINavigation */; };
+		B355B79228F0B758009CC6CE /* JoinOrganisationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B355B79128F0B758009CC6CE /* JoinOrganisationView.swift */; };
+		B355B79428F35FAE009CC6CE /* JoinOrganisationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B355B79328F35FAE009CC6CE /* JoinOrganisationState.swift */; };
+		B355B79628F35FF2009CC6CE /* JoinOrganisationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B355B79528F35FF2009CC6CE /* JoinOrganisationAction.swift */; };
+		B355B79828F36562009CC6CE /* JoinOrganisationEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B355B79728F36562009CC6CE /* JoinOrganisationEnvironment.swift */; };
+		B355B79A28F365D7009CC6CE /* JoinOrganisationReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B355B79928F365D7009CC6CE /* JoinOrganisationReducer.swift */; };
 		B362B38828CB1E13004C9450 /* OrganisationTeamMembersClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B362B38728CB1E13004C9450 /* OrganisationTeamMembersClient.swift */; };
 		B3E10C2828B1454300E60AA3 /* OrganisationMembersState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E10C2728B1454300E60AA3 /* OrganisationMembersState.swift */; };
 		B3E10C2A28B1454F00E60AA3 /* OrganisationMembersAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E10C2928B1454F00E60AA3 /* OrganisationMembersAction.swift */; };
@@ -98,6 +103,11 @@
 
 /* Begin PBXFileReference section */
 		B318737528B8AD340094770A /* SignUpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpClient.swift; sourceTree = "<group>"; };
+		B355B79128F0B758009CC6CE /* JoinOrganisationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrganisationView.swift; sourceTree = "<group>"; };
+		B355B79328F35FAE009CC6CE /* JoinOrganisationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrganisationState.swift; sourceTree = "<group>"; };
+		B355B79528F35FF2009CC6CE /* JoinOrganisationAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrganisationAction.swift; sourceTree = "<group>"; };
+		B355B79728F36562009CC6CE /* JoinOrganisationEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrganisationEnvironment.swift; sourceTree = "<group>"; };
+		B355B79928F365D7009CC6CE /* JoinOrganisationReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinOrganisationReducer.swift; sourceTree = "<group>"; };
 		B362B38728CB1E13004C9450 /* OrganisationTeamMembersClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationTeamMembersClient.swift; sourceTree = "<group>"; };
 		B3E10C2728B1454300E60AA3 /* OrganisationMembersState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationMembersState.swift; sourceTree = "<group>"; };
 		B3E10C2928B1454F00E60AA3 /* OrganisationMembersAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganisationMembersAction.swift; sourceTree = "<group>"; };
@@ -202,6 +212,18 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B355B79028F0B740009CC6CE /* JoinOrganisation */ = {
+			isa = PBXGroup;
+			children = (
+				B355B79128F0B758009CC6CE /* JoinOrganisationView.swift */,
+				B355B79328F35FAE009CC6CE /* JoinOrganisationState.swift */,
+				B355B79528F35FF2009CC6CE /* JoinOrganisationAction.swift */,
+				B355B79728F36562009CC6CE /* JoinOrganisationEnvironment.swift */,
+				B355B79928F365D7009CC6CE /* JoinOrganisationReducer.swift */,
+			);
+			path = JoinOrganisation;
 			sourceTree = "<group>";
 		};
 		B3E10C2628B1450300E60AA3 /* OrganisationMembers */ = {
@@ -505,6 +527,7 @@
 		C3FBEC3B287071A4005DE031 /* Organisations */ = {
 			isa = PBXGroup;
 			children = (
+				B355B79028F0B740009CC6CE /* JoinOrganisation */,
 				B3EE0F1228E982FE0029E608 /* OrganisationsList */,
 				B3E10C2628B1450300E60AA3 /* OrganisationMembers */,
 				C3FBEC3C287071D5005DE031 /* Views */,
@@ -687,6 +710,7 @@
 				C3BB85902898785700A80DFE /* ForgotPasswordReducer.swift in Sources */,
 				C3FBEC4C2870C272005DE031 /* Endpoint.swift in Sources */,
 				C3FBEC38286E008A005DE031 /* ForgotPasswordView.swift in Sources */,
+				B355B79428F35FAE009CC6CE /* JoinOrganisationState.swift in Sources */,
 				B3E10C2E28B1457A00E60AA3 /* OrganisationMembersEnvironment.swift in Sources */,
 				C3FBEC462870828F005DE031 /* Optional+Extensions.swift in Sources */,
 				C3B67C8B286B0A64001CB727 /* OnboardingView.swift in Sources */,
@@ -696,6 +720,7 @@
 				C3B67C7D286A4A45001CB727 /* AppeekError.swift in Sources */,
 				C3FBEC4328707E23005DE031 /* Organisation.swift in Sources */,
 				B3E2975128C36D0D00DED656 /* LoginClient.swift in Sources */,
+				B355B79628F35FF2009CC6CE /* JoinOrganisationAction.swift in Sources */,
 				C3BB85812898704300A80DFE /* AppRoute.swift in Sources */,
 				C3FBEC572870E99A005DE031 /* JSONSerializer.swift in Sources */,
 				C38627B728A2FA02000E0591 /* HomeEnvironment.swift in Sources */,
@@ -722,6 +747,7 @@
 				B3EE0F1C28E983470029E608 /* OrganisationsListReducer.swift in Sources */,
 				C3FBEC5B2870F707005DE031 /* UserOrganisationRelation.swift in Sources */,
 				B3E10C2A28B1454F00E60AA3 /* OrganisationMembersAction.swift in Sources */,
+				B355B79828F36562009CC6CE /* JoinOrganisationEnvironment.swift in Sources */,
 				C3BB858C289877D300A80DFE /* ForgotPasswordAction.swift in Sources */,
 				C3BB85852898708F00A80DFE /* AppReducer.swift in Sources */,
 				C38627B528A2F9F4000E0591 /* HomeAction.swift in Sources */,
@@ -731,7 +757,9 @@
 				B3EE0F1828E983270029E608 /* OrganisationsListAction.swift in Sources */,
 				C3BDE82D2895C3D0001E24EB /* Route.swift in Sources */,
 				B3E10C2828B1454300E60AA3 /* OrganisationMembersState.swift in Sources */,
+				B355B79A28F365D7009CC6CE /* JoinOrganisationReducer.swift in Sources */,
 				C3B67C8D286B0AC7001CB727 /* Color+Extensions.swift in Sources */,
+				B355B79228F0B758009CC6CE /* JoinOrganisationView.swift in Sources */,
 				C3FBEC482870BC22005DE031 /* Network.swift in Sources */,
 				C3BB858E2898782C00A80DFE /* ForgotPasswordEnvironment.swift in Sources */,
 				B3E2974F28C241B900DED656 /* Error+Extensions.swift in Sources */,

@@ -20,8 +20,8 @@ struct OrganisationsListView: View {
                     send: OrganisationsListAction.navigationPathChanged)
                 ) {
                     ZStack {
-                        List {
-                            Section("Actions") {
+                        Form {
+                            Section {
                                 Button("Join Team") {
                                     viewStore.send(.joinTeamTapped)
                                 }
@@ -54,8 +54,18 @@ struct OrganisationsListView: View {
                             ) { store in
                                 HomeView(store: store)
                             }
+                        case .joinTeam:
+                            IfLetStore(
+                                self.store.scope(
+                                    state: \.joinOrganisationStateCombined,
+                                    action: OrganisationsListAction.joinOrganisationAction
+                                )
+                            ) { store in
+                                JoinOrganisationView(store: store)
+                            }
                         }
                     }
+                    .navigationTitle("Your Teams")
                 }
             }
         }

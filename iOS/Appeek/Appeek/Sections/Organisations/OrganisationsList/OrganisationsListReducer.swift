@@ -37,7 +37,7 @@ let organisationsListReducer = OrganisationsListReducer.combine(
             state.errorMessage = error.friendlyMessage
             return .none
         case .joinTeamTapped:
-            print("Join team tapped action")
+            state.navigationPath.append(OrganisationsListRoute.joinTeam)
             return .none
         case let .teamSelected(team):
             state.selectedOrganisation = team
@@ -57,6 +57,13 @@ let organisationsListReducer = OrganisationsListReducer.combine(
                 delay: { _ in },
                 organisationTeamMembersClient: $0.organisationTeamMembersClient
             )
+        }
+    ),
+    joinOrganisationReducer.optional().pullback(
+        state: \.joinOrganisationStateCombined,
+        action: /OrganisationsListAction.joinOrganisationAction,
+        environment: { _ in
+            JoinOrganisationEnvironment()
         }
     )
 )

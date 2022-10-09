@@ -50,6 +50,7 @@ enum OnboardingAction: Equatable {
     
     case onAppear
     case navigationPathUpdated(NavigationPath)
+    case signUpTapped
 }
 
 // MARK: - Environment
@@ -76,6 +77,9 @@ let onboardingReducer = Reducer<OnboardingState, OnboardingAction, OnboardingEnv
         case let .navigationPathUpdated(navigationPath):
             state.navigationPath = navigationPath
             return .none
+        case .signUpTapped:
+            state.navigationPath.append(OnboardingRoute.signUp)
+            return .none
         default:
             return .none
         }
@@ -97,19 +101,21 @@ struct OnboardingView: View {
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
-            NavigationStack(path: viewStore.binding(get: \.navigationPath,
-                                                    send: OnboardingAction.navigationPathUpdated)) {
-                AppeekBackgroundView {
-                    NavigationLink("Sign Up Now", value: OnboardingRoute.signUp)
-                }
-                .onAppear {
-                    viewStore.send(.onAppear)
-                }
-                .navigationDestination(for: OnboardingRoute.self) { route in
-                    switch route {
-                    case .signUp:
-                        SignUpView(store: self.store.scope(state: \.signUpStateCombined,
-                                                           action: OnboardingAction.signUpAction))
+            AppeekBackgroundView {
+                NavigationStack(path: viewStore.binding(get: \.navigationPath,
+                                                        send: OnboardingAction.navigationPathUpdated)) {
+                    Button("Sign Up Now") {
+                        viewStore.send(.signUpTapped)
+                    }
+                    .onAppear {
+                        viewStore.send(.onAppear)
+                    }
+                    .navigationDestination(for: OnboardingRoute.self) { route in
+                        switch route {
+                        case .signUp:
+                            SignUpView(store: self.store.scope(state: \.signUpStateCombined,
+                                                               action: OnboardingAction.signUpAction))
+                        }
                     }
                 }
             }

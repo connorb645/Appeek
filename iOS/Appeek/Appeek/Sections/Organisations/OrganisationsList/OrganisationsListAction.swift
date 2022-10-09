@@ -11,6 +11,7 @@ import ComposableArchitecture
 
 enum OrganisationsListAction: Equatable {
     case homeAction(HomeAction)
+    case joinOrganisationAction(JoinOrganisationAction)
     
     case onAppear
     case navigationPathChanged(NavigationPath)
